@@ -55,7 +55,7 @@ function Invoke-MicrowinGetIso {
             return
         }
 
-        Set-WinUtilTaskbaritem -state "Indeterminate" -overlay "logo"
+        if ($sync -ne $null) { Set-WinUtilTaskbaritem -state "Indeterminate" -overlay "logo" }
         Invoke-MicrowinBusyInfo -action "wip" -message "Preparing to download ISO..." -interactive $false
 
         # Grab the location of the selected path
@@ -85,7 +85,7 @@ function Invoke-MicrowinGetIso {
             Write-Host "If you get an error about scripts is disabled on this system please close WinUtil and run - 'Set-ExecutionPolicy -ExecutionPolicy Unrestricted' and select 'A' and retry using MicroWin again."
             $msg = "The ISO file could not be downloaded"
             Invoke-MicrowinBusyInfo -action "warning" -message $msg
-            Set-WinUtilTaskbaritem -state "Error" -value 1 -overlay "warning"
+            if ($sync -ne $null) { Set-WinUtilTaskbaritem -state "Error" -value 1 -overlay "warning" }
             [System.Windows.MessageBox]::Show($msg, "Winutil", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Error)
             return
         }
@@ -124,7 +124,7 @@ function Invoke-MicrowinGetIso {
         return
     }
 
-    Set-WinUtilTaskbaritem -state "Indeterminate" -overlay "logo"
+    if ($sync -ne $null) { Set-WinUtilTaskbaritem -state "Indeterminate" -overlay "logo" }
     Invoke-MicrowinBusyInfo -action "wip" -message "Checking system requirements..." -interactive $false
 
     $oscdimgPath = Join-Path $env:TEMP 'oscdimg.exe'
@@ -190,7 +190,7 @@ function Invoke-MicrowinGetIso {
         # It's critical and we can't continue. Output an error
         $msg = "You don't have enough space for this operation. You need at least $([Math]::Round(($isoSize / ([Math]::Pow(1024, 2))) * 2, 2)) MB of free space to copy the ISO files to a temp directory and to be able to perform additional operations."
         Write-Host $msg
-        Set-WinUtilTaskbaritem -state "Error" -value 1 -overlay "warning"
+        if ($sync -ne $null) { Set-WinUtilTaskbaritem -state "Error" -value 1 -overlay "warning" }
         Invoke-MicrowinBusyInfo -action "warning" -message $msg
         return
     } else {
@@ -210,7 +210,7 @@ function Invoke-MicrowinGetIso {
         Write-Error $msg
         Write-Error "This is NOT winutil's problem, your ISO might be corrupt, or there is a problem on the system"
         Write-Host "Please refer to this wiki for more details: https://christitustech.github.io/winutil/KnownIssues/#troubleshoot-errors-during-microwin-usage" -ForegroundColor Red
-        Set-WinUtilTaskbaritem -state "Error" -value 1 -overlay "warning"
+        if ($sync -ne $null) { Set-WinUtilTaskbaritem -state "Error" -value 1 -overlay "warning" }
         Invoke-MicrowinBusyInfo -action "warning" -message $msg
         return
     }
@@ -294,7 +294,7 @@ function Invoke-MicrowinGetIso {
             $msg = "Neither install.wim nor install.esd exist in the image, this could happen if you use unofficial Windows images. Please don't use shady images from the internet."
             Write-Host "$($msg) Only use official images. Here are instructions how to download ISO images if the Microsoft website is not showing the link to download and ISO. https://www.techrepublic.com/article/how-to-download-a-windows-10-iso-file-without-using-the-media-creation-tool/"
             Invoke-MicrowinBusyInfo -action "warning" -message $msg
-            Set-WinUtilTaskbaritem -state "Error" -value 1 -overlay "warning"
+            if ($sync -ne $null) { Set-WinUtilTaskbaritem -state "Error" -value 1 -overlay "warning" }
             [System.Windows.MessageBox]::Show($msg, "Winutil", [System.Windows.MessageBoxButton]::OK, [System.Windows.MessageBoxImage]::Error)
             throw
         }
@@ -334,7 +334,7 @@ function Invoke-MicrowinGetIso {
         Remove-Item -Recurse -Force "$($scratchDir)"
         Remove-Item -Recurse -Force "$($mountDir)"
         Invoke-MicrowinBusyInfo -action "warning" -message "Failed to read and unpack ISO"
-        Set-WinUtilTaskbaritem -state "Error" -value 1 -overlay "warning"
+        if ($sync -ne $null) { Set-WinUtilTaskbaritem -state "Error" -value 1 -overlay "warning" }
 
     }
 
