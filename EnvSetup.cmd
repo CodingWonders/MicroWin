@@ -46,7 +46,7 @@ IF NOT "%1" == "SKIP_MSSTORE_UPDATE" (
     CALL :INVOKE_MICROSOFT_STORE_APP_UPDATE
 )
 CALL :DT_PROJECT_CREATE
-CALL :COPY_MICROWIN_FROM_DESTINATION
+REM CALL :COPY_MICROWIN_FROM_DESTINATION            --- no longer needed; we have already committed the files
 CALL :SET_PWSH_EXECUTION_POLICY
 ECHO Your development environment is now ready.
 
