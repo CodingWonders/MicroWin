@@ -42,7 +42,7 @@ function Invoke-MicrowinGetIso {
             return
         }
 
-    } elseif ($sync["ISOdownloader"].IsChecked) {
+    } elseif ($sync -ne $null -and $sync["ISOdownloader"].IsChecked) {
         # Create folder browsers for user-specified locations
         Invoke-MicrowinBusyInfo -action "wip" -message "Please select download location..." -interactive $true
         [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
@@ -216,33 +216,37 @@ function Invoke-MicrowinGetIso {
     }
     # storing off values in hidden fields for further steps
     # there is probably a better way of doing this, I don't have time to figure this out
-    $sync.MicrowinIsoDrive.Text = $driveLetter
+    if ($sync -ne $null) { $sync.MicrowinIsoDrive.Text = $driveLetter }
 
     $mountedISOPath = (Split-Path -Path "$filePath")
-     if ($sync.MicrowinScratchDirBox.Text.Trim() -eq "Scratch") {
+    if ($sync -ne $null -and $sync.MicrowinScratchDirBox.Text.Trim() -eq "Scratch") {
         $sync.MicrowinScratchDirBox.Text =""
     }
 
-    $UseISOScratchDir = $sync.WPFMicrowinISOScratchDir.IsChecked
+    if ($sync -ne $null) { $UseISOScratchDir = $sync.WPFMicrowinISOScratchDir.IsChecked }
 
-    if ($UseISOScratchDir) {
+    if ($sync -ne $null -and $UseISOScratchDir) {
         $sync.MicrowinScratchDirBox.Text=$mountedISOPath
     }
 
-    if( -Not $sync.MicrowinScratchDirBox.Text.EndsWith('\') -And  $sync.MicrowinScratchDirBox.Text.Length -gt 1) {
+    if ($sync -ne $null) {
+        if( -Not $sync.MicrowinScratchDirBox.Text.EndsWith('\') -And  $sync.MicrowinScratchDirBox.Text.Length -gt 1) {
 
-         $sync.MicrowinScratchDirBox.Text = Join-Path   $sync.MicrowinScratchDirBox.Text.Trim() '\'
+             $sync.MicrowinScratchDirBox.Text = Join-Path   $sync.MicrowinScratchDirBox.Text.Trim() '\'
 
+        }
     }
 
     # Detect if the folders already exist and remove them
-    if (($sync.MicrowinMountDir.Text -ne "") -and (Test-Path -Path $sync.MicrowinMountDir.Text)) {
-        try {
-            Write-Host "Deleting temporary files from previous run. Please wait..."
-            Remove-Item -Path $sync.MicrowinMountDir.Text -Recurse -Force
-            Remove-Item -Path $sync.MicrowinScratchDir.Text -Recurse -Force
-        } catch {
-            Write-Host "Could not delete temporary files. You need to delete those manually."
+    if ($sync -ne $null) {
+        if (($sync.MicrowinMountDir.Text -ne "") -and (Test-Path -Path $sync.MicrowinMountDir.Text)) {
+            try {
+                Write-Host "Deleting temporary files from previous run. Please wait..."
+                Remove-Item -Path $sync.MicrowinMountDir.Text -Recurse -Force
+                Remove-Item -Path $sync.MicrowinScratchDir.Text -Recurse -Force
+            } catch {
+                Write-Host "Could not delete temporary files. You need to delete those manually."
+            }
         }
     }
 
@@ -313,11 +317,14 @@ function Invoke-MicrowinGetIso {
         $sync.MicrowinWindowsFlavors.SelectedIndex = 0
         Write-Host "Finding suitable Pro edition. This can take some time. Do note that this is an automatic process that might not select the edition you want."
         Invoke-MicrowinBusyInfo -action "wip" -message "Finding suitable Pro edition..." -interactive $false
+        
+        $proFlavorIndex = 0
 
-        Get-WindowsImage -ImagePath $wimFile | ForEach-Object {
+        $flavors = Get-WindowsImage -ImagePath "$wimFile"
+        $flavors | ForEach-Object {
             if ((Get-WindowsImage -ImagePath $wimFile -Index $_.ImageIndex).EditionId -eq "Professional") {
                 # We have found the Pro edition
-                $sync.MicrowinWindowsFlavors.SelectedIndex = $_.ImageIndex - 1
+                $proFlavorIndex = $_.ImageIndex
             }
             # Allow UI updates during this loop
             [System.Windows.Forms.Application]::DoEvents()
@@ -344,6 +351,10 @@ function Invoke-MicrowinGetIso {
     Write-Host "Check the UI for further steps!!!"
 
     Invoke-MicrowinBusyInfo -action "done" -message "Done! Proceed with customization."
-    $sync.ProcessRunning = $false
-    Set-WinUtilTaskbaritem -state "None" -overlay "checkmark"
+    if ($sync -ne $null) {
+        $sync.ProcessRunning = $false
+        Set-WinUtilTaskbaritem -state "None" -overlay "checkmark"
+    }
+    
+    return @{"mountDir" = $mountDir; "scratchDir" = $scratchDir; "flavors" = $flavors; "proFlavorIndex" = $proFlavorIndex}
 }
