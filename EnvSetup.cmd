@@ -19,9 +19,9 @@ CD %~dp0
 
 NET SESSION >NUL 2>&1
 IF %ERRORLEVEL% NEQ 0 (
-	ECHO This script needs to be run as an administrator because some features require administrator access. Press any key to exit...
-	PAUSE > NUL
-	EXIT /B 1
+    ECHO This script needs to be run as an administrator because some features require administrator access. Press any key to exit...
+    PAUSE > NUL
+    EXIT /B 1
 )
 
 ECHO This script will set up user-wide environment variables to set up the MicroWin
@@ -43,7 +43,7 @@ ECHO You will now be asked a series of questions. These are optional, but can he
 ECHO you with development and testing. Press ENTER to continue...
 PAUSE > NUL
 IF NOT "%1" == "SKIP_MSSTORE_UPDATE" (
-	CALL :INVOKE_MICROSOFT_STORE_APP_UPDATE
+    CALL :INVOKE_MICROSOFT_STORE_APP_UPDATE
 )
 CALL :DT_PROJECT_CREATE
 CALL :COPY_MICROWIN_FROM_DESTINATION
@@ -64,14 +64,14 @@ REM Sets an environment variable
 REM ----- CALL :SET_ENVIRONMENT_VARIABLE env_var_name "env_var_value (single value only)" 0|1
 REM -- Third flag indicates whether to set a variable machine-wide. It is mandatory. Values: 0 -- user-wide; 1 -- machine-wide
 IF "%3" == "" (
-	ECHO Machine-wide flag needs to be passed.
-	EXIT /B
+    ECHO Machine-wide flag needs to be passed.
+    EXIT /B
 )
 
 IF %3 EQU 1 (
-	SETX /M %1 %2
+    SETX /M %1 %2
 ) ELSE (
-	SETX %1 %2
+    SETX %1 %2
 )
 EXIT /B
 
@@ -92,9 +92,9 @@ IF "%DT_Option%" == "Y" (
     IF NOT EXIST "%ProgramFiles%\DISMTools" (
         ECHO Installing DISMTools Latest Preview...
         winget install DISMTools-pre --accept-source-agreements --accept-package-agreements
-		REM we do this because I don't want to deal with false positives in the environment. Defender is f***ing with us at this point.
-		ECHO Setting Defender exclusion for DT Preview directory. This prevents Defender from flagging this software at an inopportune time.
-		powershell -command Start-Process powershell -argumentList \"Add-MpPreference -ExclusionPath '%ProgramFiles%\DISMTools\Preview'"\" -verb runas
+        REM we do this because I don't want to deal with false positives in the environment. Defender is f***ing with us at this point.
+        ECHO Setting Defender exclusion for DT Preview directory. This prevents Defender from flagging this software at an inopportune time.
+        powershell -command Start-Process powershell -argumentList \"Add-MpPreference -ExclusionPath '%ProgramFiles%\DISMTools\Preview'"\" -verb runas
     )
     ECHO Creating project folder...
     MD MicroWin_DT
@@ -146,11 +146,11 @@ ECHO Preparing to copy files from destination...
 IF EXIST "%MicroWinCanaryDir%\%MicroWinWinUtilSubPath%" (
     ECHO Copying MicroWin files from the target WinUtil repo is not necessary. Skipping...
 ) ELSE (
-	REM We will prepare the compiler and the pre-processor because we still want
+    REM We will prepare the compiler and the pre-processor because we still want
     REM to have consistent indentation
     ECHO Copying Build Tools...
     COPY /Y "%MicroWinWinUtilDir%\compile.ps1" compile.ps1
-	COPY /Y "%MicroWinWinUtilDir%\.gitignore" .gitignore
+    COPY /Y "%MicroWinWinUtilDir%\.gitignore" .gitignore
     MD tools
     XCOPY "%MicroWinWinUtilDir%\tools\*.*" .\tools /cehyi
     ECHO Copying MicroWin Source Files...
@@ -163,8 +163,8 @@ EXIT /B
 FOR /F "tokens=3" %%A IN ('REG QUERY "HKLM\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell" /V ExecutionPolicy 2^>NUL') DO SET "ExecPol=%%A"
 
 IF "%ExecPol%" == "Unrestricted" (
-	ECHO PowerShell Execution Policy is already set to unrestricted. Skipping...
-	EXIT /B
+    ECHO PowerShell Execution Policy is already set to unrestricted. Skipping...
+    EXIT /B
 )
 
 ECHO.
@@ -178,10 +178,10 @@ ECHO likely that your computer will catch a virus.
 ECHO.
 SET /P "PWSH_Option=Do you want to set execution policies (Y/N)? " || SET "PWSH_Option=N"
 IF "%PWSH_OPTION%" == "Y" (
-	powershell -command Set-ExecutionPolicy Unrestricted -Force
-	IF %ERRORLEVEL% NEQ 0 (
-		ECHO The PowerShell method did not work; attempting to set execution policy from Registry...
-		REG ADD "HKLM\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell" /V ExecutionPolicy /T REG_SZ /D Unrestricted /F
-	)
+    powershell -command Set-ExecutionPolicy Unrestricted -Force
+    IF %ERRORLEVEL% NEQ 0 (
+        ECHO The PowerShell method did not work; attempting to set execution policy from Registry...
+        REG ADD "HKLM\SOFTWARE\Microsoft\PowerShell\1\ShellIds\Microsoft.PowerShell" /V ExecutionPolicy /T REG_SZ /D Unrestricted /F
+    )
 )
 EXIT /B
