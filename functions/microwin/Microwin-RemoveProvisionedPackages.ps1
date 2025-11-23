@@ -33,7 +33,8 @@ function Microwin-RemoveProvisionedPackages() {
                     $_.PackageName -NotLike "*Gaming*" -and
                     $_.PackageName -NotLike "*Extension*" -and
                     $_.PackageName -NotLike "*SecHealthUI*" -and
-                    $_.PackageName -NotLike "*ScreenSketch*"
+                    $_.PackageName -NotLike "*ScreenSketch*" -and
+                    $_.PackageName -NotLike "*CrossDevice*"
             }
         } else {
             $appxProvisionedPackages = dism /english /image="$scratchDir" /get-provisionedappxpackages | Select-String -Pattern "PackageName : " -CaseSensitive -SimpleMatch
@@ -55,7 +56,8 @@ function Microwin-RemoveProvisionedPackages() {
                     $_ -NotLike "*Gaming*" -and
                     $_ -NotLike "*Extension*" -and
                     $_ -NotLike "*SecHealthUI*" -and
-                    $_ -NotLike "*ScreenSketch*"
+                    $_ -NotLike "*ScreenSketch*" -and
+                    $_ -NotLike "*CrossDevice*"
                 }
             } else {
                 Write-Host "AppX packages could not be obtained with DISM. MicroWin processing will continue, but AppX packages will be skipped."
