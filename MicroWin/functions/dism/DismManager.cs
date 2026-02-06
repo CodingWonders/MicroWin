@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Microsoft.Dism;
+using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace MicroWin.functions.dism
 {
@@ -90,8 +93,73 @@ namespace MicroWin.functions.dism
             RunDismWithProgress($"/Mount-Image /ImageFile:\"{wimPath}\" /Index:{index} /MountDir:\"{mountPath}\"", progress);
         }
 
+        private DismMountedImageInfoCollection GetMountedImages()
+        {
+            DismMountedImageInfoCollection mountedImages = null;
+
+            try
+            {
+                DismApi.Initialize(DismLogLevel.LogErrors);
+                mountedImages = DismApi.GetMountedImages();
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                try
+                {
+                    DismApi.Shutdown();
+                }
+                catch
+                {
+
+                }
+            }
+
+            return mountedImages;
+        }
+
         public void UnmountAndSave(string mountPath, Action<int> progress)
         {
+            // TODO Callum, implement the progress callback. I'll do the saving for you, 
+            // but please add that and test
+
+            if (!Directory.Exists(mountPath))
+            {
+                // TODO log this; we immediately return if it doesn't exist.
+                return;
+            }
+
+            // To be sure, we'll check the mounted images for this one.
+            DismMountedImageInfoCollection mountedImages = GetMountedImages();
+            if ((mountedImages is null) || (!mountedImages.Any(image => image.MountPath == mountPath)))
+            {
+                return;
+            }
+
+            try
+            {
+                DismApi.Initialize(DismLogLevel.LogErrors);
+                DismApi.UnmountImage(mountPath, true);
+            }
+            catch (Exception ex)
+            {
+                // TODO implement logging
+            }
+            finally
+            {
+                try
+                {
+                    DismApi.Shutdown();
+                }
+                catch
+                {
+
+                }
+            }
+
             RunDismWithProgress($"/Unmount-Image /MountDir:\"{mountPath}\" /Commit", progress);
         }
 
@@ -100,6 +168,9 @@ namespace MicroWin.functions.dism
             string publicDesktop = Path.Combine(mountPath, "Users", "Public", "Desktop");
             if (!Directory.Exists(publicDesktop)) Directory.CreateDirectory(publicDesktop);
 
+            // TODO Callum, don't bother with this... the old microwin no longer does this
+            // and you're not supposed to access that URL in the browser; it will just spit
+            // the pwsh script contents.
             if (AppState.AddWinUtilShortcut)
                 File.WriteAllText(Path.Combine(publicDesktop, "WinUtil.url"), "[InternetShortcut]\nURL=https://christitus.com/win");
         }
