@@ -2,3 +2,6 @@
 MicroWin/obj/
 
 MicroWin/bin/
+.vs 
+MicroWin_DT 
+packages 
