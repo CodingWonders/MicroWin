@@ -1,0 +1,10 @@
+C:\dev\MicroWin\MicroWin\obj\Debug\MicroWin.csproj.AssemblyReference.cache
+C:\dev\MicroWin\MicroWin\obj\Debug\MicroWin.Properties.Resources.resources
+C:\dev\MicroWin\MicroWin\obj\Debug\MicroWin.csproj.GenerateResource.cache
+C:\dev\MicroWin\MicroWin\obj\Debug\MicroWin.csproj.CoreCompileInputs.cache
+C:\dev\MicroWin\MicroWin\bin\Debug\MicroWin.exe.config
+C:\dev\MicroWin\MicroWin\bin\Debug\MicroWin.exe
+C:\dev\MicroWin\MicroWin\bin\Debug\MicroWin.pdb
+C:\dev\MicroWin\MicroWin\obj\Debug\MicroWin.exe
+C:\dev\MicroWin\MicroWin\obj\Debug\MicroWin.pdb
+C:\dev\MicroWin\MicroWin\obj\Debug\MicroWin.exe.config
