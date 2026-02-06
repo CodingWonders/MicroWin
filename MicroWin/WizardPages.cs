@@ -192,7 +192,7 @@ namespace MicroWin
                 AppState.AddReportingToolShortcut = chkReport.Checked;
                 _parent.ShowPage(new Page_Progress(_parent));
             };
-            this.Controls.AddRange(new Control[] { chkWinUtil, chkReport, btnNext });
+            this.Controls.AddRange(new Control[] { chkReport, btnNext });
         }
     }
 
