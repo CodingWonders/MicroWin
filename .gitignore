@@ -1,7 +1,5 @@
-
 MicroWin/obj/
-
 MicroWin/bin/
-.vs 
-MicroWin_DT 
-packages 
+.vs/
+MicroWin_DT/
+packages/
