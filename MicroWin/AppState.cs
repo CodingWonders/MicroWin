@@ -17,9 +17,9 @@ namespace MicroWin
         public static string TempRoot => Path.Combine(Path.GetTempPath(), "microwin");
 
         // These provide the locations for the extraction and DISM workspace
-        public static string ExtractPath => Path.Combine(TempRoot, "extracted");
-        public static string MountPath => Path.Combine(TempRoot, "mount");
-        public static string ScratchPath => Path.Combine(TempRoot, "scratch");
+        public static string ExtractPath => $"{Path.Combine(TempRoot, "extracted")}\\";
+        public static string MountPath => $"{Path.Combine(TempRoot, "mount")}\\";
+        public static string ScratchPath => $"{Path.Combine(TempRoot, "scratch")}\\";
 
         // 2. Selection Data
         public static string SelectedImageIndex { get; set; }
