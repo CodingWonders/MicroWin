@@ -22,7 +22,7 @@ namespace MicroWin
         public static string ScratchPath => $"{Path.Combine(TempRoot, "scratch")}\\";
 
         // 2. Selection Data
-        public static string SelectedImageIndex { get; set; }
+        public static int SelectedImageIndex { get; set; }
         public static bool IsAuto { get; set; }
 
         // 3. Collections

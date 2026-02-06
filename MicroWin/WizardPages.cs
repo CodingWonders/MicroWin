@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MicroWin.functions.iso;
 using MicroWin.functions.dism;
+using System.Linq;
 
 namespace MicroWin
 {
@@ -100,7 +101,7 @@ namespace MicroWin
             btnNext.Click += (s, e) => {
                 if (lstVersions.SelectedIndex != -1)
                 {
-                    AppState.SelectedImageIndex = (lstVersions.SelectedIndex + 1).ToString();
+                    AppState.SelectedImageIndex = lstVersions.SelectedIndex + 1;
                     _parent.ShowPage(new Page_SetupType(_parent));
                 }
             };
@@ -121,7 +122,7 @@ namespace MicroWin
                 var dism = new DismManager();
                 var versions = dism.GetWimVersions(wimPath);
                 lstVersions.Items.Clear();
-                lstVersions.Items.AddRange(versions.ToArray());
+                lstVersions.Items.AddRange(versions.Select(kvp => String.Format("{0}: {1}", kvp.Key, kvp.Value)).ToArray());
             }
             else
             {
@@ -242,9 +243,6 @@ namespace MicroWin
 
                 UpdateStatus("Mounting WIM...");
                 dism.MountImage(wimPath, AppState.SelectedImageIndex, AppState.MountPath, (p) => UpdateProgressBar(p));
-
-                UpdateStatus("Injecting shortcuts...");
-                dism.InjectShortcuts(AppState.MountPath);
 
                 UpdateStatus("Finalizing...");
                 dism.UnmountAndSave(AppState.MountPath, (p) => UpdateProgressBar(p));
