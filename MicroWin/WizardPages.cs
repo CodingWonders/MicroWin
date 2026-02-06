@@ -231,13 +231,6 @@ namespace MicroWin
         {
             await Task.Run(() => {
                 var dism = new DismManager();
-                var iso = new IsoManager();
-
-                UpdateStatus("Extracting ISO...");
-                char drive = iso.MountAndGetDrive(AppState.IsoPath);
-                iso.ExtractIso(drive.ToString(), AppState.ExtractPath, (p) => UpdateProgressBar(p));
-                iso.Dismount(AppState.IsoPath);
-
                 string wimPath = Path.Combine(AppState.ExtractPath, "sources", "install.wim");
                 if (!File.Exists(wimPath)) wimPath = Path.Combine(AppState.ExtractPath, "sources", "install.esd");
 
@@ -245,7 +238,13 @@ namespace MicroWin
                 dism.MountImage(wimPath, AppState.SelectedImageIndex, AppState.MountPath, (p) => UpdateProgressBar(p));
 
                 UpdateStatus("Finalizing...");
-                dism.UnmountAndSave(AppState.MountPath, (p) => UpdateProgressBar(p));
+                dism.UnmountAndSave(AppState.MountPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
+
+                /* TODO This should delete the microwin folder once complete. Since we're no longer dealing with
+                 * random folder names we do need to get rid of this folder for new instances to succeed in copying
+                 * ISO files.
+                 */
+                
             });
             _main.ShowPage(new Page_Finish(_main));
         }

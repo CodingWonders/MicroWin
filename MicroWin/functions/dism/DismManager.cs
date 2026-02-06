@@ -49,6 +49,13 @@ namespace MicroWin.functions.dism
                 return;
             }
 
+            // Check whether the file has readonly privileges; if it has then the API call throws an
+            // exception.
+            if ((File.GetAttributes(wimPath) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+            {
+                File.SetAttributes(wimPath, (File.GetAttributes(wimPath) & ~FileAttributes.ReadOnly));
+            }
+
             try
             {
                 DismApi.Initialize(DismLogLevel.LogErrors);
