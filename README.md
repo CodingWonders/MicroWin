@@ -1,6 +1,5 @@
 # MicroWin
 
-![Release](https://img.shields.io/github/v/release/CodingWonders/MicroWin?color=blue&label=Latest%20Release)
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
 ![Platform: Windows](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011-0078d4)
 
