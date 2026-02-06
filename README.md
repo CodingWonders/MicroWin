@@ -30,7 +30,7 @@ To maintain professional standards and ensure code maintainability, the project 
 ### For Developers
 1.  **Clone the Repository:**
     `git clone https://github.com/CodingWonders/MicroWin.git`
-3.  **Build:** Open the solution in **Visual Studio 2022**. Requires the **.NET Desktop Development** workload.
+3.  **Build:** Open the solution in **Visual Studio 2026**. Requires the **.NET Desktop Development** workload.
 
 ---
 
