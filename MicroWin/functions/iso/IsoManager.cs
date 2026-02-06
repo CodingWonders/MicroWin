@@ -1,12 +1,15 @@
 ﻿using System;
 using System.IO;
-using System.Diagnostics;
+using System.Management;
+using System.Threading;
 
 namespace MicroWin.functions.iso
 {
     public class IsoManager
     {
-        public string MountAndGetDrive(string isoPath)
+        private const string WmiScope = "root\\Microsoft\\Windows\\Storage";
+        
+        public char MountAndGetDrive(string isoPath)
         {
             Console.WriteLine($"[DEBUG] Attempting to mount: {isoPath}");
 
@@ -14,18 +17,34 @@ namespace MicroWin.functions.iso
             if (!File.Exists(isoPath))
             {
                 Console.WriteLine("[DEBUG] ERROR: ISO file not found at path.");
-                return "";
+                return '\0';
             }
 
-            string script = $"Mount-DiskImage -ImagePath '{isoPath}' -PassThru | Get-Volume | Select-Object -ExpandProperty DriveLetter";
-            string driveLetter = RunPowerShell(script).Trim();
+            string isoObjectPath = BuildIsoObjectPath(isoPath);
+            using ManagementObject isoObject = new(WmiScope, isoObjectPath, null);
+            using ManagementBaseObject inParams = isoObject.GetMethodParameters("Mount");
+            isoObject.InvokeMethod("Mount", inParams, null);
 
-            if (string.IsNullOrEmpty(driveLetter))
-                Console.WriteLine("[DEBUG] ERROR: PowerShell returned no drive letter. Check Admin rights.");
-            else
-                Console.WriteLine($"[DEBUG] ISO mounted successfully to drive: {driveLetter}:");
+            string volumeQuery = String.Format("ASSOCIATORS OF {{{0}}} WHERE ASSOCCLASS = MSFT_DiskImageToVolume RESULTCLASS = MSFT_Volume", isoObjectPath);
+            char driveLetter = '\0';
+
+            using ManagementObjectSearcher query = new(WmiScope, volumeQuery);
+            while (driveLetter == '\0')
+            {
+                Thread.Sleep(50);
+                using ManagementObjectCollection queryCollection = query.Get();
+                foreach (ManagementBaseObject item in queryCollection)
+                {
+                    driveLetter = item["DriveLetter"].ToString()[0];
+                }
+            }
 
             return driveLetter;
+        }
+
+        private string BuildIsoObjectPath(string isoPath)
+        {
+            return String.Format("MSFT_DiskImage.ImagePath={0},StorageType=1", $"\"{isoPath.Replace("\\", "\\\\")}\"");
         }
 
         public void ExtractIso(string driveLetter, string destination, Action<int> progressCallback)
@@ -63,32 +82,12 @@ namespace MicroWin.functions.iso
 
         public void Dismount(string isoPath)
         {
-            RunPowerShell($"Dismount-DiskImage -ImagePath '{isoPath}'");
-        }
+            if (!File.Exists(isoPath))
+                return;
 
-        private void CopyDirectory(string source, string dest)
-        {
-            foreach (string dir in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
-                Directory.CreateDirectory(dir.Replace(source, dest));
-
-            foreach (string file in Directory.GetFiles(source, "*", SearchOption.AllDirectories))
-                File.Copy(file, file.Replace(source, dest), true);
-        }
-
-        private string RunPowerShell(string command)
-        {
-            var psi = new ProcessStartInfo
-            {
-                FileName = "powershell.exe",
-                Arguments = $"-Command \"{command}\"",
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            using (var process = Process.Start(psi))
-            {
-                return process.StandardOutput.ReadToEnd();
-            }
+            using ManagementObject isoObject = new(WmiScope, BuildIsoObjectPath(isoPath), null);
+            using ManagementBaseObject inParams = isoObject.GetMethodParameters("Dismount");
+            isoObject.InvokeMethod("Dismount", inParams, null);
         }
     }
 }

@@ -48,10 +48,10 @@ namespace MicroWin
                             var iso = new IsoManager();
                             UpdateUI("Mounting ISO...", 5);
 
-                            string drive = iso.MountAndGetDrive(AppState.IsoPath);
-                            if (!string.IsNullOrEmpty(drive))
+                            char drive = iso.MountAndGetDrive(AppState.IsoPath);
+                            if (drive != '\0')
                             {
-                                iso.ExtractIso(drive, AppState.ExtractPath, (p) => {
+                                iso.ExtractIso(drive.ToString(), AppState.ExtractPath, (p) => {
                                     // Update the bar based on the 0-100 value from IsoManager
                                     UpdateUI($"Extracting: {p}%", p);
                                 });
@@ -234,8 +234,8 @@ namespace MicroWin
                 var iso = new IsoManager();
 
                 UpdateStatus("Extracting ISO...");
-                string drive = iso.MountAndGetDrive(AppState.IsoPath);
-                iso.ExtractIso(drive, AppState.ExtractPath, (p) => UpdateProgressBar(p));
+                char drive = iso.MountAndGetDrive(AppState.IsoPath);
+                iso.ExtractIso(drive.ToString(), AppState.ExtractPath, (p) => UpdateProgressBar(p));
                 iso.Dismount(AppState.IsoPath);
 
                 string wimPath = Path.Combine(AppState.ExtractPath, "sources", "install.wim");
