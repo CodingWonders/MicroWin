@@ -168,11 +168,6 @@ namespace MicroWin.functions.dism
             string publicDesktop = Path.Combine(mountPath, "Users", "Public", "Desktop");
             if (!Directory.Exists(publicDesktop)) Directory.CreateDirectory(publicDesktop);
 
-            // TODO Callum, don't bother with this... the old microwin no longer does this
-            // and you're not supposed to access that URL in the browser; it will just spit
-            // the pwsh script contents.
-            if (AppState.AddWinUtilShortcut)
-                File.WriteAllText(Path.Combine(publicDesktop, "WinUtil.url"), "[InternetShortcut]\nURL=https://christitus.com/win");
         }
     }
 }
