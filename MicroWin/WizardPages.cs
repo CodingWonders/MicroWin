@@ -185,12 +185,10 @@ namespace MicroWin
         public Page_Tools(MainForm main)
         {
             _parent = main;
-            var chkWinUtil = new CheckBox { Text = "Add WinUtil Shortcut", Location = new Point(50, 50), AutoSize = true };
             var chkReport = new CheckBox { Text = "Add Reporting Tool Shortcut", Location = new Point(50, 80), AutoSize = true };
             var btnNext = new Button { Text = "Deploy Image", Location = new Point(50, 150), Size = new Size(150, 40), BackColor = Color.LightGreen };
 
             btnNext.Click += (s, e) => {
-                AppState.AddWinUtilShortcut = chkWinUtil.Checked;
                 AppState.AddReportingToolShortcut = chkReport.Checked;
                 _parent.ShowPage(new Page_Progress(_parent));
             };
