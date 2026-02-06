@@ -123,9 +123,6 @@ namespace MicroWin.functions.dism
 
         public void UnmountAndSave(string mountPath, Action<int> progress)
         {
-            // TODO Callum, implement the progress callback. I'll do the saving for you, 
-            // but please add that and test
-
             if (!Directory.Exists(mountPath))
             {
                 // TODO log this; we immediately return if it doesn't exist.
@@ -142,7 +139,14 @@ namespace MicroWin.functions.dism
             try
             {
                 DismApi.Initialize(DismLogLevel.LogErrors);
-                DismApi.UnmountImage(mountPath, true);
+
+                DismProgressCallback progressCallback = (currentProgress, userData) =>
+                {
+                    int scaledProgress = (currentProgress/ 20)
+                    progress(scaledProgress)
+                }
+
+                DismApi.UnmountImage(mountPath, true, progressCallback);
             }
             catch (Exception ex)
             {
@@ -154,10 +158,7 @@ namespace MicroWin.functions.dism
                 {
                     DismApi.Shutdown();
                 }
-                catch
-                {
-
-                }
+                catch { }
             }
 
             RunDismWithProgress($"/Unmount-Image /MountDir:\"{mountPath}\" /Commit", progress);
@@ -167,7 +168,7 @@ namespace MicroWin.functions.dism
         {
             string publicDesktop = Path.Combine(mountPath, "Users", "Public", "Desktop");
             if (!Directory.Exists(publicDesktop)) Directory.CreateDirectory(publicDesktop);
-
+    
         }
     }
 }
