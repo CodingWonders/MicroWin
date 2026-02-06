@@ -142,7 +142,7 @@ namespace MicroWin.functions.dism
 
                 DismProgressCallback progressCallback = (currentProgress, userData) =>
                 {
-                    int scaledProgress = (currentProgress/ 20)
+                    int scaledProgress = (currentProgress / 2)
                     progress(scaledProgress)
                 }
 
