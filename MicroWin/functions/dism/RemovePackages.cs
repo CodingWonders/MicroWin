@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace MicroWin.functions.dism
 {
-    public class RemovePackages
+    public static class RemovePackages
     {
         private static List<string> excludedPackages = new List<string>
         {
@@ -38,7 +38,7 @@ namespace MicroWin.functions.dism
 
             IEnumerable<string> packagesToRemove = allPackages.Select(pkg => pkg.PackageName).Where(pkg =>
                 !excludedPackages.Any(entry => pkg.IndexOf(entry, StringComparison.OrdinalIgnoreCase) >= 0) &&
-                !AppState.SelectedPackages.Any(entry => entry.Equals(pkg, StringComparison.OrdinalIgnoreCase))).ToList();
+                !AppState.SelectedPackages.Any(entry => entry.Equals(pkg, StringComparison.OrdinalIgnoreCase)));
 
             try
             {
