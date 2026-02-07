@@ -235,6 +235,8 @@ namespace MicroWin
                 UpdateStatus("Mounting WIM...");
                 dism.MountImage(wimPath, AppState.SelectedImageIndex, AppState.MountPath, (p) => UpdateProgressBar(p));
 
+                RemovePackages.RemoveUnwantedPackages();
+
                 UpdateStatus("Finalizing...");
                 dism.UnmountAndSave(AppState.MountPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
 

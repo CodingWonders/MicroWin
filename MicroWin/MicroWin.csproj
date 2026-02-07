@@ -78,6 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="functions\dism\DismManager.cs" />
+    <Compile Include="functions\dism\RemovePackages.cs" />
     <Compile Include="functions\dism\UnattendGenerator.cs" />
     <Compile Include="functions\iso\IsoManager.cs" />
     <Compile Include="MainForm.cs">
