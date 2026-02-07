@@ -40,6 +40,8 @@ MicroWin is a community-driven project. We welcome direct contributions to the m
 * **Testing:** All changes **MUST** be verified in a Virtual Machine (VM) before submitting a Pull Request is submitted.
 * **Architecture:** Keep the logic in the correct folders.
 
+**DO NOT VIBE-CODE!!! OR ELSE YOU WILL MAKE ME ANGRY**
+
 ---
 
 ## 📜 License

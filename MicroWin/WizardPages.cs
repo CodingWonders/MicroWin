@@ -10,6 +10,16 @@ using System.Linq;
 
 namespace MicroWin
 {
+    /* TODO: Use this as the logo (in Courier New)
+     * 
+     *    /\/\  (_)  ___  _ __   ___  / / /\ \ \(_) _ __
+     *   /    \ | | / __|| '__| / _ \ \ \/  \/ /| || '_ \
+     *  / /\/\ \| || (__ | |   | (_) | \  /\  / | || | | |
+     *  \/    \/|_| \___||_|    \___/   \/  \/  |_||_| |_|
+     * 
+     */
+
+
     // --- PAGE 1: SELECT ISO ---
     public class Page_SelectISO : UserControl
     {
@@ -119,8 +129,7 @@ namespace MicroWin
 
             if (File.Exists(wimPath))
             {
-                var dism = new DismManager();
-                var versions = dism.GetWimVersions(wimPath);
+                Dictionary<int, string> versions = DismManager.GetWimVersions(wimPath);
                 lstVersions.Items.Clear();
                 lstVersions.Items.AddRange(versions.Select(kvp => String.Format("{0}: {1}", kvp.Key, kvp.Value)).ToArray());
             }
@@ -228,22 +237,23 @@ namespace MicroWin
         private async void RunDeployment()
         {
             await Task.Run(() => {
-                var dism = new DismManager();
                 string wimPath = Path.Combine(AppState.ExtractPath, "sources", "install.wim");
                 if (!File.Exists(wimPath)) wimPath = Path.Combine(AppState.ExtractPath, "sources", "install.esd");
 
                 UpdateStatus("Mounting WIM...");
-                dism.MountImage(wimPath, AppState.SelectedImageIndex, AppState.MountPath, (p) => UpdateProgressBar(p));
+                DismManager.MountImage(wimPath, AppState.SelectedImageIndex, AppState.MountPath, (p) => UpdateProgressBar(p));
+
+                RemovePackages.RemoveUnwantedPackages();
 
                 UpdateStatus("Finalizing...");
-                dism.UnmountAndSave(AppState.MountPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
+                DismManager.UnmountAndSave(AppState.MountPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
 
-                /* TODO This should delete the microwin folder once complete. Since we're no longer dealing with
-                 * random folder names we do need to get rid of this folder for new instances to succeed in copying
-                 * ISO files.
-                 */
-                
+                if (Directory.Exists(AppState.TempRoot))
+                {
+                    Directory.Delete(AppState.TempRoot, true);
+                }
             });
+
             _main.ShowPage(new Page_Finish(_main));
         }
     }
