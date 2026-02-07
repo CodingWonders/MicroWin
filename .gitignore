@@ -3,3 +3,5 @@ MicroWin/bin/
 .vs/
 MicroWin_DT/
 packages/
+/WinPEInstallerApp/bin
+/WinPEInstallerApp/Dist
