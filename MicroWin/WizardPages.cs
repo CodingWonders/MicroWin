@@ -238,12 +238,12 @@ namespace MicroWin
                 UpdateStatus("Finalizing...");
                 dism.UnmountAndSave(AppState.MountPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
 
-                /* TODO This should delete the microwin folder once complete. Since we're no longer dealing with
-                 * random folder names we do need to get rid of this folder for new instances to succeed in copying
-                 * ISO files.
-                 */
-                
+                if (Directory.Exists(AppState.TempRoot))
+                {
+                    Directory.Delete(AppState.TempRoot, true);
+                }
             });
+
             _main.ShowPage(new Page_Finish(_main));
         }
     }
