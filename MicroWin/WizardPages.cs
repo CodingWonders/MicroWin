@@ -119,8 +119,7 @@ namespace MicroWin
 
             if (File.Exists(wimPath))
             {
-                var dism = new DismManager();
-                var versions = dism.GetWimVersions(wimPath);
+                Dictionary<int, string> versions = DismManager.GetWimVersions(wimPath);
                 lstVersions.Items.Clear();
                 lstVersions.Items.AddRange(versions.Select(kvp => String.Format("{0}: {1}", kvp.Key, kvp.Value)).ToArray());
             }
@@ -228,17 +227,16 @@ namespace MicroWin
         private async void RunDeployment()
         {
             await Task.Run(() => {
-                var dism = new DismManager();
                 string wimPath = Path.Combine(AppState.ExtractPath, "sources", "install.wim");
                 if (!File.Exists(wimPath)) wimPath = Path.Combine(AppState.ExtractPath, "sources", "install.esd");
 
                 UpdateStatus("Mounting WIM...");
-                dism.MountImage(wimPath, AppState.SelectedImageIndex, AppState.MountPath, (p) => UpdateProgressBar(p));
+                DismManager.MountImage(wimPath, AppState.SelectedImageIndex, AppState.MountPath, (p) => UpdateProgressBar(p));
 
-                RemovePackages.RemoveUnwantedPackages();
+                //RemovePackages.RemoveUnwantedPackages();
 
                 UpdateStatus("Finalizing...");
-                dism.UnmountAndSave(AppState.MountPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
+                DismManager.UnmountAndSave(AppState.MountPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
 
                 if (Directory.Exists(AppState.TempRoot))
                 {

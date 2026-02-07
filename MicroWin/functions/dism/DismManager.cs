@@ -8,10 +8,10 @@ using System.Linq;
 
 namespace MicroWin.functions.dism
 {
-    public class DismManager
+    public static class DismManager
     {
 
-        public Dictionary<int, string> GetWimVersions(string wimPath)
+        public static Dictionary<int, string> GetWimVersions(string wimPath)
         {
             Dictionary<int, string> versions = new Dictionary<int, string>();
 
@@ -27,7 +27,7 @@ namespace MicroWin.functions.dism
             return versions;
         }
 
-        public void MountImage(string wimPath, int index, string mountPath, Action<int> progress)
+        public static void MountImage(string wimPath, int index, string mountPath, Action<int> progress)
         {
             // Check whether the file exists, then the index, then the mount path.
 
@@ -82,7 +82,7 @@ namespace MicroWin.functions.dism
             }
         }
 
-        private DismMountedImageInfoCollection GetMountedImages()
+        private static DismMountedImageInfoCollection GetMountedImages()
         {
             DismMountedImageInfoCollection mountedImages = null;
 
@@ -110,7 +110,7 @@ namespace MicroWin.functions.dism
             return mountedImages;
         }
 
-        private DismImageInfoCollection GetImageInformation(string wimFile)
+        private static DismImageInfoCollection GetImageInformation(string wimFile)
         {
             DismImageInfoCollection imageInfo = null;
 
@@ -138,7 +138,7 @@ namespace MicroWin.functions.dism
             return imageInfo;
         }
 
-        public void UnmountAndSave(string mountPath, Action<int> progress)
+        public static void UnmountAndSave(string mountPath, Action<int> progress)
         {
             if (!Directory.Exists(mountPath))
             {
