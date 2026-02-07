@@ -26,7 +26,8 @@ namespace MicroWin.functions.dism
             "Gaming",
             "Extension",
             "SecHealthUI",
-            "ScreenSketch"
+            "ScreenSketch",
+            "CrossDevice"
         };
 
         public static void RemoveStoreApps()
