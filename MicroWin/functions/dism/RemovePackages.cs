@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Dism;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,7 +9,7 @@ namespace MicroWin.functions.dism
 {
     public class RemovePackages
     {
-        public static List<string> excludedPackages = new List<string>
+        private static List<string> excludedPackages = new List<string>
         {
             "ApplicationModel",
             "indows-Client-LanguagePack",
@@ -29,59 +30,71 @@ namespace MicroWin.functions.dism
             "OpenSSH"
         };
 
-        // Define the list to hold all features found on the OS
-        public static List<string> AllPackages = new List<string>();
-
         public static void RemoveUnwantedPackages()
         {
-            PopulatePackageList();
+            DismPackageCollection allPackages = GetPackageList();
 
-            var selectedNames = AppState.SelectedPackages.ToList();
+            List<string> selectedNames = AppState.SelectedPackages.ToList();
 
-            var toRemove = AllPackages.Where(p =>
-                !excludedPackages.Any(sub => p.IndexOf(sub, StringComparison.OrdinalIgnoreCase) >= 0) &&
-                !AppState.SelectedPackages.Any(s => s.Equals(p, StringComparison.OrdinalIgnoreCase))
-            ).ToList();
+            IEnumerable<string> packagesToRemove = allPackages.Select(pkg => pkg.PackageName).Where(pkg =>
+                !excludedPackages.Any(entry => pkg.IndexOf(entry, StringComparison.OrdinalIgnoreCase) >= 0) &&
+                !AppState.SelectedPackages.Any(entry => entry.Equals(pkg, StringComparison.OrdinalIgnoreCase))).ToList();
 
-            foreach (var package in toRemove)
+            try
             {
-                Process.Start("dism.exe", arguments: $"/English /Image={AppState.MountPath} /RemovePackage=${package}");
+                DismApi.Initialize(DismLogLevel.LogErrors);
+                using DismSession session = DismApi.OpenOfflineSession(AppState.MountPath);
+                foreach (string packageToRemove in packagesToRemove)
+                {
+                    // we have this because the API throws an exception on removal error
+                    try
+                    {
+                        DismApi.RemovePackageByName(session, packageToRemove);
+                    }
+                    catch (Exception)
+                    {
+                        // TODO log here...
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                // TODO implement logging here
+            }
+            finally
+            {
+                try
+                {
+                    DismApi.Shutdown();
+                }
+                catch { }
             }
         }
 
-        public static void PopulatePackageList()
+        private static DismPackageCollection GetPackageList()
         {
-            ProcessStartInfo psi = new ProcessStartInfo
+            DismPackageCollection packages = null;
+
+            try
             {
-                FileName = "dism.exe",
-                Arguments = $"/English /Image={AppState.MountPath} /Get-Packages /Format:Table",
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                CreateNoWindow = true
-            };
-
-            using (Process proc = Process.Start(psi))
-            {
-                using (StreamReader reader = proc.StandardOutput)
-                {
-                    string output = reader.ReadToEnd();
-                    string[] lines = output.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-
-                    foreach (var line in lines)
-                    {
-
-                        if (line.Contains("Enabled") || line.Contains("Disabled"))
-                        {
-                            string featureName = line.Split(' ')[0].Trim();
-                            if (!string.IsNullOrEmpty(featureName))
-                            {
-                                AllPackages.Add(featureName);
-                            }
-                        }
-                    }
-                }
-                proc.WaitForExit();
+                DismApi.Initialize(DismLogLevel.LogErrors);
+                using DismSession session = DismApi.OpenOfflineSession(AppState.MountPath);
+                packages = DismApi.GetPackages(session);
             }
+            catch (Exception)
+            {
+                // TODO implement the logging
+            }
+            finally
+            {
+                try
+                {
+                    DismApi.Shutdown();
+                }
+                catch { }
+            }
+
+            return packages;
         }
     }
 }
