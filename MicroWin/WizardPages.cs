@@ -10,6 +10,16 @@ using System.Linq;
 
 namespace MicroWin
 {
+    /* TODO: Use this as the logo (in Courier New)
+     * 
+     *    /\/\  (_)  ___  _ __   ___  / / /\ \ \(_) _ __
+     *   /    \ | | / __|| '__| / _ \ \ \/  \/ /| || '_ \
+     *  / /\/\ \| || (__ | |   | (_) | \  /\  / | || | | |
+     *  \/    \/|_| \___||_|    \___/   \/  \/  |_||_| |_|
+     * 
+     */
+
+
     // --- PAGE 1: SELECT ISO ---
     public class Page_SelectISO : UserControl
     {
