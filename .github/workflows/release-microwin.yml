@@ -1,0 +1,54 @@
+name: Pre-Release MicroWin & Installer
+
+on:
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  build-and-pre-release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Essential for auto-generating release notes from history
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # 1. Build the WinPE Installer (The specialized WinForms build)
+      - name: Build WinPE Installer
+        run: |
+          dotnet publish WinPEInstallerApp/WinPEInstallerApp.csproj `
+            -c Release `
+            -o ./build-installer `
+            -r win-x64 `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:PublishReadyToRun=true `
+            -p:IncludeNativeLibrariesForSelfExtract=true `
+            -p:DebugType=None `
+            -p:DebugSymbols=false `
+            -p:SuppressTrimAnalysisWarnings=true
+
+      # 2. Build the Main MicroWin App
+      - name: Build Main MicroWin App
+        run: |
+          dotnet publish -c Release -o ./build-microwin -r win-x64 --self-contained true -p:PublishSingleFile=true
+
+      # 3. Create Pre-Release and Upload Assets
+      - name: Create GitHub Pre-Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.${{ github.run_number }}-beta
+          name: MicroWin Pre-Release v0.${{ github.run_number }}
+          generate_release_notes: true
+          draft: false
+          prerelease: true # This marks the release with the "Pre-release" badge on GitHub
+          files: |
+            ./build-installer/WinPEInstallerApp.exe
+            ./build-microwin/MicroWin.exe
