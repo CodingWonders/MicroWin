@@ -272,6 +272,15 @@ namespace MicroWin
 
                 new OsPackageRemover().RunTask();
 
+                if (AppState.AddReportingToolShortcut)
+                {
+                    using (var client = new HttpClient())
+                    {
+                        var data = await client.GetByteArrayAsync("https://raw.githubusercontent.com/CodingWonders/MyScripts/refs/heads/main/MicroWinHelperTools/ReportingTool/ReportingTool.ps1");
+                        File.WriteAllBytes(Path.Combine(AppState.MountPath, "ReportingTool.ps1"), data);
+                    }
+                }
+
                 UpdateStatus("Finalizing...");
                 DismManager.UnmountAndSave(AppState.MountPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
 
