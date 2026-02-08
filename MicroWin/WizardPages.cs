@@ -214,6 +214,8 @@ namespace MicroWin
         private MainForm _parent;
         public Page_Save(MainForm main)
         {
+            _parent = main;
+
             var lbl = new Label { Text = "Save ISO", Location = new Point(50, 30), AutoSize = true, Font = new Font("Arial", 12, FontStyle.Bold) };
             var btn = new Button { Text = "Browse", Location = new Point(50, 60), Size = new Size(120, 30) };
 
