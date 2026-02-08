@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 using MicroWin.functions.iso;
 using MicroWin.functions.dism;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Diagnostics;
 
 namespace MicroWin
 {
@@ -205,7 +208,31 @@ namespace MicroWin
         }
     }
 
-    // --- PAGE 6: PROGRESS & DEPLOYMENT ---
+    // --- PAGE 6: Save ---
+    public class Page_Save : UserControl
+    {
+        private MainForm _parent;
+        public Page_Save(MainForm main)
+        {
+            var lbl = new Label { Text = "Save ISO", Location = new Point(50, 30), AutoSize = true, Font = new Font("Arial", 12, FontStyle.Bold) };
+            var btn = new Button { Text = "Browse", Location = new Point(50, 60), Size = new Size(120, 30) };
+
+            btn.Click += (s, e) => {
+                using (SaveFileDialog ofd = new SaveFileDialog {})
+                {
+                    if (ofd.ShowDialog() == DialogResult.OK)
+                    {
+                        AppState.saveISO = ofd.FileName;
+                        _parent.ShowPage(new Page_WinVersion(_parent));
+                    }
+                }
+            };
+            this.Controls.AddRange(new Control[] { lbl, btn });
+        }
+
+    }
+
+    // --- PAGE 7: PROGRESS & DEPLOYMENT ---
     public class Page_Progress : UserControl
     {
         private Label lblStatus;
@@ -236,17 +263,48 @@ namespace MicroWin
 
         private async void RunDeployment()
         {
-            await Task.Run(() => {
-                string wimPath = Path.Combine(AppState.ExtractPath, "sources", "install.wim");
-                if (!File.Exists(wimPath)) wimPath = Path.Combine(AppState.ExtractPath, "sources", "install.esd");
+            await Task.Run(async () => {
+                string installwimPath = Path.Combine(AppState.ExtractPath, "sources", "install.wim");
+                if (!File.Exists(installwimPath)) installwimPath = Path.Combine(AppState.ExtractPath, "sources", "install.esd");
 
-                UpdateStatus("Mounting WIM...");
-                DismManager.MountImage(wimPath, AppState.SelectedImageIndex, AppState.MountPath, (p) => UpdateProgressBar(p));
+                UpdateStatus("Mounting Install WIM...");
+                DismManager.MountImage(installwimPath, AppState.SelectedImageIndex, AppState.MountPath, (p) => UpdateProgressBar(p));
 
                 new OsPackageRemover().RunTask();
 
+                if (AppState.AddReportingToolShortcut)
+                {
+                    using (var client = new HttpClient())
+                    {
+                        var data = await client.GetByteArrayAsync("https://raw.githubusercontent.com/CodingWonders/MyScripts/refs/heads/main/MicroWinHelperTools/ReportingTool/ReportingTool.ps1");
+                        File.WriteAllBytes(Path.Combine(AppState.MountPath, "ReportingTool.ps1"), data);
+                    }
+                }
+
                 UpdateStatus("Finalizing...");
                 DismManager.UnmountAndSave(AppState.MountPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
+
+                string bootwimPath = Path.Combine(AppState.ExtractPath, "sources", "boot.wim");
+                if (!File.Exists(bootwimPath)) bootwimPath = Path.Combine(AppState.ExtractPath, "sources", "boot.esd");
+
+                UpdateStatus("Mounting Boot WIM...");
+                DismManager.MountImage(bootwimPath, 2, AppState.MountPath, (p) => UpdateProgressBar(p));
+
+                // Add editing boot.wim (Edi registry)
+
+                UpdateStatus("Finalizing...");
+                DismManager.UnmountAndSave(AppState.MountPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
+
+                // Download oscdimg
+
+                using (var client = new HttpClient())
+                {
+                    var data = await client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/oscdimg.exe");
+                    File.WriteAllBytes(Path.Combine(AppState.TempRoot, "oscdimg.exe"), data);
+                }
+
+                Process.Start(Path.Combine(AppState.TempRoot, "oscdimg.exe"), 
+                    $"-m - o - u2 - udfver102 - bootdata:2#p0,e,b\"{Path.Combine(AppState.MountPath, "boot", "etfsboot.com")}\"#pEF,e,b\"{Path.Combine(AppState.MountPath, "efi", "microsoft", "boot", "efisys.bin")}\" \"{AppState.MountPath}\" \"{AppState.saveISO}\"");
 
                 if (Directory.Exists(AppState.TempRoot))
                 {
@@ -258,7 +316,7 @@ namespace MicroWin
         }
     }
 
-    // --- PAGE 7: FINISH ---
+    // --- PAGE 8: FINISH ---
     public class Page_Finish : UserControl
     {
         public Page_Finish(MainForm main)
