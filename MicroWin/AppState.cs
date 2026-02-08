@@ -32,5 +32,7 @@ namespace MicroWin
         // 4. Customization Toggles
         public static bool AddWinUtilShortcut { get; set; }
         public static bool AddReportingToolShortcut { get; set; }
+
+        public static string saveISO;
     }
 }
