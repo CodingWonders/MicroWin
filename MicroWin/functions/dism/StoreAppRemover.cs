@@ -8,34 +8,41 @@ using System.Threading.Tasks;
 
 namespace MicroWin.functions.dism
 {
-    public static class StoreAppRemover
+    public class StoreAppRemover : ImageModificationTask
     {
-        private static List<string> excludedStoreApps = new List<string>
-        {
-            "AppInstaller",
-            "Store",
-            "Notepad",
-            "Printing",
-            "YourPhone",
-            "Xbox",
-            "WindowsTerminal",
-            "Calculator",
-            "Photos",
-            "VCLibs",
-            "Paint",
-            "Gaming",
-            "Extension",
-            "SecHealthUI",
-            "ScreenSketch",
-            "CrossDevice"
-        };
+        public override List<string> excludedItems { 
+            get => base.excludedItems; 
+            set => base.excludedItems = [
+                "AppInstaller",
+                "Store",
+                "Notepad",
+                "Printing",
+                "YourPhone",
+                "Xbox",
+                "WindowsTerminal",
+                "Calculator",
+                "Photos",
+                "VCLibs",
+                "Paint",
+                "Gaming",
+                "Extension",
+                "SecHealthUI",
+                "ScreenSketch",
+                "CrossDevice"                
+            ]; 
+        }
 
-        public static void RemoveStoreApps()
+        public override void RunTask()
+        {
+            RemoveStoreApps();
+        }
+
+        private void RemoveStoreApps()
         {
             DismAppxPackageCollection allStoreApps = GetStoreAppsList();
 
             IEnumerable<string> appsToRemove = allStoreApps.Select(appx => appx.PackageName).Where(appx =>
-                !excludedStoreApps.Any(entry => appx.IndexOf(entry, StringComparison.OrdinalIgnoreCase) >= 0));
+                !excludedItems.Any(entry => appx.IndexOf(entry, StringComparison.OrdinalIgnoreCase) >= 0));
 
             try
             {
@@ -67,7 +74,7 @@ namespace MicroWin.functions.dism
             }
         }
 
-        private static DismAppxPackageCollection GetStoreAppsList()
+        private DismAppxPackageCollection GetStoreAppsList()
         {
             DismAppxPackageCollection storeApps = null;
 
