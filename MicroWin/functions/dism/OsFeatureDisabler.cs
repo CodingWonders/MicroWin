@@ -12,15 +12,15 @@ namespace MicroWin.functions.dism
         public override List<string> excludedItems { 
             get => base.excludedItems; 
             set => base.excludedItems = [
-                "*Defender*",
-                "*Printing*",
-                "*TelnetClient*",
-                "*PowerShell*",
-                "*NetFx*",
-                "*Media*",
-                "*NFS*",
-                "*SearchEngine*",
-                "*RemoteDesktop*"
+                "Defender",
+                "Printing",
+                "TelnetClient",
+                "PowerShell",
+                "NetFx",
+                "Media",
+                "NFS",
+                "SearchEngine",
+                "RemoteDesktop"
             ]; 
         }
 
