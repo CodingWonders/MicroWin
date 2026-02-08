@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using MicroWin.functions.iso;
 using MicroWin.functions.dism;
+using MicroWin.functions.Helpers.RegistryHelpers;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -267,11 +268,11 @@ namespace MicroWin
         private async void RunDeployment()
         {
             await Task.Run(async () => {
-                string installwimPath = Path.Combine(AppState.ExtractPath, "sources", "install.wim");
+                string installwimPath = Path.Combine(AppState.MountPath, "sources", "install.wim");
                 if (!File.Exists(installwimPath)) installwimPath = Path.Combine(AppState.ExtractPath, "sources", "install.esd");
 
                 UpdateStatus("Mounting Install WIM...");
-                DismManager.MountImage(installwimPath, AppState.SelectedImageIndex, AppState.MountPath, (p) => UpdateProgressBar(p));
+                DismManager.MountImage(installwimPath, AppState.SelectedImageIndex, AppState.ScratchPath, (p) => UpdateProgressBar(p));
 
                 new OsPackageRemover().RunTask();
 
@@ -280,38 +281,44 @@ namespace MicroWin
                     using (var client = new HttpClient())
                     {
                         var data = await client.GetByteArrayAsync("https://raw.githubusercontent.com/CodingWonders/MyScripts/refs/heads/main/MicroWinHelperTools/ReportingTool/ReportingTool.ps1");
-                        File.WriteAllBytes(Path.Combine(AppState.MountPath, "ReportingTool.ps1"), data);
+                        File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "ReportingTool.ps1"), data);
                     }
 
                     // To-Do: Mount Registry Hives
 
-                    RegistryKey zSOFTWAREkey = Registry.LocalMachine.OpenSubKey(@"zSOFTWARE");
-                    zSOFTWAREkey.CreateSubKey("MicroWin");
-                    zSOFTWAREkey.Close();
+                    // RegistryKey zSOFTWAREkey = Registry.LocalMachine.OpenSubKey(@"zSOFTWARE");
+                    // zSOFTWAREkey.CreateSubKey("MicroWin");
+                    // zSOFTWAREkey.Close();
 
-                    RegistryKey zSOFTWAREMicroWinkey = Registry.LocalMachine.OpenSubKey(@"zSOFTWARE\MicroWin");
-                    zSOFTWAREMicroWinkey.CreateSubKey("MicroWinBuildDate");
-                    zSOFTWAREMicroWinkey.CreateSubKey("MicroWinVersion");
+                    // RegistryKey zSOFTWAREMicroWinkey = Registry.LocalMachine.OpenSubKey(@"zSOFTWARE\MicroWin");
+                    // zSOFTWAREMicroWinkey.CreateSubKey("MicroWinBuildDate");
+                    // zSOFTWAREMicroWinkey.CreateSubKey("MicroWinVersion");
 
-                    zSOFTWAREMicroWinkey.SetValue("MicroWinBuildDate", DateTime.Now);
-                    zSOFTWAREMicroWinkey.SetValue("MicroWinVersion", AppState.Version);
+                    // zSOFTWAREMicroWinkey.SetValue("MicroWinBuildDate", DateTime.Now);
+                    // zSOFTWAREMicroWinkey.SetValue("MicroWinVersion", AppState.Version);
 
-                    zSOFTWAREMicroWinkey.Close();
+                    // zSOFTWAREMicroWinkey.Close();
+
+                    RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "HKLM/zSOFTWARE");
+                    RegistryHelper.AddRegistryItem("HKLM//zSOFTWARE//MicroWin");
+                    // RegistryHelper.AddRegistryItem("HKLM//zSOFTWARE//MicroWin/MicroWinVersion", $"{AppState.Version");
+                    // RegistryHelper.AddRegistryItem("HKLM//zSOFTWARE//MicroWin/MicroWinBuildDate", REG_SZ);
+
                 }
 
                 UpdateStatus("Finalizing...");
-                DismManager.UnmountAndSave(AppState.MountPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
+                DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
 
                 string bootwimPath = Path.Combine(AppState.ExtractPath, "sources", "boot.wim");
                 if (!File.Exists(bootwimPath)) bootwimPath = Path.Combine(AppState.ExtractPath, "sources", "boot.esd");
 
                 UpdateStatus("Mounting Boot WIM...");
-                DismManager.MountImage(bootwimPath, 2, AppState.MountPath, (p) => UpdateProgressBar(p));
+                DismManager.MountImage(bootwimPath, 2, AppState.ScratchPath, (p) => UpdateProgressBar(p));
 
                 // Add editing boot.wim (Edit registry)
 
                 UpdateStatus("Finalizing...");
-                DismManager.UnmountAndSave(AppState.MountPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
+                DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
 
                 // Download oscdimg
 
