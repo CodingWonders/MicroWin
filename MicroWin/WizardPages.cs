@@ -308,7 +308,7 @@ namespace MicroWin
                 UpdateStatus("Mounting Boot WIM...");
                 DismManager.MountImage(bootwimPath, 2, AppState.MountPath, (p) => UpdateProgressBar(p));
 
-                // Add editing boot.wim (Edi registry)
+                // Add editing boot.wim (Edit registry)
 
                 UpdateStatus("Finalizing...");
                 DismManager.UnmountAndSave(AppState.MountPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
