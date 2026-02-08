@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Diagnostics;
+using Microsoft.Win32;
 
 namespace MicroWin
 {
@@ -281,6 +282,21 @@ namespace MicroWin
                         var data = await client.GetByteArrayAsync("https://raw.githubusercontent.com/CodingWonders/MyScripts/refs/heads/main/MicroWinHelperTools/ReportingTool/ReportingTool.ps1");
                         File.WriteAllBytes(Path.Combine(AppState.MountPath, "ReportingTool.ps1"), data);
                     }
+
+                    // To-Do: Mount Registry Hives
+
+                    RegistryKey zSOFTWAREkey = Registry.LocalMachine.OpenSubKey(@"zSOFTWARE");
+                    zSOFTWAREkey.CreateSubKey("MicroWin");
+                    zSOFTWAREkey.Close();
+
+                    RegistryKey zSOFTWAREMicroWinkey = Registry.LocalMachine.OpenSubKey(@"zSOFTWARE\MicroWin");
+                    zSOFTWAREMicroWinkey.CreateSubKey("MicroWinBuildDate");
+                    zSOFTWAREMicroWinkey.CreateSubKey("MicroWinVersion");
+
+                    zSOFTWAREMicroWinkey.SetValue("MicroWinBuildDate", DateTime.Now);
+                    zSOFTWAREMicroWinkey.SetValue("MicroWinVersion", AppState.Version);
+
+                    zSOFTWAREMicroWinkey.Close();
                 }
 
                 UpdateStatus("Finalizing...");

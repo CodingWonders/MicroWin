@@ -34,5 +34,7 @@ namespace MicroWin
         public static bool AddReportingToolShortcut { get; set; }
 
         public static string saveISO;
+
+        public static string Version => "V1.0";
     }
 }
