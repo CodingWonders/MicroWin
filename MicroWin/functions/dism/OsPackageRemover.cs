@@ -29,7 +29,8 @@ namespace MicroWin.functions.dism
                 "License",
                 "Hello-Face",
                 "ISE",
-                "OpenSSH"
+                "OpenSSH",
+                "PMCPPC"
             ];
         }
 
