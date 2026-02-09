@@ -68,7 +68,7 @@ namespace MicroWin
                             char drive = iso.MountAndGetDrive(AppState.IsoPath);
                             if (drive != '\0')
                             {
-                                iso.ExtractIso(drive.ToString(), AppState.ExtractPath, (p) => {
+                                iso.ExtractIso(drive.ToString(), AppState.MountPath, (p) => {
                                     // Update the bar based on the 0-100 value from IsoManager
                                     UpdateUI($"Extracting: {p}%", p);
                                 });
@@ -131,8 +131,8 @@ namespace MicroWin
 
         private void LoadWimData()
         {
-            string wimPath = Path.Combine(AppState.ExtractPath, "sources", "install.wim");
-            if (!File.Exists(wimPath)) wimPath = Path.Combine(AppState.ExtractPath, "sources", "install.esd");
+            string wimPath = Path.Combine(AppState.MountPath, "sources", "install.wim");
+            if (!File.Exists(wimPath)) wimPath = Path.Combine(AppState.MountPath, "sources", "install.esd");
 
             if (File.Exists(wimPath))
             {
@@ -271,7 +271,7 @@ namespace MicroWin
         {
             await Task.Run(async () => {
                 string installwimPath = Path.Combine(AppState.MountPath, "sources", "install.wim");
-                if (!File.Exists(installwimPath)) installwimPath = Path.Combine(AppState.ExtractPath, "sources", "install.esd");
+                if (!File.Exists(installwimPath)) installwimPath = Path.Combine(AppState.MountPath, "sources", "install.esd");
 
                 UpdateStatus("Mounting Install WIM...");
                 DismManager.MountImage(installwimPath, AppState.SelectedImageIndex, AppState.ScratchPath, (p) => UpdateProgressBar(p));
@@ -314,8 +314,8 @@ namespace MicroWin
                 UpdateStatus("Finalizing...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
 
-                string bootwimPath = Path.Combine(AppState.ExtractPath, "sources", "boot.wim");
-                if (!File.Exists(bootwimPath)) bootwimPath = Path.Combine(AppState.ExtractPath, "sources", "boot.esd");
+                string bootwimPath = Path.Combine(AppState.MountPath, "sources", "boot.wim");
+                if (!File.Exists(bootwimPath)) bootwimPath = Path.Combine(AppState.MountPath, "sources", "boot.esd");
 
                 UpdateStatus("Mounting Boot WIM...");
                 DismManager.MountImage(bootwimPath, 2, AppState.ScratchPath, (p) => UpdateProgressBar(p));
