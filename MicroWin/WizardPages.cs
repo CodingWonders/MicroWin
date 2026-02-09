@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MicroWin.functions.iso;
 using MicroWin.functions.dism;
 using MicroWin.functions.Helpers.RegistryHelpers;
+using MicroWin.functions.Helpers;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -323,7 +324,7 @@ namespace MicroWin
                 UpdateStatus("Finalizing...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
 
-                checkoscdImg();
+                oscdimg.oscdimg.checkoscdImg();
 
                 if (Directory.Exists(AppState.TempRoot))
                 {

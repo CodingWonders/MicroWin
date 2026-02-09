@@ -1,31 +1,32 @@
 using System.Diagnostics;
-using Microsoft.Win32;
-using MicroWin.Helpers.RegistryHelpers;
+using System.IO;
+using MicroWin.functions.Helpers.RegistryHelpers;
+using System;
 
 namespace MicroWin.oscdimg
 {
-    public static class oscdimgCheck
+    public static class oscdimg
     {
-        public string peToolsPath;
-        public string adkKitsRoot => GetKitsRoot -wow64environment=false;
-        public string adkKitsRoot_WOW64Environ => GetKitsRoot -wow64environment=true;
+        public static string peToolsPath;
+        public static string adkKitsRoot => GetKitsRoot(false);
+        public static string adkKitsRoot_WOW64Environ => GetKitsRoot(true);
 
-        public string expectedADKPath => Path.Combine(adkKitsRoot, "Assessment and Deployment Kit");
-        public string expectedADKPath_WOW64Environ => Path.Combine(adkKitsRoot_WOW64Environ, "Assessment and Deployment Kit");
+        public static string expectedADKPath => Path.Combine(adkKitsRoot, "Assessment and Deployment Kit");
+        public static string expectedADKPath_WOW64Environ => Path.Combine(adkKitsRoot_WOW64Environ, "Assessment and Deployment Kit");
 
-        public string oscdimgPath => Path.Combine(AppState.TempRoot, "oscdimg.exe");
-        public bool oscdImgFound => Path.Exists(oscdimgPath);
+        public static string oscdimgPath { get; set; } = Path.Combine(AppState.TempRoot, "oscdimg.exe");
+        public static bool oscdImgFound => File.Exists(oscdimgPath);
         
         public static void checkoscdImg()
         {
-            if (!oscdImgFound & ((TestKitRootPaths -adkKitsRootPath=$"{expectedADKPath}" -adkKitsRootPath_WOW64Environ=$"{expectedADKPath_WOW64Environ}") == true));
+            if (!oscdImgFound && TestKitRootPaths(expectedADKPath, expectedADKPath_WOW64Environ))
             {
                 if (expectedADKPath != "Assessment and Deployment Kit") { peToolsPath = expectedADKPath; };
                 if ((peToolsPath == "") & (expectedADKPath_WOW64Environ != "Assessment and Deployment Kit")) { peToolsPath = expectedADKPath_WOW64Environ; };
                 if (Environment.Is64BitOperatingSystem) {
-                    oscdimgPath = "$peToolsPath\\Deployment Tools\\amd64\\Oscdimg\\oscdimg.exe";
+                    oscdimgPath = $"{peToolsPath}\\Deployment Tools\\amd64\\Oscdimg\\oscdimg.exe";
                 } else {
-                    oscdimgPath = "$peToolsPath\\Deployment Tools\\x86\\Oscdimg\\oscdimg.exe";
+                    oscdimgPath = $"{peToolsPath}\\Deployment Tools\\x86\\Oscdimg\\oscdimg.exe";
                 }
             }
             startInstall();
@@ -34,12 +35,13 @@ namespace MicroWin.oscdimg
         public static void startInstall()
         {
             // Start the ISO building
-            oscdimgProc = Process.Start(oscdimgPath, $"-m - o - u2 - udfver102 - bootdata:2#p0,e,b\"{Path.Combine(AppState.MountPath, "boot", "etfsboot.com")}\"#pEF,e,b\"{Path.Combine(AppState.MountPath, "efi", "microsoft", "boot", "efisys.bin")}\" \"{AppState.MountPath}\" \"{AppState.saveISO}\"");
+            var oscdimgProc = Process.Start(oscdimgPath, $"-m - o - u2 - udfver102 - bootdata:2#p0,e,b\"{Path.Combine(AppState.MountPath, "boot", "etfsboot.com")}\"#pEF,e,b\"{Path.Combine(AppState.MountPath, "efi", "microsoft", "boot", "efisys.bin")}\" \"{AppState.MountPath}\" \"{AppState.saveISO}\"");
         }
 
-        public static void GetKitsRoot(bool wow64environment)
+        public static string GetKitsRoot(bool wow64environment)
         {
-            string adk10KitsRoot = "";
+            string adk10KitsRoot = string.Empty;
+            string regPath;
 
             // if we set the wow64 bit on and we're on a 32-bit system, then we prematurely return the value
             if (wow64environment && !Environment.Is64BitOperatingSystem) 
@@ -61,10 +63,22 @@ namespace MicroWin.oscdimg
             }
 
             try {
-                adk10KitsRoot ; // Get-ItemPropertyValue -Path $regPath -Name "KitsRoot10" -ErrorAction Stop
+                adk10KitsRoot = RegistryHelper.QueryRegistryValue(regPath, "KitsRoot10").Data.ToString() ; // Get-ItemPropertyValue -Path $regPath -Name "KitsRoot10" -ErrorAction Stop
             } catch {
                 // Add logging
-            } 
+            }
+
+            return adk10KitsRoot;
+        }
+
+        public static bool TestKitRootPaths(string adkKitsRootPath, string adkKitsRootPath_WOW64Environ)
+        {
+            if (File.Exists(adkKitsRootPath) ^ File.Exists(adkKitsRootPath_WOW64Environ))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
