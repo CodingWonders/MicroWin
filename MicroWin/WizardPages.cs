@@ -319,7 +319,29 @@ namespace MicroWin
                 UpdateStatus("Mounting Boot WIM...");
                 DismManager.MountImage(bootwimPath, 2, AppState.ScratchPath, (p) => UpdateProgressBar(p));
 
-                // Add editing boot.wim (Edit registry)
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "HKLM\\zSOFTWARE");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "HKLM\\zSYSTEM");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "HKLM\\zDEFAULT");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Users", "Default", "ntuser.dat"), "HKLM\\zNTUSER");
+
+                RegistryHelper.AddRegistryItem("HKLM\\zDEFAULT\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV1", ValueKind.REG_DWORD, 0));
+                RegistryHelper.AddRegistryItem("HKLM\\zDEFAULT\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV2", ValueKind.REG_DWORD, 0));
+                RegistryHelper.AddRegistryItem("HKLM\\zNTUSER\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV1", ValueKind.REG_DWORD, 0));
+                RegistryHelper.AddRegistryItem("HKLM\\zNTUSER\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV2", ValueKind.REG_DWORD, 0));
+                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\LabConfig", new RegistryItem("BypassCPUCheck", ValueKind.REG_DWORD, 1));
+                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\LabConfig", new RegistryItem("BypassRAMCheck", ValueKind.REG_DWORD, 1));
+                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\LabConfig", new RegistryItem("BypassSecureBootCheck", ValueKind.REG_DWORD, 1));
+                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\LabConfig", new RegistryItem("BypassStorageCheck", ValueKind.REG_DWORD, 1));
+                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\LabConfig", new RegistryItem("BypassTPMCheck", ValueKind.REG_DWORD, 1));
+                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\MoSetup", new RegistryItem("AllowUpgradesWithUnsupportedTPMOrCPU", ValueKind.REG_DWORD, 1));
+                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\Status\\ChildCompletion", new RegistryItem("setup.exe", ValueKind.REG_DWORD, 3));
+
+                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup", new RegistryItem("CmdLine", ValueKind.REG_SZ, "\\sources\\setup.exe"));
+
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "HKLM\\zSOFTWARE");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "HKLM\\zSYSTEM");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "HKLM\\zDEFAULT");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Users", "Default", "ntuser.dat"), "HKLM\\zNTUSER");
 
                 UpdateStatus("Finalizing...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
