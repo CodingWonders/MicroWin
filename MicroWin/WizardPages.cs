@@ -224,7 +224,10 @@ namespace MicroWin
             var btn = new Button { Text = "Browse", Location = new Point(50, 60), Size = new Size(120, 30) };
 
             btn.Click += (s, e) => {
-                using (SaveFileDialog ofd = new SaveFileDialog {})
+                using (SaveFileDialog ofd = new SaveFileDialog {
+                    Filter = "ISO Files|*.iso",
+                    FileName = "MicroWin.iso"
+                })
                 {
                     if (ofd.ShowDialog() == DialogResult.OK)
                     {
