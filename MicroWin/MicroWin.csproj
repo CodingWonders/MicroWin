@@ -87,6 +87,7 @@
     <Compile Include="functions\Helpers\RegistryHelpers\RegistryItem.cs" />
     <Compile Include="functions\Helpers\RegistryHelpers\ValueKind.cs" />
     <Compile Include="functions\iso\IsoManager.cs" />
+    <Compile Include="functions\oscdimg.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -135,6 +136,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="tools\oscdimg.exe" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
