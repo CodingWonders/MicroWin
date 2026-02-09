@@ -3,9 +3,9 @@ using System.IO;
 using MicroWin.functions.Helpers.RegistryHelpers;
 using System;
 
-namespace MicroWin.oscdimg
+namespace MicroWin.OSCDIMG
 {
-    public static class oscdimg
+    public static class OscdimgUtilities
     {
         public static string peToolsPath;
         public static string adkKitsRoot => GetKitsRoot(false);

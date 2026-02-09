@@ -87,7 +87,7 @@
     <Compile Include="functions\Helpers\RegistryHelpers\RegistryItem.cs" />
     <Compile Include="functions\Helpers\RegistryHelpers\ValueKind.cs" />
     <Compile Include="functions\iso\IsoManager.cs" />
-    <Compile Include="functions\oscdimg.cs" />
+    <Compile Include="functions\OSCDIMG\OscdimgUtilities.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
