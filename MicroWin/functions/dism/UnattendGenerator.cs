@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 namespace MicroWin.functions.dism
@@ -68,7 +69,18 @@ namespace MicroWin.functions.dism
             xml.AppendLine("  </settings>");
             xml.AppendLine("</unattend>");
 
-            File.WriteAllText(destinationPath, xml.ToString());
+            // We have to create the directories that hold the answer file first
+            try
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(destinationPath)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+
+                File.WriteAllText(destinationPath, xml.ToString());
+            }
+            catch (Exception)
+            {
+                // TODO log
+            }
         }
     }
 }

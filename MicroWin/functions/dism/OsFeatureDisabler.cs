@@ -75,7 +75,7 @@ namespace MicroWin.functions.dism
             try
             {
                 DismApi.Initialize(DismLogLevel.LogErrors);
-                using DismSession session = DismApi.OpenOfflineSession(AppState.MountPath);
+                using DismSession session = DismApi.OpenOfflineSession(AppState.ScratchPath);
                 featureList = DismApi.GetFeatures(session);
             }
             catch (Exception)
