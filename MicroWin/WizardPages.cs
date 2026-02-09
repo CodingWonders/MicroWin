@@ -322,16 +322,7 @@ namespace MicroWin
                 UpdateStatus("Finalizing...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
 
-                // Download oscdimg
-
-                using (var client = new HttpClient())
-                {
-                    var data = await client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/oscdimg.exe");
-                    File.WriteAllBytes(Path.Combine(AppState.TempRoot, "oscdimg.exe"), data);
-                }
-
-                Process.Start(Path.Combine(AppState.TempRoot, "oscdimg.exe"), 
-                    $"-m - o - u2 - udfver102 - bootdata:2#p0,e,b\"{Path.Combine(AppState.MountPath, "boot", "etfsboot.com")}\"#pEF,e,b\"{Path.Combine(AppState.MountPath, "efi", "microsoft", "boot", "efisys.bin")}\" \"{AppState.MountPath}\" \"{AppState.saveISO}\"");
+                checkoscdImg();
 
                 if (Directory.Exists(AppState.TempRoot))
                 {
