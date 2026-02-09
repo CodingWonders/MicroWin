@@ -229,7 +229,7 @@ namespace MicroWin
                     if (ofd.ShowDialog() == DialogResult.OK)
                     {
                         AppState.saveISO = ofd.FileName;
-                        _parent.ShowPage(new Page_WinVersion(_parent));
+                        _parent.ShowPage(new Page_Progress(_parent));
                     }
                 }
             };
