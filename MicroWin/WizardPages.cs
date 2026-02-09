@@ -300,8 +300,9 @@ namespace MicroWin
                 // Skip first logon animation
                 RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\Active Setup\\Installed Components\\CMP_NoFla");
                 RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\Active Setup\\Installed Components\\CMP_NoFla", new RegistryItem("", ValueKind.REG_SZ, "Stop First Logon Animation Process"));
-                // CW Please look at the one below as unsure if this is correct. 
                 RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\Active Setup\\Installed Components\\CMP_NoFla", new RegistryItem("StubPath", ValueKind.REG_SZ, "\'%WINDIR%\\System32\\cmd.exe\\' /C \\'taskkill /f /im firstlogonanim.exe\'"));
+
+                RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\PowerShell\\1\\ShellIds\\Microsoft.PowerShell", new RegistryItem("ExecutionPolicy", ValueKind.REG_SZ, "RemoteSigned"));
 
                 RegistryHelper.UnloadRegistryHive("HKLM\\zSYSTEM");
                 RegistryHelper.UnloadRegistryHive("HKLM\\zSOFTWARE");
