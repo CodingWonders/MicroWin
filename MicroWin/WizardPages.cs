@@ -299,9 +299,9 @@ namespace MicroWin
 
                     // zSOFTWAREMicroWinkey.Close();
 
-                    RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "HKLM/zSOFTWARE");
-                    RegistryHelper.AddRegistryItem("HKLM//zSOFTWARE//MicroWin");
-                    // RegistryHelper.AddRegistryItem("HKLM//zSOFTWARE//MicroWin/MicroWinVersion", $"{AppState.Version");
+                    RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "HKLM\\zSOFTWARE");
+                    RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin");
+                    RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinVersion", ValueKind.REG_SZ, $"{AppState.Version}"));
                     // RegistryHelper.AddRegistryItem("HKLM//zSOFTWARE//MicroWin/MicroWinBuildDate", REG_SZ);
 
                 }
