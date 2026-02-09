@@ -206,7 +206,7 @@ namespace MicroWin
 
             btnNext.Click += (s, e) => {
                 AppState.AddReportingToolShortcut = chkReport.Checked;
-                _parent.ShowPage(new Page_Progress(_parent));
+                _parent.ShowPage(new Page_Save(_parent));
             };
             this.Controls.AddRange(new Control[] { chkReport, btnNext });
         }
@@ -275,6 +275,8 @@ namespace MicroWin
 
                 UpdateStatus("Mounting Install WIM...");
                 DismManager.MountImage(installwimPath, AppState.SelectedImageIndex, AppState.ScratchPath, (p) => UpdateProgressBar(p));
+
+                UnattendGenerator.CreateUnattend($"{Path.Combine(AppState.ScratchPath, "Windows", "Panther", "autounattend.xml")}");
 
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "HKLM\\zSOFTWARE");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "HKLM\\zSYSTEM");

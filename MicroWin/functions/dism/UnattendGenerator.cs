@@ -5,7 +5,7 @@ namespace MicroWin.functions.dism
 {
     public class UnattendGenerator
     {
-        public void CreateUnattend(string destinationPath)
+        public static void CreateUnattend(string destinationPath)
         {
             StringBuilder xml = new StringBuilder();
             xml.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
@@ -68,7 +68,7 @@ namespace MicroWin.functions.dism
             xml.AppendLine("  </settings>");
             xml.AppendLine("</unattend>");
 
-            File.WriteAllText(Path.Combine(destinationPath, "autounattend.xml"), xml.ToString());
+            File.WriteAllText(destinationPath, xml.ToString());
         }
     }
 }
