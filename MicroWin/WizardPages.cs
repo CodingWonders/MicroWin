@@ -284,25 +284,10 @@ namespace MicroWin
                         File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "ReportingTool.ps1"), data);
                     }
 
-                    // To-Do: Mount Registry Hives
-
-                    // RegistryKey zSOFTWAREkey = Registry.LocalMachine.OpenSubKey(@"zSOFTWARE");
-                    // zSOFTWAREkey.CreateSubKey("MicroWin");
-                    // zSOFTWAREkey.Close();
-
-                    // RegistryKey zSOFTWAREMicroWinkey = Registry.LocalMachine.OpenSubKey(@"zSOFTWARE\MicroWin");
-                    // zSOFTWAREMicroWinkey.CreateSubKey("MicroWinBuildDate");
-                    // zSOFTWAREMicroWinkey.CreateSubKey("MicroWinVersion");
-
-                    // zSOFTWAREMicroWinkey.SetValue("MicroWinBuildDate", DateTime.Now);
-                    // zSOFTWAREMicroWinkey.SetValue("MicroWinVersion", AppState.Version);
-
-                    // zSOFTWAREMicroWinkey.Close();
-
                     RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "HKLM\\zSOFTWARE");
                     RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin");
                     RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinVersion", ValueKind.REG_SZ, $"{AppState.Version}"));
-                    // RegistryHelper.AddRegistryItem("HKLM//zSOFTWARE//MicroWin/MicroWinBuildDate", REG_SZ);
+                    RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinBuildDate", ValueKind.REG_SZ, $"{DateTime.Now}"));
 
                 }
 
