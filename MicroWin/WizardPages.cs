@@ -302,7 +302,7 @@ namespace MicroWin
                     RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "HKLM\\zSOFTWARE");
                     RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin");
                     RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinVersion", ValueKind.REG_SZ, $"{AppState.Version}"));
-                    // RegistryHelper.AddRegistryItem("HKLM//zSOFTWARE//MicroWin/MicroWinBuildDate", REG_SZ);
+                    RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinBuildDate", ValueKind.REG_SZ, $"{DateTime.Now}"));
 
                 }
 
