@@ -1,7 +1,8 @@
-using System.Diagnostics;
-using System.IO;
 using MicroWin.functions.Helpers.RegistryHelpers;
 using System;
+using System.Diagnostics;
+using System.IO;
+using System.Net.Http;
 
 namespace MicroWin.OSCDIMG
 {
@@ -27,6 +28,15 @@ namespace MicroWin.OSCDIMG
                     oscdimgPath = $"{peToolsPath}\\Deployment Tools\\amd64\\Oscdimg\\oscdimg.exe";
                 } else {
                     oscdimgPath = $"{peToolsPath}\\Deployment Tools\\x86\\Oscdimg\\oscdimg.exe";
+                }
+            }
+
+            if (!File.Exists(oscdimgPath))
+            {
+                using (var client = new HttpClient())
+                {
+                    var data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/c#-rewrite/MicroWin/tools/oscdimg.exe").GetAwaiter().GetResult();
+                    File.WriteAllBytes(oscdimgPath, data);
                 }
             }
             startInstall();
