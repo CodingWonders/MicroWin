@@ -274,6 +274,11 @@ namespace MicroWin
                 UpdateStatus("Mounting Install WIM...");
                 DismManager.MountImage(installwimPath, AppState.SelectedImageIndex, AppState.ScratchPath, (p) => UpdateProgressBar(p));
 
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "HKLM\\zSOFTWARE");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "HKLM\\zSYSTEM");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "HKLM\\zDEFAULT");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Users", "Default", "ntuser.dat"), "HKLM\\zNTUSER");
+
                 new OsPackageRemover().RunTask();
 
                 if (AppState.AddReportingToolShortcut)
@@ -284,17 +289,24 @@ namespace MicroWin
                         File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "ReportingTool.ps1"), data);
                     }
 
-                    RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "HKLM\\zSOFTWARE");
                     RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin");
                     RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinVersion", ValueKind.REG_SZ, $"{AppState.Version}"));
                     RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinBuildDate", ValueKind.REG_SZ, $"{DateTime.Now}"));
-                    RegistryHelper.UnloadRegistryHive("HKLM\\zSOFTWARE");
 
                 }
 
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "HKLM\\zSYSTEM");
                 RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\ControlSet001\\Control\\Session Manager", new RegistryItem("DisableWpbtExecution", RegistryValueKind.DWord, 1));
+
+                // Skip first logon animation
+                RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\Active Setup\\Installed Components\\CMP_NoFla");
+                RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\Active Setup\\Installed Components\\CMP_NoFla", new RegistryItem("Stop First Logon Animation Process", ValueKind.REG_SZ));
+                // CW Please look at the one below as unsure if this is correct. 
+                RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\Active Setup\\Installed Components\\CMP_NoFla", new RegistryItem("StubPath", ValueKind.REG_SZ, "\'%WINDIR%\\System32\\cmd.exe\\' /C \\'taskkill /f /im firstlogonanim.exe\\'"));
+
                 RegistryHelper.UnloadRegistryHive("HKLM\\zSYSTEM");
+                RegistryHelper.UnloadRegistryHive("HKLM\\zSOFTWARE");
+                RegistryHelper.UnloadRegistryHive("HKLM\\zDEFAULT");
+                RegistryHelper.UnloadRegistryHive("HKLM\\zNTUSER");
 
                 UpdateStatus("Finalizing...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
