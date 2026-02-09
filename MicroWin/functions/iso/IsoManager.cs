@@ -62,7 +62,7 @@ namespace MicroWin.functions.iso
             {
                 try
                 {
-                    string destFile = file.Replace(source, destination);
+                    string destFile = file.Replace(source, $"{destination}\\");
                     string destDir = Path.GetDirectoryName(destFile);
                     if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
 
