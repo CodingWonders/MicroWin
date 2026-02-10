@@ -27,7 +27,6 @@ namespace MicroWin.functions.Helpers.DynaLog
         private const int DYNALOG_LOG_ARCHIVE_RETENTION_MAXIMUM_THRESHOLD_DAYS = -28;
 
         // Absolute values for constants
-        private static readonly int DYNALOG_LOG_ARCHIVE_MINIMUM_THRESHOLD_DAYS_ABS = -DYNALOG_LOG_ARCHIVE_MINIMUM_THRESHOLD_DAYS;
         private static readonly int DYNALOG_LOG_ARCHIVE_RETENTION_MAXIMUM_THRESHOLD_DAYS_ABS = -DYNALOG_LOG_ARCHIVE_RETENTION_MAXIMUM_THRESHOLD_DAYS;
 
         /// <summary>
@@ -36,19 +35,19 @@ namespace MicroWin.functions.Helpers.DynaLog
         /// <value></value>
         /// <returns></returns>
         /// <remarks>This can be called by any function/method</remarks>
-        public static bool LoggerEnabled = True;
+        public static bool LoggerEnabled = true;
 
         private static void RemoveLogArchives()
         {
-            LogMessage("Removing archived logs older than " & DYNALOG_LOG_ARCHIVE_RETENTION_MAXIMUM_THRESHOLD_DAYS_ABS & " days...", False);
+            logMessage($"Removing archived logs older than {DYNALOG_LOG_ARCHIVE_RETENTION_MAXIMUM_THRESHOLD_DAYS_ABS} days...", false);
             try
             {
-                string[] LogArchives = Directory.GetFiles(Path.Combine(Application.StartupPath, "logs"), "DT_DynaLog_*.old", SearchOption.TopDirectoryOnly);
-                LogMessage("Archives found: " & LogArchives.Count);
-                if (LogArchives.Count > 0)
+                string[] LogArchives = Directory.GetFiles(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs"), "MW_DynaLog_*.old", SearchOption.TopDirectoryOnly);
+                logMessage($"Archives found: {LogArchives.Length}");
+                if (LogArchives.Any())
                 {
-                    LogMessage("Removing log archives...");
-                    foreach (var LogArchive in LogArchives)
+                    logMessage("Removing log archives...");
+                    foreach (string LogArchive in LogArchives)
                     {
                         try
                         {
@@ -56,20 +55,20 @@ namespace MicroWin.functions.Helpers.DynaLog
                             DateTime CreationDate = File.GetCreationTimeUtc(LogArchive);
                             if (CreationDate < DateTime.UtcNow.AddDays(DYNALOG_LOG_ARCHIVE_RETENTION_MAXIMUM_THRESHOLD_DAYS))
                             {
-                                LogMessage("- Log archive " & Quote & LogArchive & Quote & " is more than " & DYNALOG_LOG_ARCHIVE_RETENTION_MAXIMUM_THRESHOLD_DAYS_ABS & " days old. Removing...");
+                                logMessage($"- Log archive \"{LogArchive}\" is more than {DYNALOG_LOG_ARCHIVE_RETENTION_MAXIMUM_THRESHOLD_DAYS_ABS} days old. Removing...");
                                 File.Delete(LogArchive);
                             }
                         }
                         catch (Exception ex)
                         {
-                            LogMessage("Could not delete log archive. Error message: " & ex.Message);
+                            logMessage($"Could not delete log archive. Error message: {ex.Message}");
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                LogMessage("Could not detect log archives. Error message: " & ex.Message);
+                logMessage($"Could not detect log archives. Error message: {ex.Message}");
             }
         }
 
@@ -79,26 +78,26 @@ namespace MicroWin.functions.Helpers.DynaLog
         /// <remarks>If a DynaLog log file is older than 2 weeks, it will be archived</remarks>
         public static void CheckLogAge()
         {
-            LogMessage("Checking existing logs...", False);
-            if (File.Exists(Application.StartupPath & "\\logs\\DT_DynaLog.log"))
+            logMessage("Checking existing logs...", false);
+            if (File.Exists($"{AppDomain.CurrentDomain.BaseDirectory}\\logs\\MW_DynaLog.log"))
             {
-                LogMessage("Log File Found. Checking log file creation date...", False);
+                logMessage("Log File Found. Checking log file creation DateTime...", false);
                 try
                 {
-                    DateTime CreationDate = File.GetCreationTimeUtc(Application.StartupPath & "\\logs\\DT_DynaLog.log");
+                    DateTime CreationDate = File.GetCreationTimeUtc($"{AppDomain.CurrentDomain.BaseDirectory}\\logs\\MW_DynaLog.log");
                     if (CreationDate < DateTime.UtcNow.AddDays(DYNALOG_LOG_ARCHIVE_MINIMUM_THRESHOLD_DAYS))
                     {
-                        LogMessage("Current log file is more than 2 weeks old. Archiving...", False);
-                        string ArchivedFileName = "DT_DynaLog_" & DateTime.UtcNow.ToString("yyMMdd-HHmm") & ".old";
+                        logMessage("Current log file is more than 2 weeks old. Archiving...", false);
+                        string ArchivedFileName = $"MW_DynaLog_{DateTime.UtcNow.ToString("yyMMdd-HHmm")}.old";
                         try
                         {
-                            File.Move(Application.StartupPath & "\\logs\\DT_DynaLog.log", Application.StartupPath & "\\logs\\" & ArchivedFileName);
-                            LogMessage("The old log file has been archived. New messages will be shown in a new log file", False);      // A blank sheet of... logs?
-                            File.SetCreationTimeUtc(Application.StartupPath & "\\logs\\DT_DynaLog.log", Date.UtcNow);
+                            File.Move("{AppDomain.CurrentDomain.BaseDirectory}\\logs\\MW_DynaLog.log", $"{AppDomain.CurrentDomain.BaseDirectory}\\logs\\{ArchivedFileName}");
+                            logMessage("The old log file has been archived. New messages will be shown in a new log file", false);      // A blank sheet of... logs?
+                            File.SetCreationTimeUtc($"{AppDomain.CurrentDomain.BaseDirectory}\\logs\\MW_DynaLog.log", DateTime.UtcNow);
                         }
                         catch (Exception ex)
                         {
-                            LogMessage("Could not archive log. Error info:" & CrLf & CrLf & ex.ToString(), False);
+                            logMessage($"Could not archive log. Error info:\n\n{ex}", false);
                         }
                     }
                     else
@@ -108,7 +107,7 @@ namespace MicroWin.functions.Helpers.DynaLog
                 }
                 catch (Exception ex)
                 {
-                    LogMessage("Could not check log file age. Error info:" & CrLf & CrLf & ex.ToString(), False);
+                    logMessage($"Could not check log file age. Error info:\n\n{ex}", false);
                 }
                 RemoveLogArchives();
             }
@@ -120,29 +119,11 @@ namespace MicroWin.functions.Helpers.DynaLog
 
         public static void BeginLogging()
         {
-            LogMessage("----- Dynamic Logging (DynaLog) version " & DYNALOG_VERSION & " -----", False);
-            LogMessage("DynaLog Logger has begun logging program operations...", False);
-            LogMessage("--- Time Stamps are shown in UTC Time!!! ---", False);
+            logMessage($"----- Dynamic Logging (DynaLog) version {DYNALOG_VERSION} -----", false);
+            logMessage($"DynaLog Logger has begun logging program operations...", false);
+            logMessage($"--- Time Stamps are shown in UTC Time!!! ---", false);
         }
 
-        Public Shared Sub EndLogging()
-            LogMessage("DynaLog Logger has stopped logging program operations...", False)
-            LogMessage("========================================================", False)
-        End Sub
-
-        Public Shared Sub DisableLogging()
-            LogMessage("Logger has been temporarily disabled by caller " & New StackFrame(1).GetMethod().Name, False)
-            LoggerEnabled = False
-        End Sub
-
-        Public Shared Sub EnableLogging()
-            If MainForm.EnableDynaLog Then
-                LoggerEnabled = True
-                LogMessage("Logger has been enabled again by caller " & New StackFrame(1).GetMethod().Name, False)
-            Else
-                Debug.WriteLine("The logger has been ultimately disabled and cannot be enabled with this method. Use the Ultimate switch to bypass.")
-            End If
-        End Sub
 
         /// <summary>
         /// Logs a message with DynaLog to the log file
@@ -150,31 +131,37 @@ namespace MicroWin.functions.Helpers.DynaLog
         /// <param name="message">The message to log. It cannot be empty</param>
         /// <param name="GetParentCaller">Determines whether or not to get the name of the caller that called a specific method that called DynaLog logging</param>
         /// <remarks></remarks>
-        Public Shared Sub LogMessage(message As String, Optional GetParentCaller As Boolean = True)
-            If Not LoggerEnabled OrElse message = "" Then
-                Debug.WriteLine("Logger Enabled? " & If(LoggerEnabled, "Yes", "No"))
-                Debug.WriteLine("Message: " & Quote & message & Quote)
-                Debug.WriteLine("Either the logger is not enabled or the message is empty. Message cannot be logged.")
-                Exit Sub
-            End If
-            Debug.WriteLine(message)
-            Try
-                ' DynaLog will NOT display logs for log file/folder creation - ONLY in debugger.
-                If Not Directory.Exists(Application.StartupPath & "\logs") Then
-                    Debug.WriteLine("Creating log directory...")
-                    Directory.CreateDirectory(Application.StartupPath & "\logs")
-                End If
-                Dim FileLength As Long = 0
-                If File.Exists(Application.StartupPath & "\logs\DT_DynaLog.log") Then
-                    FileLength = New FileInfo(Application.StartupPath & "\logs\DT_DynaLog.log").Length
-                End If
-                Dim MessagePrefix As String = "[" & Date.UtcNow.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture) & "] [PID " & Process.GetCurrentProcess().Id & "] [" & New StackFrame(1).GetMethod().Name & If(GetParentCaller, " (" & New StackFrame(2).GetMethod().Name & ")", "") & "] "
-                Dim MessageLine As String = MessagePrefix & message.Replace(CrLf, CrLf & MessagePrefix).Trim()
-                File.AppendAllText(Application.StartupPath & "\logs\DT_DynaLog.log", If(FileLength > 0, CrLf, "") & MessageLine)
-            Catch ex As Exception
-                Debug.WriteLine("DynaLog logging could not log this operation. Error:" & CrLf & CrLf & ex.ToString())
-            End Try
-        End Sub
+        public static void logMessage(string message, bool getParentCaller = false)
+        {
+            if ((!LoggerEnabled) || (message == ""))
+            {
+                Debug.WriteLine($"Logger Enabled? {(LoggerEnabled ? "Yes" : "No")}");
+                Debug.WriteLine($"Message: {message}");
+                Debug.WriteLine($"Either the logger is not enabled or the message is empty. Message cannot be logged.");
+                return;
+            }
 
-    End Class
+            Debug.WriteLine(message);
+            try
+            {
+                if (!Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs")))
+                {
+                    Debug.WriteLine("Creating log directory...");
+                    Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs"));
+                }
+                long fileLength = 0L;
+                if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "MW_DynaLog.log")))
+                {
+                    fileLength = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "MW_DynaLog.log")).Length;
+                }
+                string messagePrefix = $"[{DateTime.UtcNow.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}] [PID {Process.GetCurrentProcess().Id}] [{new StackFrame(1).GetMethod().Name}{(getParentCaller ? $" ({new StackFrame(2).GetMethod().Name})" : "")}] ";
+                string messageLine = $"{messagePrefix}{message.Replace("\n", $"\n{messagePrefix}").Trim()}";
+                File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "MW_DynaLog.log"), $"{(fileLength > 0 ? "\n" : "")}{messageLine}");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"DynaLog logging could not log this operation. Error: \n\n{ex}");
+            }
+        }
+    }
 }
