@@ -9,7 +9,7 @@ using MicroWin.functions.dism;
 using MicroWin.functions.Helpers.RegistryHelpers;
 using MicroWin.functions.Helpers;
 using MicroWin.OSCDIMG;
-using MicroWin.Helpers.DeleteFiles;
+using MicroWin.functions.Helpers.DeleteFile;
 using System.Linq;
 using System.Net;
 using System.Net.Http;

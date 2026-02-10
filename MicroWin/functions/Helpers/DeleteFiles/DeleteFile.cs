@@ -1,4 +1,13 @@
-namespace MicroWin.functions.Helpers.DeleteFiles
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Diagnostics;
+using System.IO;
+using Microsoft.Win32;
+
+namespace MicroWin.functions.Helpers.DeleteFile
 {
     public static class DeleteFiles
     {
@@ -15,7 +24,7 @@ namespace MicroWin.functions.Helpers.DeleteFiles
 
             foreach (var dir in directory.GetDirectories("*", SearchOption.AllDirectories))
             {
-                file.Attributes = FileAttributes.Normal;
+                dir.Attributes = FileAttributes.Normal;
             }
 
             directory.Delete(true);
