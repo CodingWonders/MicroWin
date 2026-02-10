@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Windows.Forms;
 
 namespace MicroWin.OSCDIMG
 {
@@ -45,7 +46,18 @@ namespace MicroWin.OSCDIMG
         public static void startInstall()
         {
             // Start the ISO building
-            var oscdimgProc = Process.Start(oscdimgPath, $"-m - o - u2 - udfver102 - bootdata:2#p0,e,b\"{Path.Combine(AppState.MountPath, "boot", "etfsboot.com")}\"#pEF,e,b\"{Path.Combine(AppState.MountPath, "efi", "microsoft", "boot", "efisys.bin")}\" \"{AppState.MountPath}\" \"{AppState.saveISO}\"");
+            Process oscdimgProc = new Process()
+            {
+                StartInfo = new ProcessStartInfo()
+                {
+                    FileName = oscdimgPath,
+                    Arguments = $"-m - o - u2 - udfver102 - bootdata:2#p0,e,b\"{Path.Combine(AppState.MountPath, "boot", "etfsboot.com")}\"#pEF,e,b\"{Path.Combine(AppState.MountPath, "efi", "microsoft", "boot", "efisys.bin")}\" \"{AppState.MountPath}\" \"{AppState.saveISO}\"",
+                    CreateNoWindow = !Debugger.IsAttached,
+                    WindowStyle = (Debugger.IsAttached ? ProcessWindowStyle.Normal : ProcessWindowStyle.Hidden)
+                }
+            };
+            oscdimgProc.Start();
+            MessageBox.Show($"Process exited with code {oscdimgProc.ExitCode}.", "OSCDIMG");
         }
 
         public static string GetKitsRoot(bool wow64environment)
