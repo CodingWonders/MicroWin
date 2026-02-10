@@ -335,6 +335,12 @@ namespace MicroWin
                     }
                 }
 
+                using (var client = new HttpClient())
+                {
+                    var data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/FirstStartup.ps1").GetAwaiter().GetResult();
+                    File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "Windows"), data);
+                }
+
                 RegistryHelper.UnloadRegistryHive("HKLM\\zSYSTEM");
                 RegistryHelper.UnloadRegistryHive("HKLM\\zSOFTWARE");
                 RegistryHelper.UnloadRegistryHive("HKLM\\zDEFAULT");

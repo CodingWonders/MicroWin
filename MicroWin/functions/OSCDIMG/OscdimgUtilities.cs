@@ -36,7 +36,7 @@ namespace MicroWin.OSCDIMG
             {
                 using (var client = new HttpClient())
                 {
-                    var data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/c#-rewrite/MicroWin/tools/oscdimg.exe").GetAwaiter().GetResult();
+                    var data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/oscdimg.exe").GetAwaiter().GetResult();
                     File.WriteAllBytes(oscdimgPath, data);
                 }
             }
