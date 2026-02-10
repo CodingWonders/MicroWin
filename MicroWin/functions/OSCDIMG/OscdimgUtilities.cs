@@ -57,6 +57,7 @@ namespace MicroWin.OSCDIMG
                 }
             };
             oscdimgProc.Start();
+            oscdimgProc.WaitForExit();
             MessageBox.Show($"Process exited with code {oscdimgProc.ExitCode}.", "OSCDIMG");
         }
 
