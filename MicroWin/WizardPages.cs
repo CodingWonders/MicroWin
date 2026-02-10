@@ -58,6 +58,7 @@ namespace MicroWin
                 {
                     DeleteFiles.SafeDeleteDirectory(AppState.TempRoot);
                 }
+
                 using (OpenFileDialog ofd = new OpenFileDialog { Filter = "ISO Files|*.iso" })
                 {
                     if (ofd.ShowDialog() == DialogResult.OK)
@@ -361,7 +362,7 @@ namespace MicroWin
 
                 Console.Write(AppState.saveISO);
 
-                //DeleteFiles.SafeDeleteDirectory(AppState.TempRoot);
+                DeleteFiles.SafeDeleteDirectory(AppState.TempRoot);
             });
 
             _main.ShowPage(new Page_Finish(_main));
