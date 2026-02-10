@@ -9,6 +9,7 @@ using MicroWin.functions.dism;
 using MicroWin.functions.Helpers.RegistryHelpers;
 using MicroWin.functions.Helpers;
 using MicroWin.OSCDIMG;
+using MicroWin.Helpers.DeleteFiles;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -53,6 +54,10 @@ namespace MicroWin
             };
 
             btn.Click += async (s, e) => {
+                if (Directory.Exists(AppState.TempRoot))
+                {
+                    DeleteFiles.SafeDeleteDirectory(AppState.TempRoot);
+                }
                 using (OpenFileDialog ofd = new OpenFileDialog { Filter = "ISO Files|*.iso" })
                 {
                     if (ofd.ShowDialog() == DialogResult.OK)
@@ -354,10 +359,7 @@ namespace MicroWin
 
                 OscdimgUtilities.checkoscdImg();
 
-                if (Directory.Exists(AppState.TempRoot))
-                {
-                    Directory.Delete(AppState.TempRoot, true);
-                }
+                DeleteFiles.SafeDeleteDirectory(AppState.TempRoot);
             });
 
             _main.ShowPage(new Page_Finish(_main));
