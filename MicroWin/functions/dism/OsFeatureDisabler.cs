@@ -1,4 +1,5 @@
 ﻿using Microsoft.Dism;
+using MicroWin.functions.Helpers.DynaLog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,13 +51,13 @@ namespace MicroWin.functions.dism
                     }
                     catch (Exception)
                     {
-                        // TODO log
+                        DynaLog.logMessage($"ERROR: Failed to disable {featureToDisable}");
                     }
                 }
             }
             catch (Exception)
             {
-                // TODO log
+                DynaLog.logMessage("ERROR: Failed to Initialize DISM");
             }
             finally
             {
@@ -80,7 +81,7 @@ namespace MicroWin.functions.dism
             }
             catch (Exception)
             {
-                // TODO log
+                DynaLog.logMessage("ERROR: Failed to Initialize DISM");
             }
             finally
             {
