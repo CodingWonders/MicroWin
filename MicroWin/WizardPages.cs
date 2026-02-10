@@ -359,7 +359,9 @@ namespace MicroWin
 
                 OscdimgUtilities.checkoscdImg();
 
-                DeleteFiles.SafeDeleteDirectory(AppState.TempRoot);
+                Console.Write(AppState.saveISO);
+
+                //DeleteFiles.SafeDeleteDirectory(AppState.TempRoot);
             });
 
             _main.ShowPage(new Page_Finish(_main));

@@ -32,7 +32,7 @@ namespace MicroWin
         public static bool AddWinUtilShortcut { get; set; }
         public static bool AddReportingToolShortcut { get; set; }
 
-        public static string saveISO;
+        public static string saveISO { get; set; }
 
         public static string Version => "V1.0";
     }
