@@ -1,20 +1,17 @@
-﻿using System;
-using System.Windows.Forms;
-using System.IO;
-using System.Drawing;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using MicroWin.functions.iso;
+﻿using Microsoft.Dism;
 using MicroWin.functions.dism;
-using MicroWin.functions.Helpers.RegistryHelpers;
-using MicroWin.functions.Helpers;
-using MicroWin.OSCDIMG;
 using MicroWin.functions.Helpers.DeleteFile;
+using MicroWin.functions.Helpers.RegistryHelpers;
+using MicroWin.functions.iso;
+using MicroWin.OSCDIMG;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Diagnostics;
-using Microsoft.Win32;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MicroWin
 {
@@ -316,6 +313,27 @@ namespace MicroWin
                 RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\Active Setup\\Installed Components\\CMP_NoFla", new RegistryItem("StubPath", ValueKind.REG_SZ, "\'%WINDIR%\\System32\\cmd.exe\\' /C \\'taskkill /f /im firstlogonanim.exe\'"));
 
                 RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\PowerShell\\1\\ShellIds\\Microsoft.PowerShell", new RegistryItem("ExecutionPolicy", ValueKind.REG_SZ, "RemoteSigned"));
+
+                int majorver = Convert.ToInt32(RegistryHelper.QueryRegistryValue("HKLM\\zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentMajorVersionNumber"));
+                int minorver = Convert.ToInt32(RegistryHelper.QueryRegistryValue("HKLM\\zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentMinorVersionNumber"));
+                string build = Convert.ToString(RegistryHelper.QueryRegistryValue("HKLM\\zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentBuild"));
+                string ubr = Convert.ToString(RegistryHelper.QueryRegistryValue("HKLM\\zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "UBR"));
+
+                if (majorver == 10 && minorver == 0 && build == "26100" && ubr == "1")
+                {
+                    try
+                    {
+                        DismApi.Initialize(DismLogLevel.LogErrors);
+                        using DismSession session = DismApi.OpenOfflineSession(AppState.ScratchPath);
+
+                        DismApi.EnableFeature(session, "Recall", false, true);
+                        DismApi.Shutdown();
+                    }
+                    catch
+                    {
+                        // Add logging
+                    }
+                }
 
                 RegistryHelper.UnloadRegistryHive("HKLM\\zSYSTEM");
                 RegistryHelper.UnloadRegistryHive("HKLM\\zSOFTWARE");
