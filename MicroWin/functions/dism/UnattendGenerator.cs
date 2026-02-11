@@ -142,10 +142,10 @@ namespace MicroWin.functions.dism
             // We have to create the directories that hold the answer file first
             try
             {
-                if (!Directory.Exists(Path.GetDirectoryName(destinationPath)))
-                    Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
+                if (!Directory.Exists(destinationPath))
+                    Directory.CreateDirectory(destinationPath);
 
-                File.WriteAllText(Path.Combine(destinationPath, "autounattend.xml"), xml.ToString());
+                File.WriteAllText(Path.Combine(destinationPath, "unattend.xml"), xml.ToString());
             }
             catch (Exception ex)
             {

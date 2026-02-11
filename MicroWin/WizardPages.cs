@@ -288,10 +288,10 @@ namespace MicroWin
                 new OsPackageRemover().RunTask();
                 new StoreAppRemover().RunTask();
 
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "HKLM\\zSOFTWARE");
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "HKLM\\zSYSTEM");
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "HKLM\\zDEFAULT");
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Users", "Default", "ntuser.dat"), "HKLM\\zNTUSER");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "zSOFTWARE");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "zSYSTEM");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "zDEFAULT");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Users", "Default", "ntuser.dat"), "zNTUSER");
 
                 if (AppState.AddReportingToolShortcut)
                 {
@@ -347,10 +347,10 @@ namespace MicroWin
                     catch { }
                 }
 
-                RegistryHelper.UnloadRegistryHive("HKLM\\zSYSTEM");
-                RegistryHelper.UnloadRegistryHive("HKLM\\zSOFTWARE");
-                RegistryHelper.UnloadRegistryHive("HKLM\\zDEFAULT");
-                RegistryHelper.UnloadRegistryHive("HKLM\\zNTUSER");
+                RegistryHelper.UnloadRegistryHive("zSYSTEM");
+                RegistryHelper.UnloadRegistryHive("zSOFTWARE");
+                RegistryHelper.UnloadRegistryHive("zDEFAULT");
+                RegistryHelper.UnloadRegistryHive("zNTUSER");
 
                 UpdateStatus("Finalizing...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
@@ -361,10 +361,10 @@ namespace MicroWin
                 UpdateStatus("Mounting Boot WIM...");
                 DismManager.MountImage(bootwimPath, 2, AppState.ScratchPath, (p) => UpdateProgressBar(p));
 
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "HKLM\\zSOFTWARE");
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "HKLM\\zSYSTEM");
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "HKLM\\zDEFAULT");
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Users", "Default", "ntuser.dat"), "HKLM\\zNTUSER");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "zSOFTWARE");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "zSYSTEM");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "zDEFAULT");
+                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Users", "Default", "ntuser.dat"), "zNTUSER");
 
                 RegistryHelper.AddRegistryItem("HKLM\\zDEFAULT\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV1", ValueKind.REG_DWORD, 0));
                 RegistryHelper.AddRegistryItem("HKLM\\zDEFAULT\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV2", ValueKind.REG_DWORD, 0));
@@ -380,10 +380,10 @@ namespace MicroWin
 
                 RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup", new RegistryItem("CmdLine", ValueKind.REG_SZ, "\\sources\\setup.exe"));
 
-                RegistryHelper.UnloadRegistryHive("HKLM\\zSYSTEM");
-                RegistryHelper.UnloadRegistryHive("HKLM\\zSOFTWARE");
-                RegistryHelper.UnloadRegistryHive("HKLM\\zDEFAULT");
-                RegistryHelper.UnloadRegistryHive("HKLM\\zNTUSER");
+                RegistryHelper.UnloadRegistryHive("zSYSTEM");
+                RegistryHelper.UnloadRegistryHive("zSOFTWARE");
+                RegistryHelper.UnloadRegistryHive("zDEFAULT");
+                RegistryHelper.UnloadRegistryHive("zNTUSER");
 
                 UpdateStatus("Finalizing...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));

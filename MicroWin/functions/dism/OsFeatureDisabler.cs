@@ -47,7 +47,7 @@ namespace MicroWin.functions.dism
                 {
                     try
                     {
-                        DismApi.DisableFeature(session, featureToDisable, "", true);
+                        DismApi.DisableFeature(session, featureToDisable, null, true);
                     }
                     catch (Exception ex)
                     {
