@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.Win32;
+using MicroWin.functions.dism;
 
 namespace MicroWin.functions.Helpers.DeleteFile
 {
@@ -16,6 +17,11 @@ namespace MicroWin.functions.Helpers.DeleteFile
             if (!Directory.Exists(path)) return;
 
             var directory = new DirectoryInfo(path);
+
+            if (Directory.Exists(AppState.ScratchPath))
+            {
+                DismManager.UnmountAndDiscard(AppState.ScratchPath);
+            }
 
             foreach (var file in directory.GetFiles("*", SearchOption.AllDirectories))
             {

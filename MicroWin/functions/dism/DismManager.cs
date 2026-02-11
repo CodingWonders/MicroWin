@@ -178,5 +178,39 @@ namespace MicroWin.functions.dism
                 catch { }
             }
         }
+        public static void UnmountAndDiscard(string mountPath)
+        {
+            if (!Directory.Exists(mountPath))
+            {
+                // TODO log this; we immediately return if it doesn't exist.
+                return;
+            }
+
+            // To be sure, we'll check the mounted images for this one.
+            DismMountedImageInfoCollection mountedImages = GetMountedImages();
+            if ((mountedImages is null) || (!mountedImages.Any(image => image.MountPath == mountPath)))
+            {
+                return;
+            }
+
+            try
+            {
+                DismApi.Initialize(DismLogLevel.LogErrors);
+
+                DismApi.UnmountImage(mountPath, false);
+            }
+            catch (Exception)
+            {
+                // TODO implement logging
+            }
+            finally
+            {
+                try
+                {
+                    DismApi.Shutdown();
+                }
+                catch { }
+            }
+        }
     }
 }
