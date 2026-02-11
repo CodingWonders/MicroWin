@@ -90,7 +90,7 @@ namespace MicroWin.functions.dism
             xml.AppendLine("        <LocalAccounts>");
             foreach (var user in AppState.UserAccounts)
             {
-                xml.AppendLine("          <LocalAccount wcm:action=\"add\"");
+                xml.AppendLine("          <LocalAccount wcm:action=\"add\">");
                 xml.AppendLine($"            <Password><Value>{user.Password}</Value><PlainText>true</PlainText></Password>");
                 xml.AppendLine($"            <Name>{user.Name}</Name>");
                 xml.AppendLine($"            <Group>{(user.Role == "Administrator" ? "Administrators" : "Users")}</Group>");
