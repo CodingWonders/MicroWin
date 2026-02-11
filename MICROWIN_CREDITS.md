@@ -1,6 +1,6 @@
 # MicroWin CREDITS
 
-These are the people who have created or helped improve MicroWin, in both the [WinUtil](https://github.com/ChrisTitusTech/winutil) or here, *in no particular order*:
+These are the people who have created or helped improve MicroWin over the years, in [WinUtil](https://github.com/ChrisTitusTech/winutil), *in no particular order*:
 
 - [KonTy](https://github.com/KonTy)
 - [CodingWonders](https://github.com/CodingWonders)
