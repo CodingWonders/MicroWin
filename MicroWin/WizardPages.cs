@@ -289,7 +289,9 @@ namespace MicroWin
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "HKLM\\zDEFAULT");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Users", "Default", "ntuser.dat"), "HKLM\\zNTUSER");
 
+                new OsFeatureDisabler().RunTask();
                 new OsPackageRemover().RunTask();
+                new StoreAppRemover().RunTask();
 
                 if (AppState.AddReportingToolShortcut)
                 {
