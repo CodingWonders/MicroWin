@@ -380,10 +380,10 @@ namespace MicroWin
 
                 RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup", new RegistryItem("CmdLine", ValueKind.REG_SZ, "\\sources\\setup.exe"));
 
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "HKLM\\zSOFTWARE");
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "HKLM\\zSYSTEM");
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "HKLM\\zDEFAULT");
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Users", "Default", "ntuser.dat"), "HKLM\\zNTUSER");
+                RegistryHelper.UnloadRegistryHive("HKLM\\zSYSTEM");
+                RegistryHelper.UnloadRegistryHive("HKLM\\zSOFTWARE");
+                RegistryHelper.UnloadRegistryHive("HKLM\\zDEFAULT");
+                RegistryHelper.UnloadRegistryHive("HKLM\\zNTUSER");
 
                 UpdateStatus("Finalizing...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
