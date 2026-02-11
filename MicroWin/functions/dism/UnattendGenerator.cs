@@ -11,9 +11,7 @@ namespace MicroWin.functions.dism
         {
             StringBuilder xml = new StringBuilder();
             xml.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-            xml.AppendLine("<unattend xmlns=\"urn:schemas-microsoft-com:unattend\">");
-
-            // --- Specialized Settings Pass ---
+            xml.AppendLine("<unattend xmlns=\"urn:schemas-microsoft-com:unattend\" xmlns:wcm=\"http://schemas.microsoft.com/WMIConfig/2002/State\" xmlns:xsi=\"http://w3.org/2001/XMLSchema-instance\">");
             xml.AppendLine("  <settings pass=\"specialize\">");
             xml.AppendLine("    <component name=\"Microsoft-Windows-SQMApi\" processorArchitecture=\"amd64\" publicKeyToken=\"31bf3856ad364e35\" language=\"neutral\" versionScope=\"nonSxS\" xmlns:wcm=\"http://schemas.microsoft.com/WMIConfig/2002/State\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
             xml.AppendLine("      <CEIPEnabled>0</CEIPEnabled>");
@@ -23,8 +21,6 @@ namespace MicroWin.functions.dism
             xml.AppendLine("    </component>");
             xml.AppendLine("    <component name=\"Microsoft-Windows-Deployment\" processorArchitecture=\"amd64\" publicKeyToken=\"31bf3856ad364e35\" language=\"neutral\" versionScope=\"nonSxS\">");
             xml.AppendLine("      <RunSynchronous>");
-
-            // Adding all 49 commands from your snippet
             xml.AppendLine("        <RunSynchronousCommand wcm:action=\"add\"><Order>1</Order><Path>reg.exe add \"HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\OOBE\" /v BypassNRO /t REG_DWORD /d 1 /f</Path></RunSynchronousCommand>");
             xml.AppendLine("        <RunSynchronousCommand wcm:action=\"add\"><Order>2</Order><Path>reg.exe load \"HKU\\DefaultUser\" \"C:\\Users\\Default\\NTUSER.DAT\"</Path></RunSynchronousCommand>");
             xml.AppendLine("        <RunSynchronousCommand wcm:action=\"add\"><Order>3</Order><Path>reg.exe add \"HKU\\DefaultUser\\Software\\Microsoft\\Windows\\CurrentVersion\\Runonce\" /v \"UninstallCopilot\" /t REG_SZ /d \"powershell.exe -NoProfile -Command \\\"Get-AppxPackage -Name 'Microsoft.Windows.Ai.Copilot.Provider' | Remove-AppxPackage;\\\"\" /f</Path></RunSynchronousCommand>");
@@ -74,12 +70,9 @@ namespace MicroWin.functions.dism
             xml.AppendLine("        <RunSynchronousCommand wcm:action=\"add\"><Order>47</Order><Path>reg.exe load \"HKU\\DefaultUser\" \"C:\\Users\\Default\\NTUSER.DAT\"</Path></RunSynchronousCommand>");
             xml.AppendLine("        <RunSynchronousCommand wcm:action=\"add\"><Order>48</Order><Path>reg.exe add \"HKU\\DefaultUser\\Software\\Microsoft\\Windows\\CurrentVersion\\Runonce\" /v \"ClassicContextMenu\" /t REG_SZ /d \"reg.exe add \\\"HKCU\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32\\\" /ve /f\" /f</Path></RunSynchronousCommand>");
             xml.AppendLine("        <RunSynchronousCommand wcm:action=\"add\"><Order>49</Order><Path>reg.exe unload \"HKU\\DefaultUser\"</Path></RunSynchronousCommand>");
-
             xml.AppendLine("      </RunSynchronous>");
             xml.AppendLine("    </component>");
             xml.AppendLine("  </settings>");
-
-            // --- AuditUser Settings Pass ---
             xml.AppendLine("  <settings pass=\"auditUser\">");
             xml.AppendLine("    <component name=\"Microsoft-Windows-Deployment\" processorArchitecture=\"amd64\" publicKeyToken=\"31bf3856ad364e35\" language=\"neutral\" versionScope=\"nonSxS\" xmlns:wcm=\"http://schemas.microsoft.com/WMIConfig/2002/State\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">");
             xml.AppendLine("      <RunSynchronous>");
@@ -91,8 +84,6 @@ namespace MicroWin.functions.dism
             xml.AppendLine("      </RunSynchronous>");
             xml.AppendLine("    </component>");
             xml.AppendLine("  </settings>");
-
-            // --- OOBE System Settings Pass ---
             xml.AppendLine("  <settings pass=\"oobeSystem\">");
             xml.AppendLine("    <component name=\"Microsoft-Windows-Shell-Setup\" processorArchitecture=\"amd64\" publicKeyToken=\"31bf3856ad364e35\" language=\"neutral\" versionScope=\"nonConditioned\">");
             xml.AppendLine("      <UserAccounts>");
