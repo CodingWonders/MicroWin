@@ -145,7 +145,7 @@ namespace MicroWin.functions.dism
                 if (!Directory.Exists(Path.GetDirectoryName(destinationPath)))
                     Directory.CreateDirectory(Path.GetDirectoryName(destinationPath));
 
-                File.WriteAllText(destinationPath, xml.ToString());
+                File.WriteAllText(Path.Combine(destinationPath, "autounattend.xml"), xml.ToString());
             }
             catch (Exception ex)
             {
