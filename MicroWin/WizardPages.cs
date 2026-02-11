@@ -284,14 +284,14 @@ namespace MicroWin
 
                 UnattendGenerator.CreateUnattend($"{Path.Combine(AppState.ScratchPath, "Windows", "Panther")}");
 
+                new OsFeatureDisabler().RunTask();
+                new OsPackageRemover().RunTask();
+                new StoreAppRemover().RunTask();
+
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "HKLM\\zSOFTWARE");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "HKLM\\zSYSTEM");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "HKLM\\zDEFAULT");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Users", "Default", "ntuser.dat"), "HKLM\\zNTUSER");
-
-                new OsFeatureDisabler().RunTask();
-                new OsPackageRemover().RunTask();
-                new StoreAppRemover().RunTask();
 
                 if (AppState.AddReportingToolShortcut)
                 {

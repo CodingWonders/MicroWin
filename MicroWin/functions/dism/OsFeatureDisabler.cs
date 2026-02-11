@@ -11,8 +11,9 @@ namespace MicroWin.functions.dism
     public class OsFeatureDisabler : ImageModificationTask
     {
         public override List<string> excludedItems { 
-            get => base.excludedItems; 
-            set => base.excludedItems = [
+            get;
+            protected set;
+        } = [
                 "Defender",
                 "Printing",
                 "TelnetClient",
@@ -22,8 +23,7 @@ namespace MicroWin.functions.dism
                 "NFS",
                 "SearchEngine",
                 "RemoteDesktop"
-            ]; 
-        }
+            ];
 
         public override void RunTask()
         {
@@ -42,16 +42,16 @@ namespace MicroWin.functions.dism
             try
             {
                 DismApi.Initialize(DismLogLevel.LogErrors);
-                using DismSession session = DismApi.OpenOfflineSession(AppState.MountPath);
+                using DismSession session = DismApi.OpenOfflineSession(AppState.ScratchPath);
                 foreach (string featureToDisable in featuresToDisable)
                 {
                     try
                     {
                         DismApi.DisableFeature(session, featureToDisable, "", true);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        DynaLog.logMessage($"ERROR: Failed to disable {featureToDisable}");
+                        DynaLog.logMessage($"ERROR: Failed to disable {featureToDisable}: {ex.Message}");
                     }
                 }
             }

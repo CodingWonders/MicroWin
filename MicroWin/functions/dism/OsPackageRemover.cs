@@ -1,4 +1,5 @@
 ﻿using Microsoft.Dism;
+using MicroWin.functions.Helpers.Loggers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,8 +12,9 @@ namespace MicroWin.functions.dism
     {
         public override List<string> excludedItems
         {
-            get => base.excludedItems; 
-            set => base.excludedItems = [
+            get;
+            protected set;
+        } = [
                 "ApplicationModel",
                 "indows-Client-LanguagePack",
                 "LanguageFeatures-Basic",
@@ -32,7 +34,6 @@ namespace MicroWin.functions.dism
                 "OpenSSH",
                 "PMCPPC"
             ];
-        }
 
         public override void RunTask()
         {
@@ -46,13 +47,12 @@ namespace MicroWin.functions.dism
             List<string> selectedNames = AppState.SelectedPackages.ToList();
 
             IEnumerable<string> packagesToRemove = allPackages.Select(pkg => pkg.PackageName).Where(pkg =>
-                !excludedItems.Any(entry => pkg.IndexOf(entry, StringComparison.OrdinalIgnoreCase) >= 0) &&
-                !AppState.SelectedPackages.Any(entry => entry.Equals(pkg, StringComparison.OrdinalIgnoreCase)));
+                !excludedItems.Any(entry => pkg.IndexOf(entry, StringComparison.OrdinalIgnoreCase) >= 0));
 
             try
             {
                 DismApi.Initialize(DismLogLevel.LogErrors);
-                using DismSession session = DismApi.OpenOfflineSession(AppState.MountPath);
+                using DismSession session = DismApi.OpenOfflineSession(AppState.ScratchPath);
                 foreach (string packageToRemove in packagesToRemove)
                 {
                     // we have this because the API throws an exception on removal error
@@ -60,9 +60,9 @@ namespace MicroWin.functions.dism
                     {
                         DismApi.RemovePackageByName(session, packageToRemove);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        // TODO log here...
+                        DynaLog.logMessage($"ERROR: Failed to remove {packageToRemove}: {ex.Message}");
                     }
                 }
             }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Dism;
+using MicroWin.functions.Helpers.Loggers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,9 @@ namespace MicroWin.functions.dism
     public class StoreAppRemover : ImageModificationTask
     {
         public override List<string> excludedItems { 
-            get => base.excludedItems; 
-            set => base.excludedItems = [
+            get;
+            protected set;
+        } = [
                 "AppInstaller",
                 "Store",
                 "Notepad",
@@ -28,9 +30,8 @@ namespace MicroWin.functions.dism
                 "Extension",
                 "SecHealthUI",
                 "ScreenSketch",
-                "CrossDevice"                
-            ]; 
-        }
+                "CrossDevice"
+            ];
 
         public override void RunTask()
         {
@@ -40,6 +41,7 @@ namespace MicroWin.functions.dism
         private void RemoveStoreApps()
         {
             DismAppxPackageCollection allStoreApps = GetStoreAppsList();
+            if (allStoreApps is null) return;
 
             IEnumerable<string> appsToRemove = allStoreApps.Select(appx => appx.PackageName).Where(appx =>
                 !excludedItems.Any(entry => appx.IndexOf(entry, StringComparison.OrdinalIgnoreCase) >= 0));
@@ -54,9 +56,9 @@ namespace MicroWin.functions.dism
                     {
                         DismApi.RemoveProvisionedAppxPackage(session, appToRemove);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        // TODO log here...
+                        DynaLog.logMessage($"ERROR: Failed to remove {appToRemove}: {ex.Message}");
                     }
                 }
             }
@@ -81,7 +83,7 @@ namespace MicroWin.functions.dism
             try
             {
                 DismApi.Initialize(DismLogLevel.LogErrors);
-                using DismSession session = DismApi.OpenOfflineSession(AppState.MountPath);
+                using DismSession session = DismApi.OpenOfflineSession(AppState.ScratchPath);
                 storeApps = DismApi.GetProvisionedAppxPackages(session);
             }
             catch (Exception)

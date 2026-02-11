@@ -1,3 +1,4 @@
+using MicroWin.functions.Helpers.Loggers;
 using MicroWin.functions.Helpers.RegistryHelpers;
 using System;
 using System.Diagnostics;
@@ -58,7 +59,7 @@ namespace MicroWin.OSCDIMG
             };
             oscdimgProc.Start();
             oscdimgProc.WaitForExit();
-            MessageBox.Show($"Process exited with code {oscdimgProc.ExitCode}.", "OSCDIMG");
+            DynaLog.logMessage($"Process exited with code {oscdimgProc.ExitCode}.");
         }
 
         public static string GetKitsRoot(bool wow64environment)
