@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.Win32;
+using MicroWin.functions.Helpers.Loggers;
 
 namespace MicroWin.functions.Helpers.RegistryHelpers
 {
@@ -23,6 +24,9 @@ namespace MicroWin.functions.Helpers.RegistryHelpers
         /// <returns>The exit code of the process</returns>
         private static int RunRegProcess(string arguments)
         {
+            DynaLog.logMessage("Running REG process...");
+            DynaLog.logMessage($"- Command-line Arguments: {arguments}");
+            DynaLog.logMessage("Checking presence of REG program...");
             int exitCode = ERROR_SUCCESS;
 
             Process regProc = new()

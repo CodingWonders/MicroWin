@@ -5,7 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace MicroWin.functions.Helpers.DynaLog
+namespace MicroWin.functions.Helpers.Loggers
 {
     public class DynaLog
     {

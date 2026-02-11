@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MicroWin.functions.Helpers.Loggers;
+using System;
 using System.IO;
 using System.Text;
 
@@ -146,9 +147,9 @@ namespace MicroWin.functions.dism
 
                 File.WriteAllText(destinationPath, xml.ToString());
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Handle logging here
+                DynaLog.logMessage($"Unattended file could not be made: {ex.Message}");
             }
         }
     }

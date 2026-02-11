@@ -1,5 +1,5 @@
 ﻿using Microsoft.Dism;
-using MicroWin.functions.Helpers.DynaLog;
+using MicroWin.functions.Helpers.Loggers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
