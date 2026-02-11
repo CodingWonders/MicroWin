@@ -310,9 +310,7 @@ namespace MicroWin
                 RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\ControlSet001\\Control\\Session Manager", new RegistryItem("DisableWpbtExecution", ValueKind.REG_DWORD, 1));
 
                 // Skip first logon animation
-                RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\Active Setup\\Installed Components\\CMP_NoFla");
-                RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\Active Setup\\Installed Components\\CMP_NoFla", new RegistryItem("", ValueKind.REG_SZ, "Stop First Logon Animation Process"));
-                RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\Active Setup\\Installed Components\\CMP_NoFla", new RegistryItem("StubPath", ValueKind.REG_SZ, "\'%WINDIR%\\System32\\cmd.exe\\' /C \\'taskkill /f /im firstlogonanim.exe\'"));
+                RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", new RegistryItem("EnableFirstLogonAnimation", ValueKind.REG_DWORD, 0));
 
                 RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\PowerShell\\1\\ShellIds\\Microsoft.PowerShell", new RegistryItem("ExecutionPolicy", ValueKind.REG_SZ, "RemoteSigned"));
 
