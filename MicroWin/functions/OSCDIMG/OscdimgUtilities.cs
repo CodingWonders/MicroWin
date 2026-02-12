@@ -73,10 +73,10 @@ namespace MicroWin.OSCDIMG
 
             if (wow64environment) 
             {
-                regPath = "HKLM:\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots";
+                regPath = "SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots";
             }
             else {
-                regPath = "HKLM:\\SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots";
+                regPath = "SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots";
             };
 
             if (RegistryHelper.RegistryKeyExists(regPath) == false) 
