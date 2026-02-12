@@ -26,7 +26,8 @@ if ((Get-BitLockerVolume -MountPoint $Env:SystemDrive).ProtectionStatus -eq 'On'
 
 # Get BCD entries and set bootmgr timeout accordingly
 # Check if the number of occurrences of "path" is 2 - this fixes the Boot Manager screen issue
-if ((bcdedit | Select-String "path").Count -eq 2) {
+
+if ((bcdedit | Select-String "timeout").Line -match "2") {
     bcdedit /timeout 0
 }
 
@@ -60,3 +61,4 @@ reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "
 
 # Restart explorer to apply all messages
 Stop-Process -Name Explorer
+
