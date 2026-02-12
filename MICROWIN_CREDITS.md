@@ -9,3 +9,7 @@ These are the people who have created or helped improve MicroWin over the years,
 - [og-mrk](https://github.com/og-mrk)
 - [Chris Titus](https://github.com/ChrisTitusTech)
 - [psyirius](https://github.com/psyirius)
+
+These are the tools that have helped during testing:
+
+- [DISMTools](https://github.com/CodingWonders/DISMTools)
