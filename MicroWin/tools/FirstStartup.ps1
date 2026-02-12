@@ -42,8 +42,10 @@ reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Notifications\Settings\W
 # This will set List view in Start menu on Win11 25H2. This will not do anything in 24H2 and older
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Start" /v AllAppsViewMode /t REG_DWORD /d 2 /f
 
-# This will disable the Recommendations in 25H2. This is much simpler than the method used in 24H2 that requires the Education Environment policy
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v Start_IrisRecommendations /t REG_DWORD /d 0 /f
+# This will disable the Recommendations in 25H2.
+reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Explorer" /v HideRecommendedSection /t REG_DWORD /d 0 /f
+reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Start" /v HideRecommendedSection /t REG_DWORD /d 0 /f
+reg add "HKLM\SOFTWARE\Microsoft\PolicyManager\current\device\Education" /v IsEducationEnvironment /t REG_DWORD /d 0 /f
 
 # Other Start Menu settings
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v Start_AccountNotifications /t REG_DWORD /d 0 /f
@@ -57,3 +59,4 @@ reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "SystemUsesLightTheme" /t REG_DWORD /d 0 /f
 
 Stop-Process -Name Explorer
+
