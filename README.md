@@ -1,26 +1,53 @@
 # MicroWin
-This repository contains the source code for the MicroWin CANARY version. MicroWin CANARY allows us to work more quickly and efficiently on the next version of MicroWin that will be available on WinUtil (https://github.com/ChrisTitusTech/winutil).
 
-The point of this repository is **NOT** to ditch MicroWin from WinUtil, but rather to allow us to work on the next version of MicroWin in a more efficient manner. Once the next version of MicroWin is ready, it will be merged back into WinUtil. I will merge the changes.
+![License: MIT](https://img.shields.io/badge/License-MIT-green)
+![Platform: Windows](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011-0078d4)
 
-*Decoupling* it from WinUtil will only make it able to run independently.
+**MicroWin** is an open-source, standalone utility designed to surgically debloat and optimize Windows 10 and 11 images. It provides a specialized environment for creating streamlined, high-performance Windows installations by removing telemetry, unnecessary apps, and background bloat.
 
-**THIS REPOSITORY IS CURRENTLY MARKED AS PRIVATE because I'm not fully sure if it will be viable. Once this is decoupled from WinUtil and contributing to the CANARY version becomes more viable, I will make this repository public.**
+### 📜 Evolution & History
+Originally developed as a flagship component of the **ChrisTitusTech WinUtil** suite, **MicroWin was officially converted into its own independent project on Thursday, February 5th, 2026.** This strategic decoupling allows for a dedicated C# architecture, a robust native GUI, and rapid development cycles independent of the main WinUtil script.
 
-<!-- by the way, chris, copilot wanted me to point to your social media sites while working on this paragraph -->
-Those who are looking at this file have access to this repository. This essentially works like a repository owned by a team, in the sense that you can contribute directly, without forking. Still, I recommend that you create branches.
+---
 
-## Developing
+## 📂 Project Structure
+To maintain professional standards and ensure code maintainability, the project follows a clean "Separation of Concerns" architecture:
 
-To work on changes for MicroWin, you have to do the following:
+| Directory | Description |
+| :--- | :--- |
+| **`/functions/dism`** | DISM logic. |
+| **`/functions/iso`** | ISO logic. |
 
-1. Clone this repo
-2. Run `envsetup.cmd` and answer the questions:
+---
 
-<img width="999" height="651" alt="vmware_fkEgHwjWMW" src="https://github.com/user-attachments/assets/58836862-be59-4223-b303-6e3be388ece3" />
+## 🛠 Getting Started
 
-3. Create your branch
-4. Work on your changes **AND TEST THEM**
-5. Create a PR
+### For Users
+1.  Navigate to the **[Releases](https://github.com/CodingWonders/MicroWin/releases)** page.
+2.  Download the latest `MicroWin.exe`.
+3.  **Run as Administrator** to ensure full access to Windows administration tools like DISM.
 
-The plan is to make it run independently first before making any test suites. Then we can make a control panel and an entry point script.
+### For Developers
+1.  **Clone the Repository:**
+    `git clone https://github.com/CodingWonders/MicroWin.git`
+3.  **Build:** Open the solution in **Visual Studio 2026**. Requires the **.NET Desktop Development** workload.
+
+---
+
+## 🤝 Contributing
+MicroWin is a community-driven project. We welcome direct contributions to the main build.
+* **Feature Branches:** Please create a branch for new features rather than committing directly to `main`.
+* **Testing:** All changes **MUST** be verified in a Virtual Machine (VM) before submitting a Pull Request is submitted.
+* **Architecture:** Keep the logic in the correct folders.
+
+**DO NOT VIBE-CODE!!! OR ELSE YOU WILL MAKE ME ANGRY**
+
+---
+
+## 📜 License
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for more information.
+
+---
+
+## 📝 Credits
+MicroWin is developed and maintained by the community, with special thanks to the original contributors of the WinUtil project for the foundational logic.
