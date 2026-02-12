@@ -3,8 +3,9 @@ $ErrorActionPreference = "Continue"
 
 "FirstStartup has worked" | Out-File -FilePath "$env:HOMEDRIVE\windows\LogFirstRun.txt" -Append -NoClobber
 
-$taskbarPath = "$env:AppData\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar"
 # Delete all files on the Taskbar
+$taskbarPath = "$Env:AppData\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar"
+
 if (Test-Path "$taskbarPath") {
     Remove-Item "$taskbarPath\*"
 }
@@ -55,10 +56,11 @@ reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Start" /v ShowFrequentLi
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Start" /v ShowRecentList /t REG_DWORD /d 0 /f
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /v Start_TrackDocs /t REG_DWORD /d 0 /f
 
-# Color Modes 
+# Enable Dark Mode
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "AppsUseLightTheme" /t REG_DWORD /d 0 /f
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize" /v "SystemUsesLightTheme" /t REG_DWORD /d 0 /f
 
 # Restart explorer to apply all messages
 Stop-Process -Name Explorer
+
 
