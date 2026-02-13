@@ -84,6 +84,7 @@
     <Compile Include="functions\dism\StoreAppRemover.cs" />
     <Compile Include="functions\dism\UnattendGenerator.cs" />
     <Compile Include="functions\Helpers\DeleteFiles\DeleteFile.cs" />
+    <Compile Include="functions\Helpers\DesktopWindowManager\WindowHelper.cs" />
     <Compile Include="functions\Helpers\DynaLog\DynaLog.cs" />
     <Compile Include="functions\Helpers\RegistryHelpers\RegistryHelper.cs" />
     <Compile Include="functions\Helpers\RegistryHelpers\RegistryItem.cs" />
