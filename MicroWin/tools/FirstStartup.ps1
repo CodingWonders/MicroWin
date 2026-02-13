@@ -10,11 +10,8 @@ if (Test-Path "$taskbarPath") {
     Remove-Item "$taskbarPath\*"
 }
 
-# Delete edge .lnk files like desktop shortcut and start menu entry
+# Delete Edge desktop icon
 Remove-Item "$Public\Desktop\Microsoft Edge.lnk"
-Remove-Item "$Env:ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Edge.lnk"
-Remove-Item "$Env:AppData\Microsoft\Internet Explorer\Quick Launch\Microsoft Edge.lnk"
-Remove-Item "$Env:AppData\Microsoft\Internet Explorer\Quick Launch\User Pinned\TaskBar\Microsoft Edge.lnk"
 
 if ((Get-BitLockerVolume -MountPoint $Env:SystemDrive).ProtectionStatus -eq 'On') {
     Write-Host "Disabling BitLocker..."
@@ -80,4 +77,5 @@ $timeout = 100
 
 # Send the broadcast message to all windows
 [Win32]::SendMessageTimeout($HWND_BROADCAST, $WM_SETTINGCHANGE, [IntPtr]::Zero, "ImmersiveColorSet", $SMTO_ABORTIFHUNG, $timeout, [ref]([IntPtr]::Zero))
+
 
