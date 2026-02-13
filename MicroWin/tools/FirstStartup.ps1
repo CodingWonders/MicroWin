@@ -11,7 +11,7 @@ if (Test-Path "$taskbarPath") {
 }
 
 # Delete Edge desktop icon
-Remove-Item "$Public\Desktop\Microsoft Edge.lnk"
+Remove-Item "$Env:Public\Desktop\Microsoft Edge.lnk"
 
 if ((Get-BitLockerVolume -MountPoint $Env:SystemDrive).ProtectionStatus -eq 'On') {
     Write-Host "Disabling BitLocker..."
@@ -77,5 +77,6 @@ $timeout = 100
 
 # Send the broadcast message to all windows
 [Win32]::SendMessageTimeout($HWND_BROADCAST, $WM_SETTINGCHANGE, [IntPtr]::Zero, "ImmersiveColorSet", $SMTO_ABORTIFHUNG, $timeout, [ref]([IntPtr]::Zero))
+
 
 
