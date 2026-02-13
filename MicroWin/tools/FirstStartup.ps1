@@ -10,10 +10,6 @@ if (Test-Path "$taskbarPath") {
     Remove-Item "$taskbarPath\*"
 }
 
-Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Taskband" -Name "FavoritesRemovedChanges"
-Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Taskband" -Name "FavoritesChanges"
-Remove-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Taskband" -Name "Favorites"
-
 # Delete edge .lnk files like desktop shortcut and start menu entry
 Remove-Item "$Public\Desktop\Microsoft Edge.lnk"
 Remove-Item "$Env:ProgramData\Microsoft\Windows\Start Menu\Programs\Microsoft Edge.lnk"
@@ -84,3 +80,4 @@ $timeout = 100
 
 # Send the broadcast message to all windows
 [Win32]::SendMessageTimeout($HWND_BROADCAST, $WM_SETTINGCHANGE, [IntPtr]::Zero, "ImmersiveColorSet", $SMTO_ABORTIFHUNG, $timeout, [ref]([IntPtr]::Zero))
+
