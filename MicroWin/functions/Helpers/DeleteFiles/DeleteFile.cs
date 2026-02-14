@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using System.IO;
-using Microsoft.Win32;
 using MicroWin.functions.dism;
+using MicroWin.functions.Helpers.RegistryHelpers;
+using System.IO;
 
 namespace MicroWin.functions.Helpers.DeleteFile
 {
@@ -15,6 +9,14 @@ namespace MicroWin.functions.Helpers.DeleteFile
         public static void SafeDeleteDirectory(string path)
         {
             if (!Directory.Exists(path)) return;
+
+            if (Directory.Exists(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config")))
+            {
+                RegistryHelper.UnloadRegistryHive("zSYSTEM");
+                RegistryHelper.UnloadRegistryHive("zSOFTWARE");
+                RegistryHelper.UnloadRegistryHive("zDEFAULT");
+                RegistryHelper.UnloadRegistryHive("zNTUSER");
+            }
 
             var directory = new DirectoryInfo(path);
 
