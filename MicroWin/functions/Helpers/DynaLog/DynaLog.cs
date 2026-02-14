@@ -3,7 +3,6 @@ using System.IO;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace MicroWin.functions.Helpers.Loggers
 {

@@ -314,26 +314,26 @@ namespace MicroWin
 
                 RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\PowerShell\\1\\ShellIds\\Microsoft.PowerShell", new RegistryItem("ExecutionPolicy", ValueKind.REG_SZ, "RemoteSigned"));
 
-                // int majorver = Convert.ToInt32(RegistryHelper.QueryRegistryValue("HKLM\\zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentMajorVersionNumber"));
-                // int minorver = Convert.ToInt32(RegistryHelper.QueryRegistryValue("HKLM\\zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentMinorVersionNumber"));
-                // string build = Convert.ToString(RegistryHelper.QueryRegistryValue("HKLM\\zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentBuild"));
-                // string ubr = Convert.ToString(RegistryHelper.QueryRegistryValue("HKLM\\zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "UBR"));
+                int majorver = Convert.ToInt32(RegistryHelper.QueryRegistryValue("zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentMajorVersionNumber").Data);
+                int minorver = Convert.ToInt32(RegistryHelper.QueryRegistryValue("zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentMinorVersionNumber").Data);
+                string build = Convert.ToString(RegistryHelper.QueryRegistryValue("zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentBuild").Data);
+                string ubr = Convert.ToString(RegistryHelper.QueryRegistryValue("zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "UBR").Data);
 
-                //if (majorver == 10 && minorver == 0 && build == "26100" && ubr == "1")
-                //{
-                    //try
-                    //{
-                        //DismApi.Initialize(DismLogLevel.LogErrors);
-                        //using DismSession session = DismApi.OpenOfflineSession(AppState.ScratchPath);
+                if (majorver == 10 && minorver == 0 && build == "26100" && ubr == "1")
+                {
+                    try
+                    {
+                        DismApi.Initialize(DismLogLevel.LogErrors);
+                        using DismSession session = DismApi.OpenOfflineSession(AppState.ScratchPath);
 
-                        //DismApi.EnableFeature(session, "Recall", false, true);
-                        //DismApi.Shutdown();
-                    //}
-                    //catch
-                    //{
+                        DismApi.EnableFeature(session, "Recall", false, true);
+                        DismApi.Shutdown();
+                    }
+                    catch
+                    {
                         // Add logging
-                    //}
-                //}
+                    }
+                }
 
                 using (var client = new HttpClient())
                 {
