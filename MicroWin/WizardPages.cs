@@ -340,7 +340,7 @@ namespace MicroWin
                     try
                     {
                         var data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/FirstStartup.ps1").GetAwaiter().GetResult();
-                        File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "Windows"), data);
+                        File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "Windows", "FirstStartup.ps1"), data);
                     }
                     catch { }
                 }
