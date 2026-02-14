@@ -312,6 +312,7 @@ namespace MicroWin
                 // Skip first logon animation
                 RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", new RegistryItem("EnableFirstLogonAnimation", ValueKind.REG_DWORD, 0));
 
+                // We need to look into a better way to do this, as setting it as RemoteSigned the scripts still fail to execute.
                 RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\PowerShell\\1\\ShellIds\\Microsoft.PowerShell", new RegistryItem("ExecutionPolicy", ValueKind.REG_SZ, "RemoteSigned"));
 
                 int majorver = Convert.ToInt32(RegistryHelper.QueryRegistryValue("zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentMajorVersionNumber").Data);
