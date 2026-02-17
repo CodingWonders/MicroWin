@@ -25,17 +25,19 @@ namespace MicroWin.functions.dism
                 "RemoteDesktop"
             ];
 
-        public override void RunTask()
+        public override void RunTask(Action<int> pbReporter, Action<string> curOpReporter)
         {
-            DisableFeatures();
+            DisableFeatures(pbReporter, curOpReporter);
         }
 
-        private void DisableFeatures()
+        private void DisableFeatures(Action<int> pbReporter, Action<string> curOpReporter)
         {
+            curOpReporter.Invoke("Getting image features...");
             DismFeatureCollection allFeatures = GetFeatureList();
 
             if (allFeatures is null) return;
 
+            curOpReporter.Invoke("Filtering image features...");
             IEnumerable<string> featuresToDisable = allFeatures
                 .Where(feature => ! new DismPackageFeatureState[3] { DismPackageFeatureState.NotPresent, DismPackageFeatureState.UninstallPending, DismPackageFeatureState.Staged }.Contains(feature.State))
                 .Select(feature => feature.FeatureName)
@@ -45,8 +47,11 @@ namespace MicroWin.functions.dism
             {
                 DismApi.Initialize(DismLogLevel.LogErrors);
                 using DismSession session = DismApi.OpenOfflineSession(AppState.ScratchPath);
+                int idx = 0;
                 foreach (string featureToDisable in featuresToDisable)
                 {
+                    curOpReporter.Invoke($"Disabling feature {featureToDisable}...");
+                    pbReporter.Invoke((idx / featuresToDisable.Count()) * 100);
                     try
                     {
                         DismApi.DisableFeature(session, featureToDisable, null, true);
@@ -55,6 +60,7 @@ namespace MicroWin.functions.dism
                     {
                         DynaLog.logMessage($"ERROR: Failed to disable {featureToDisable}: {ex.Message}");
                     }
+                    idx++;
                 }
             }
             catch (Exception)

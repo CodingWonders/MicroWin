@@ -92,7 +92,7 @@
             this.IsoCreationPage = new System.Windows.Forms.Panel();
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.logTB = new System.Windows.Forms.TextBox();
             this.pnlProgress = new System.Windows.Forms.Panel();
             this.lblCurrentStatus = new System.Windows.Forms.Label();
             this.pbCurrent = new System.Windows.Forms.ProgressBar();
@@ -761,6 +761,8 @@
             // ReportToolCB
             // 
             this.ReportToolCB.AutoSize = true;
+            this.ReportToolCB.Checked = true;
+            this.ReportToolCB.CheckState = System.Windows.Forms.CheckState.Checked;
             this.ReportToolCB.Location = new System.Drawing.Point(83, 133);
             this.ReportToolCB.Name = "ReportToolCB";
             this.ReportToolCB.Size = new System.Drawing.Size(218, 19);
@@ -805,7 +807,7 @@
             // IsoCreationPage
             // 
             this.IsoCreationPage.Controls.Add(this.pnlProgress);
-            this.IsoCreationPage.Controls.Add(this.textBox1);
+            this.IsoCreationPage.Controls.Add(this.logTB);
             this.IsoCreationPage.Controls.Add(this.label14);
             this.IsoCreationPage.Controls.Add(this.label15);
             this.IsoCreationPage.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -838,15 +840,17 @@
             this.label15.TabIndex = 7;
             this.label15.Text = "Customizations in progress";
             // 
-            // textBox1
+            // logTB
             // 
-            this.textBox1.Location = new System.Drawing.Point(99, 128);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox1.Size = new System.Drawing.Size(790, 248);
-            this.textBox1.TabIndex = 9;
+            this.logTB.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.logTB.Font = new System.Drawing.Font("Courier New", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.logTB.Location = new System.Drawing.Point(99, 128);
+            this.logTB.Multiline = true;
+            this.logTB.Name = "logTB";
+            this.logTB.ReadOnly = true;
+            this.logTB.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.logTB.Size = new System.Drawing.Size(790, 248);
+            this.logTB.TabIndex = 9;
             // 
             // pnlProgress
             // 
@@ -1014,7 +1018,7 @@
         private System.Windows.Forms.ProgressBar pbCurrent;
         private System.Windows.Forms.Label lblOverallStatus;
         private System.Windows.Forms.Label lblCurrentStatus;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox logTB;
         private System.Windows.Forms.SaveFileDialog isoSaverSFD;
     }
 }

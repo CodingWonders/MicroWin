@@ -54,6 +54,12 @@ namespace MicroWin
                 BackColor = Color.FromArgb(247, 247, 247);
                 ForeColor = Color.FromArgb(35, 38, 41);
             }
+
+            // Change colors of other components. I want consistency
+            // TODO Add remaining controls
+            logTB.BackColor = BackColor;
+            logTB.ForeColor = ForeColor;
+
             WindowHelper.ToggleDarkTitleBar(Handle, colorVal == 0);
         }
 
@@ -338,39 +344,95 @@ namespace MicroWin
             AppState.CopyUnattendToFileSystem = UnattendCopyCB.Checked;
         }
 
-        private void UpdateStatus(string text)
+        private void UpdateCurrentStatus(string text, bool resetBar = true)
         {
-            if (this.InvokeRequired) this.Invoke(new Action(() => { lblCurrentStatus.Text = text; pbCurrent.Value = 0; }));
-            else { lblCurrentStatus.Text = text; pbCurrent.Value = 0; }
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() =>
+                {
+                    lblCurrentStatus.Text = text;
+                    if (resetBar) pbCurrent.Value = 0;
+                }));
+            }
+            else 
+            { 
+                lblCurrentStatus.Text = text;
+                if (resetBar) pbCurrent.Value = 0; 
+            }
         }
 
-        private void UpdateProgressBar(int value)
+        private void UpdateCurrentProgressBar(int value)
         {
             int safeValue = Math.Max(0, Math.Min(value, 100));
             if (this.InvokeRequired) this.Invoke(new Action(() => pbCurrent.Value = safeValue));
             else pbCurrent.Value = safeValue;
         }
 
+        private void UpdateOverallStatus(string text)
+        {
+            if (this.InvokeRequired) this.Invoke(new Action(() => { lblOverallStatus.Text = text; }));
+            else { lblOverallStatus.Text = text; }
+        }
+
+        private void UpdateOverallProgressBar(int value)
+        {
+            int safeValue = Math.Max(0, Math.Min(value, 100));
+            if (this.InvokeRequired) this.Invoke(new Action(() => pbOverall.Value = safeValue));
+            else pbOverall.Value = safeValue;
+        }
+
+        private void WriteLogMessage(string message)
+        {
+            string fullMsg = $"[{DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss")}] {message}\n";
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => logTB.AppendText(fullMsg)));
+            }
+            else
+            {
+                logTB.AppendText(fullMsg);
+            }
+        }
+
         private async void RunDeployment()
         {
+            // Clear old results and write the cool banner
+            logTB.Clear();
+            logTB.Text = @"
+    /\/\  (_)  ___  _ __   ___  / / /\ \ \(_) _ __
+   /    \ | | / __|| '__| / _ \ \ \/  \/ /| || '_ \
+  / /\/\ \| || (__ | |   | (_) | \  /\  / | || | | |
+  \/    \/|_| \___||_|    \___/   \/  \/  |_||_| |_|
+
+                MicroWin .NET (BETA 0.2)
+
+";
+
             await Task.Run(async () => {
                 string installwimPath = Path.Combine(AppState.MountPath, "sources", "install.wim");
                 if (!File.Exists(installwimPath)) installwimPath = Path.Combine(AppState.MountPath, "sources", "install.esd");
 
-                UpdateStatus("Mounting Install WIM...");
-                DismManager.MountImage(installwimPath, AppState.SelectedImageIndex, AppState.ScratchPath, (p) => UpdateProgressBar(p));
+                UpdateOverallStatus("Customizing install image...");
+                UpdateOverallProgressBar(0);
+                UpdateCurrentStatus("Mounting install image...");
+                DismManager.MountImage(installwimPath, AppState.SelectedImageIndex, AppState.ScratchPath, (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
 
                 UnattendGenerator.CreateUnattend($"{Path.Combine(AppState.ScratchPath, "Windows", "Panther")}");
 
-                new OsFeatureDisabler().RunTask();
-                new OsPackageRemover().RunTask();
-                new StoreAppRemover().RunTask();
+                UpdateOverallProgressBar(10);
+                new OsFeatureDisabler().RunTask((p) => UpdateCurrentProgressBar(p), (msg) => UpdateCurrentStatus(msg, false));
+                UpdateOverallProgressBar(20);
+                new OsPackageRemover().RunTask((p) => UpdateCurrentProgressBar(p), (msg) => UpdateCurrentStatus(msg, false));
+                UpdateOverallProgressBar(30);
+                new StoreAppRemover().RunTask((p) => UpdateCurrentProgressBar(p), (msg) => UpdateCurrentStatus(msg, false));
 
+                UpdateOverallProgressBar(40);
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "zSOFTWARE");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "zSYSTEM");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "zDEFAULT");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Users", "Default", "ntuser.dat"), "zNTUSER");
 
+                UpdateCurrentStatus("Modifying install image...");
                 if (AppState.AddReportingToolShortcut)
                 {
                     using (var client = new HttpClient())
@@ -418,7 +480,7 @@ namespace MicroWin
                     try
                     {
                         var data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/FirstStartup.ps1").GetAwaiter().GetResult();
-                        File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "Windows"), data);
+                        File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "Windows", "FirstStartup.ps1"), data);
                     }
                     catch { }
                 }
@@ -428,20 +490,25 @@ namespace MicroWin
                 RegistryHelper.UnloadRegistryHive("zDEFAULT");
                 RegistryHelper.UnloadRegistryHive("zNTUSER");
 
-                UpdateStatus("Finalizing...");
-                DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
+                UpdateCurrentStatus("Unmounting install image...");
+                DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
+
+                UpdateOverallProgressBar(50);
 
                 string bootwimPath = Path.Combine(AppState.MountPath, "sources", "boot.wim");
                 if (!File.Exists(bootwimPath)) bootwimPath = Path.Combine(AppState.MountPath, "sources", "boot.esd");
 
-                UpdateStatus("Mounting Boot WIM...");
-                DismManager.MountImage(bootwimPath, 2, AppState.ScratchPath, (p) => UpdateProgressBar(p));
+                UpdateOverallStatus("Customizing boot image...");
+                UpdateCurrentStatus("Mounting boot image...");
+                DismManager.MountImage(bootwimPath, 2, AppState.ScratchPath, (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
 
+                UpdateCurrentStatus("Modifying WinPE registry...");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "zSOFTWARE");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "zSYSTEM");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "zDEFAULT");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Users", "Default", "ntuser.dat"), "zNTUSER");
 
+                UpdateCurrentProgressBar(50);
                 RegistryHelper.AddRegistryItem("HKLM\\zDEFAULT\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV1", ValueKind.REG_DWORD, 0));
                 RegistryHelper.AddRegistryItem("HKLM\\zDEFAULT\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV2", ValueKind.REG_DWORD, 0));
                 RegistryHelper.AddRegistryItem("HKLM\\zNTUSER\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV1", ValueKind.REG_DWORD, 0));
@@ -454,16 +521,21 @@ namespace MicroWin
                 RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\MoSetup", new RegistryItem("AllowUpgradesWithUnsupportedTPMOrCPU", ValueKind.REG_DWORD, 1));
                 RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\Status\\ChildCompletion", new RegistryItem("setup.exe", ValueKind.REG_DWORD, 3));
 
+                UpdateCurrentProgressBar(75);
                 RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup", new RegistryItem("CmdLine", ValueKind.REG_SZ, "\\sources\\setup.exe"));
 
+                UpdateCurrentProgressBar(95);
                 RegistryHelper.UnloadRegistryHive("zSYSTEM");
                 RegistryHelper.UnloadRegistryHive("zSOFTWARE");
                 RegistryHelper.UnloadRegistryHive("zDEFAULT");
                 RegistryHelper.UnloadRegistryHive("zNTUSER");
 
-                UpdateStatus("Finalizing...");
-                DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateProgressBar(p));
+                UpdateCurrentStatus("Unmounting boot image...");
+                DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
 
+                UpdateOverallStatus("Generating ISO file...");
+                UpdateOverallProgressBar(90);
+                UpdateCurrentStatus("Generating ISO file...");
                 OscdimgUtilities.checkoscdImg();
 
                 Console.Write(AppState.SaveISO);
@@ -471,6 +543,9 @@ namespace MicroWin
                 DeleteFiles.SafeDeleteDirectory(AppState.TempRoot);
             });
 
+            UpdateCurrentStatus("Generation complete");
+            UpdateOverallProgressBar(100);
+            UpdateCurrentProgressBar(100);
             MessageBox.Show("Generation Complete.");
             Close();
         }
