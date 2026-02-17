@@ -383,7 +383,7 @@ namespace MicroWin
 
         private void WriteLogMessage(string message)
         {
-            string fullMsg = $"[{DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss")}] {message}\n";
+            string fullMsg = $"[{DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss")} UTC] {message}{Environment.NewLine}";
             if (InvokeRequired)
             {
                 Invoke(new Action(() => logTB.AppendText(fullMsg)));
@@ -446,6 +446,7 @@ namespace MicroWin
                     RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinBuildDate", ValueKind.REG_SZ, $"{DateTime.Now}"));
 
                 }
+                UpdateCurrentProgressBar(10);
 
                 RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\ControlSet001\\Control\\Session Manager", new RegistryItem("DisableWpbtExecution", ValueKind.REG_DWORD, 1));
 
@@ -475,6 +476,7 @@ namespace MicroWin
                 //}
                 //}
 
+                UpdateCurrentProgressBar(50);
                 using (var client = new HttpClient())
                 {
                     try
@@ -485,10 +487,12 @@ namespace MicroWin
                     catch { }
                 }
 
+                UpdateCurrentProgressBar(90);
                 RegistryHelper.UnloadRegistryHive("zSYSTEM");
                 RegistryHelper.UnloadRegistryHive("zSOFTWARE");
                 RegistryHelper.UnloadRegistryHive("zDEFAULT");
                 RegistryHelper.UnloadRegistryHive("zNTUSER");
+                UpdateCurrentProgressBar(100);
 
                 UpdateCurrentStatus("Unmounting install image...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));

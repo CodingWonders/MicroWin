@@ -59,7 +59,7 @@ namespace MicroWin.functions.dism
                 foreach (string packageToRemove in packagesToRemove)
                 {
                     curOpReporter.Invoke($"Removing package {packageToRemove}...");
-                    pbReporter.Invoke((idx / packagesToRemove.Count()) * 100);
+                    pbReporter.Invoke((int)(((double)idx / packagesToRemove.ToList().Count) * 100));
                     // we have this because the API throws an exception on removal error
                     try
                     {
@@ -78,6 +78,7 @@ namespace MicroWin.functions.dism
             }
             finally
             {
+                pbReporter.Invoke(100);
                 try
                 {
                     DismApi.Shutdown();

@@ -56,7 +56,7 @@ namespace MicroWin.functions.dism
                 foreach (string appToRemove in appsToRemove)
                 {
                     curOpReporter.Invoke($"Removing AppX package {appToRemove}...");
-                    pbReporter.Invoke((idx / appsToRemove.Count()) * 100);
+                    pbReporter.Invoke((int)(((double)idx / appsToRemove.ToList().Count) * 100));
                     try
                     {
                         DismApi.RemoveProvisionedAppxPackage(session, appToRemove);
@@ -74,6 +74,7 @@ namespace MicroWin.functions.dism
             }
             finally
             {
+                pbReporter.Invoke(100);
                 try
                 {
                     DismApi.Shutdown();

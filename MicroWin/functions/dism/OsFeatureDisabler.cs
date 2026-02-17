@@ -51,7 +51,7 @@ namespace MicroWin.functions.dism
                 foreach (string featureToDisable in featuresToDisable)
                 {
                     curOpReporter.Invoke($"Disabling feature {featureToDisable}...");
-                    pbReporter.Invoke((idx / featuresToDisable.Count()) * 100);
+                    pbReporter.Invoke((int)(((double)idx / featuresToDisable.ToList().Count) * 100));
                     try
                     {
                         DismApi.DisableFeature(session, featureToDisable, null, true);
@@ -69,6 +69,7 @@ namespace MicroWin.functions.dism
             }
             finally
             {
+                pbReporter.Invoke(100);
                 try
                 {
                     DismApi.Shutdown();
