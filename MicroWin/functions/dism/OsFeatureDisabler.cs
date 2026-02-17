@@ -34,6 +34,8 @@ namespace MicroWin.functions.dism
         {
             DismFeatureCollection allFeatures = GetFeatureList();
 
+            if (allFeatures is null) return;
+
             IEnumerable<string> featuresToDisable = allFeatures
                 .Where(feature => ! new DismPackageFeatureState[3] { DismPackageFeatureState.NotPresent, DismPackageFeatureState.UninstallPending, DismPackageFeatureState.Staged }.Contains(feature.State))
                 .Select(feature => feature.FeatureName)

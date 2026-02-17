@@ -44,7 +44,7 @@ namespace MicroWin.functions.dism
         {
             DismPackageCollection allPackages = GetPackageList();
 
-            List<string> selectedNames = AppState.SelectedPackages.ToList();
+            if (allPackages is null) return;
 
             IEnumerable<string> packagesToRemove = allPackages.Select(pkg => pkg.PackageName).Where(pkg =>
                 !excludedItems.Any(entry => pkg.IndexOf(entry, StringComparison.OrdinalIgnoreCase) >= 0));

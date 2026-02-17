@@ -52,7 +52,7 @@ namespace MicroWin.OSCDIMG
                 StartInfo = new ProcessStartInfo()
                 {
                     FileName = oscdimgPath,
-                    Arguments = $"-m -o -u2 -udfver102 -bootdata:2#p0,e,b{Path.Combine(AppState.MountPath, "boot", "etfsboot.com")}#pEF,e,b{Path.Combine(AppState.MountPath, "efi", "microsoft", "boot", "efisys.bin")} \"{AppState.MountPath}\" \"{AppState.saveISO}\""
+                    Arguments = $"-m -o -u2 -udfver102 -bootdata:2#p0,e,b{Path.Combine(AppState.MountPath, "boot", "etfsboot.com")}#pEF,e,b{Path.Combine(AppState.MountPath, "efi", "microsoft", "boot", "efisys.bin")} \"{AppState.MountPath}\" \"{AppState.SaveISO}\""
                 }
             };
             oscdimgProc.Start();

@@ -11,22 +11,6 @@ namespace MicroWin.functions.dism
     public static class DismManager
     {
 
-        public static Dictionary<int, string> GetWimVersions(string wimPath)
-        {
-            Dictionary<int, string> versions = new Dictionary<int, string>();
-
-            DismImageInfoCollection imageInfoCollection = GetImageInformation(wimPath);
-            if (imageInfoCollection is null)
-                return versions;
-
-            foreach (DismImageInfo imageInfo in imageInfoCollection)
-            {
-                versions.Add(imageInfo.ImageIndex, imageInfo.ImageName);
-            }
-
-            return versions;
-        }
-
         public static void MountImage(string wimPath, int index, string mountPath, Action<int> progress)
         {
             // Check whether the file exists, then the index, then the mount path.
@@ -110,7 +94,7 @@ namespace MicroWin.functions.dism
             return mountedImages;
         }
 
-        private static DismImageInfoCollection GetImageInformation(string wimFile)
+        public static DismImageInfoCollection GetImageInformation(string wimFile)
         {
             DismImageInfoCollection imageInfo = null;
 
