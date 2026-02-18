@@ -9,6 +9,8 @@ namespace MicroWin.functions.dism
     {
         public static void CreateUnattend(string destinationPath)
         {
+            // TODO Condition the specialize pass to filter out components that don't exist on Windows 10.
+
             StringBuilder xml = new StringBuilder();
             xml.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
             xml.AppendLine("<unattend xmlns=\"urn:schemas-microsoft-com:unattend\" xmlns:wcm=\"http://schemas.microsoft.com/WMIConfig/2002/State\" xmlns:xsi=\"http://w3.org/2001/XMLSchema-instance\">");
@@ -91,7 +93,26 @@ namespace MicroWin.functions.dism
             foreach (var user in AppState.UserAccounts)
             {
                 xml.AppendLine("          <LocalAccount wcm:action=\"add\">");
-                xml.AppendLine($"            <Password><Value>{user.Password}</Value><PlainText>true</PlainText></Password>");
+                xml.AppendLine($"            <Password>");
+                // Determine if we need to encode the password with base64. If we need to, we must append
+                // "Password" to the actual password; otherwise Setup/oobeSystem will fail. Base64 encoding is the only
+                // way Microsoft provides in order to hide sensitive info.
+                // https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/wsim/hide-sensitive-data-in-an-answer-file
+                if (AppState.EncodeWithB64)
+                {
+                    string b64pass = Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes($"{user.Password}Password"));
+                    xml.AppendLine($"                <Value>{b64pass}</Value>");
+                    xml.AppendLine($"                <PlainText>false</PlainText>");
+#pragma warning disable IDE0059
+                    b64pass = "";
+#pragma warning restore IDE0059
+                }
+                else
+                {
+                    xml.AppendLine($"                <Value>{user.Password}</Value>");
+                    xml.AppendLine($"                <PlainText>true</PlainText>");
+                }
+                xml.AppendLine($"            </Password>");
                 xml.AppendLine($"            <Name>{user.Name}</Name>");
                 xml.AppendLine($"            <Group>{(user.Role == "Administrator" ? "Administrators" : "Users")}</Group>");
                 xml.AppendLine("          </LocalAccount>");
@@ -136,7 +157,19 @@ namespace MicroWin.functions.dism
                 if (!Directory.Exists(destinationPath))
                     Directory.CreateDirectory(destinationPath);
 
-                File.WriteAllText(Path.Combine(destinationPath, "unattend.xml"), xml.ToString());
+                string destXml = Path.Combine(destinationPath, "unattend.xml");
+
+                File.WriteAllText(destXml, xml.ToString());
+
+                if (AppState.CopyUnattendToFileSystem)
+                {
+                    try
+                    {
+                        DynaLog.logMessage("Answer file will also be copied to the root of the system drive...");
+                        File.Copy(destXml, $"{Environment.GetEnvironmentVariable("SYSTEMDRIVE")}\\unattend.xml", true);
+                    }
+                    catch { }
+                }
             }
             catch (Exception ex)
             {

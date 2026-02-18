@@ -35,21 +35,25 @@ namespace MicroWin.functions.dism
                 "PMCPPC"
             ];
 
-        public override void RunTask(Action<int> pbReporter, Action<string> curOpReporter)
+        public override void RunTask(Action<int> pbReporter, Action<string> curOpReporter, Action<string> logWriter)
         {
-            RemoveUnwantedPackages(pbReporter, curOpReporter);
+            RemoveUnwantedPackages(pbReporter, curOpReporter, logWriter);
         }
 
-        private void RemoveUnwantedPackages(Action<int> pbReporter, Action<string> curOpReporter)
+        private void RemoveUnwantedPackages(Action<int> pbReporter, Action<string> curOpReporter, Action<string> logWriter)
         {
             curOpReporter.Invoke("Getting image packages...");
             DismPackageCollection allPackages = GetPackageList();
 
             if (allPackages is null) return;
 
+            logWriter.Invoke($"Amount of packages in image: {allPackages.Count}");
+
             curOpReporter.Invoke("Filtering image packages...");
             IEnumerable<string> packagesToRemove = allPackages.Select(pkg => pkg.PackageName).Where(pkg =>
                 !excludedItems.Any(entry => pkg.IndexOf(entry, StringComparison.OrdinalIgnoreCase) >= 0));
+
+            logWriter.Invoke($"Packages to remove: {packagesToRemove.Count()}");
 
             try
             {
@@ -67,6 +71,7 @@ namespace MicroWin.functions.dism
                     }
                     catch (Exception ex)
                     {
+                        logWriter.Invoke($"Package {packageToRemove} could not be removed: {ex.Message}");
                         DynaLog.logMessage($"ERROR: Failed to remove {packageToRemove}: {ex.Message}");
                     }
                     idx++;

@@ -117,15 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="FinishPage_Description.Text" xml:space="preserve">
-    <value>Sysprep will be launched and will perform the final steps. This will take some time. After this is complete, use one of the buttons below to either close this wizard, or relaunch Sysprep if it failed to prepare your computer.</value>
+  <data name="label18.Text" xml:space="preserve">
+    <value>To continue with OS installation, use a tool to create bootable USB drives, such as Rufus or Ventoy, and install the system.
+
+If you want to continue customizing this system, use either of the following:</value>
+  </data>
+  <data name="label5.Text" xml:space="preserve">
+    <value>Enter the information that will be used to create the first user account on the target system. Additional users can be created later. You can skip entering this information. In that case, default values will be used.</value>
   </data>
   <metadata name="isoPickerOFD.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
-  <data name="label5.Text" xml:space="preserve">
-    <value>Enter the information that will be used to create the first user account on the target system. Additional users can be created later. You can skip entering this information. In that case, default values will be used.</value>
-  </data>
   <metadata name="isoSaverSFD.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>141, 17</value>
   </metadata>

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace MicroWin.functions.dism
 {
@@ -128,6 +129,7 @@ namespace MicroWin.functions.dism
 
         public static void UnmountAndSave(string mountPath, Action<int> progress, Action<string> logMessage)
         {
+            logMessage.Invoke($"Preparing to unmount image...");
             if (!Directory.Exists(mountPath))
             {
                 // TODO log this; we immediately return if it doesn't exist.
@@ -145,6 +147,7 @@ namespace MicroWin.functions.dism
             {
                 DismApi.Initialize(DismLogLevel.LogErrors);
 
+                logMessage.Invoke($"Saving and unmounting image...");
                 DismProgressCallback progressCallback = (currentProgress) =>
                 {
                     int scaledProgress = (currentProgress.Current / 2);

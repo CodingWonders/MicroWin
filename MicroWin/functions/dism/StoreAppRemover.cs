@@ -33,20 +33,24 @@ namespace MicroWin.functions.dism
                 "CrossDevice"
             ];
 
-        public override void RunTask(Action<int> pbReporter, Action<string> curOpReporter)
+        public override void RunTask(Action<int> pbReporter, Action<string> curOpReporter, Action<string> logWriter)
         {
-            RemoveStoreApps(pbReporter, curOpReporter);
+            RemoveStoreApps(pbReporter, curOpReporter, logWriter);
         }
 
-        private void RemoveStoreApps(Action<int> pbReporter, Action<string> curOpReporter)
+        private void RemoveStoreApps(Action<int> pbReporter, Action<string> curOpReporter, Action<string> logWriter)
         {
             curOpReporter.Invoke("Getting image AppX packages...");
             DismAppxPackageCollection allStoreApps = GetStoreAppsList();
             if (allStoreApps is null) return;
 
+            logWriter.Invoke($"Amount of AppX packages in image: {allStoreApps.Count}");
+
             curOpReporter.Invoke("Filtering image AppX packages...");
             IEnumerable<string> appsToRemove = allStoreApps.Select(appx => appx.PackageName).Where(appx =>
                 !excludedItems.Any(entry => appx.IndexOf(entry, StringComparison.OrdinalIgnoreCase) >= 0));
+
+            logWriter.Invoke($"AppX packages to remove: {appsToRemove.Count()}");
 
             try
             {
@@ -63,6 +67,7 @@ namespace MicroWin.functions.dism
                     }
                     catch (Exception ex)
                     {
+                        logWriter.Invoke($"AppX package {appToRemove} could not be removed: {ex.Message}");
                         DynaLog.logMessage($"ERROR: Failed to remove {appToRemove}: {ex.Message}");
                     }
                     idx++;

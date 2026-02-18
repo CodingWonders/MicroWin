@@ -23,8 +23,6 @@ namespace MicroWin
 {
     public partial class MainForm : Form
     {
-        private Panel pnlContent;
-
         private const string swStatus = "BETA";
 
         private WizardPage CurrentWizardPage = new();
@@ -56,18 +54,20 @@ namespace MicroWin
             }
 
             // Change colors of other components. I want consistency
-            // TODO Add remaining controls
+            isoPathTB.BackColor = BackColor;
+            isoPathTB.ForeColor = ForeColor;
+            lvVersions.BackColor = BackColor;
+            lvVersions.ForeColor = ForeColor;
+            usrNameTB.BackColor = BackColor;
+            usrNameTB.ForeColor = ForeColor;
+            usrPasswordTB.BackColor = BackColor;
+            usrPasswordTB.ForeColor = ForeColor;
+            DriverExportCombo.BackColor = BackColor;
+            DriverExportCombo.ForeColor = ForeColor;
             logTB.BackColor = BackColor;
             logTB.ForeColor = ForeColor;
 
             WindowHelper.ToggleDarkTitleBar(Handle, colorVal == 0);
-        }
-
-        public void ShowPage(UserControl page)
-        {
-            pnlContent.Controls.Clear();
-            page.Dock = DockStyle.Fill;
-            pnlContent.Controls.Add(page);
         }
 
         private void ChangePage(WizardPage.Page newPage)
@@ -87,6 +87,7 @@ namespace MicroWin
             UserAccountsPage.Visible = newPage == WizardPage.Page.UserAccountsPage;
             IsoSettingsPage.Visible = newPage == WizardPage.Page.IsoSettingsPage;
             IsoCreationPage.Visible = newPage == WizardPage.Page.IsoCreationPage;
+            FinishPage.Visible = newPage == WizardPage.Page.FinishPage;
 
             CurrentWizardPage.wizardPage = newPage;
 
@@ -101,7 +102,9 @@ namespace MicroWin
             Next_Button.Enabled = !(newPage != WizardPage.Page.FinishPage) || !((int)newPage + 1 >= WizardPage.PageCount);
             Cancel_Button.Enabled = !(newPage == WizardPage.Page.FinishPage);
             Back_Button.Enabled = !(newPage == WizardPage.Page.WelcomePage) && !(newPage == WizardPage.Page.FinishPage);
-            ButtonPanel.Visible = !(newPage > WizardPage.Page.IsoSettingsPage);
+            ButtonPanel.Visible = !(newPage == WizardPage.Page.IsoCreationPage);
+
+            Next_Button.Text = newPage == WizardPage.Page.FinishPage ? "Close" : "Next";
 
             if (CurrentWizardPage.wizardPage == WizardPage.Page.IsoCreationPage)
             {
@@ -155,7 +158,6 @@ namespace MicroWin
         private void MainForm_Load(object sender, EventArgs e)
         {
             Text = $"MicroWin .NET ({swStatus} 0.2)";
-            pnlContent = new Panel { Dock = DockStyle.Fill };
 
             string disclaimerMessage = $"Thank you for trying this {swStatus} release of MicroWin .NET.\n\n" +
                 $"Because this is a prerelease version of a rewrite of the original PowerShell version, bugs may happen. We expect improvements in quality " +
@@ -172,7 +174,6 @@ namespace MicroWin
             ChangePage(WizardPage.Page.WelcomePage);
 
             SetColorMode();
-            pnlContent.BringToFront();
 
             // Insert an item in there so we can work with it
             AppState.UserAccounts.Add(new UserAccount() { Role = "Administrator" });
@@ -266,6 +267,9 @@ namespace MicroWin
                 isoPickerBtn.Enabled = false;
                 AppState.IsoPath = isoPathTB.Text;
 
+                ButtonPanel.Enabled = false;
+                WindowHelper.DisableCloseCapability(Handle);
+
                 await Task.Run(() => {
                     var iso = new IsoManager();
                     InvokeIsoExtractionUIUpdate("Mounting ISO...", 5);
@@ -285,6 +289,9 @@ namespace MicroWin
                     InvokeIsoExtractionUIUpdate("Extraction complete. Click Next to continue.", 100);
                 });
                 isoPickerBtn.Enabled = true;
+
+                ButtonPanel.Enabled = true;
+                WindowHelper.EnableCloseCapability(Handle);
             }
         }
 
@@ -408,6 +415,8 @@ namespace MicroWin
 
 ";
 
+            WindowHelper.DisableCloseCapability(Handle);
+
             await Task.Run(async () => {
                 string installwimPath = Path.Combine(AppState.MountPath, "sources", "install.wim");
                 if (!File.Exists(installwimPath)) installwimPath = Path.Combine(AppState.MountPath, "sources", "install.esd");
@@ -417,16 +426,18 @@ namespace MicroWin
                 UpdateCurrentStatus("Mounting install image...");
                 DismManager.MountImage(installwimPath, AppState.SelectedImageIndex, AppState.ScratchPath, (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
 
+                WriteLogMessage("Creating unattended answer file...");
                 UnattendGenerator.CreateUnattend($"{Path.Combine(AppState.ScratchPath, "Windows", "Panther")}");
 
                 UpdateOverallProgressBar(10);
-                new OsFeatureDisabler().RunTask((p) => UpdateCurrentProgressBar(p), (msg) => UpdateCurrentStatus(msg, false));
+                new OsFeatureDisabler().RunTask((p) => UpdateCurrentProgressBar(p), (msg) => UpdateCurrentStatus(msg, false), (msg) => WriteLogMessage(msg));
                 UpdateOverallProgressBar(20);
-                new OsPackageRemover().RunTask((p) => UpdateCurrentProgressBar(p), (msg) => UpdateCurrentStatus(msg, false));
+                new OsPackageRemover().RunTask((p) => UpdateCurrentProgressBar(p), (msg) => UpdateCurrentStatus(msg, false), (msg) => WriteLogMessage(msg));
                 UpdateOverallProgressBar(30);
-                new StoreAppRemover().RunTask((p) => UpdateCurrentProgressBar(p), (msg) => UpdateCurrentStatus(msg, false));
+                new StoreAppRemover().RunTask((p) => UpdateCurrentProgressBar(p), (msg) => UpdateCurrentStatus(msg, false), (msg) => WriteLogMessage(msg));
 
                 UpdateOverallProgressBar(40);
+                WriteLogMessage("Loading image registry hives...");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "zSOFTWARE");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "zSYSTEM");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "zDEFAULT");
@@ -435,6 +446,7 @@ namespace MicroWin
                 UpdateCurrentStatus("Modifying install image...");
                 if (AppState.AddReportingToolShortcut)
                 {
+                    WriteLogMessage("Downloading and integrating reporting tool...");
                     using (var client = new HttpClient())
                     {
                         var data = await client.GetByteArrayAsync("https://raw.githubusercontent.com/CodingWonders/MyScripts/refs/heads/main/MicroWinHelperTools/ReportingTool/ReportingTool.ps1");
@@ -448,11 +460,14 @@ namespace MicroWin
                 }
                 UpdateCurrentProgressBar(10);
 
+                WriteLogMessage("Disabling WPBT...");
                 RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\ControlSet001\\Control\\Session Manager", new RegistryItem("DisableWpbtExecution", ValueKind.REG_DWORD, 1));
 
                 // Skip first logon animation
+                WriteLogMessage("Disabling FLA...");
                 RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System", new RegistryItem("EnableFirstLogonAnimation", ValueKind.REG_DWORD, 0));
 
+                WriteLogMessage("Setting execution policies...");
                 RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\PowerShell\\1\\ShellIds\\Microsoft.PowerShell", new RegistryItem("ExecutionPolicy", ValueKind.REG_SZ, "RemoteSigned"));
 
                 // int majorver = Convert.ToInt32(RegistryHelper.QueryRegistryValue("HKLM\\zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentMajorVersionNumber"));
@@ -488,6 +503,7 @@ namespace MicroWin
                 }
 
                 UpdateCurrentProgressBar(90);
+                WriteLogMessage("Unloading image registry hives...");
                 RegistryHelper.UnloadRegistryHive("zSYSTEM");
                 RegistryHelper.UnloadRegistryHive("zSOFTWARE");
                 RegistryHelper.UnloadRegistryHive("zDEFAULT");
@@ -507,12 +523,14 @@ namespace MicroWin
                 DismManager.MountImage(bootwimPath, 2, AppState.ScratchPath, (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
 
                 UpdateCurrentStatus("Modifying WinPE registry...");
+                WriteLogMessage("Loading image registry hives...");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "zSOFTWARE");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "zSYSTEM");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "zDEFAULT");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Users", "Default", "ntuser.dat"), "zNTUSER");
 
                 UpdateCurrentProgressBar(50);
+                WriteLogMessage("Bypassing requirements...");
                 RegistryHelper.AddRegistryItem("HKLM\\zDEFAULT\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV1", ValueKind.REG_DWORD, 0));
                 RegistryHelper.AddRegistryItem("HKLM\\zDEFAULT\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV2", ValueKind.REG_DWORD, 0));
                 RegistryHelper.AddRegistryItem("HKLM\\zNTUSER\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV1", ValueKind.REG_DWORD, 0));
@@ -526,9 +544,11 @@ namespace MicroWin
                 RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\Status\\ChildCompletion", new RegistryItem("setup.exe", ValueKind.REG_DWORD, 3));
 
                 UpdateCurrentProgressBar(75);
+                WriteLogMessage("Imposing old Setup...");
                 RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup", new RegistryItem("CmdLine", ValueKind.REG_SZ, "\\sources\\setup.exe"));
 
                 UpdateCurrentProgressBar(95);
+                WriteLogMessage("Unloading image registry hives...");
                 RegistryHelper.UnloadRegistryHive("zSYSTEM");
                 RegistryHelper.UnloadRegistryHive("zSOFTWARE");
                 RegistryHelper.UnloadRegistryHive("zDEFAULT");
@@ -542,16 +562,35 @@ namespace MicroWin
                 UpdateCurrentStatus("Generating ISO file...");
                 OscdimgUtilities.checkoscdImg();
 
-                Console.Write(AppState.SaveISO);
-
+                UpdateOverallStatus("Finishing up...");
+                UpdateOverallProgressBar(95);
+                UpdateCurrentStatus("Finishing up...");
+                WriteLogMessage("Deleting temporary files...");
                 DeleteFiles.SafeDeleteDirectory(AppState.TempRoot);
             });
 
+            WindowHelper.EnableCloseCapability(Handle);
+            WriteLogMessage("Finished.");
             UpdateCurrentStatus("Generation complete");
             UpdateOverallProgressBar(100);
             UpdateCurrentProgressBar(100);
-            MessageBox.Show("Generation Complete.");
-            Close();
+            ChangePage(WizardPage.Page.FinishPage);
+        }
+
+        private void lnkUseDT_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/CodingWonders/DISMTools");
+        }
+
+        private void lnkUseNtLite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://ntlite.com");
+        }
+
+        private void lnkOpenIsoLoc_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe"),
+                $"/select,\"{AppState.SaveISO}\"");
         }
     }
 }

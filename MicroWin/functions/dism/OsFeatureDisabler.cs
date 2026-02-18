@@ -25,23 +25,27 @@ namespace MicroWin.functions.dism
                 "RemoteDesktop"
             ];
 
-        public override void RunTask(Action<int> pbReporter, Action<string> curOpReporter)
+        public override void RunTask(Action<int> pbReporter, Action<string> curOpReporter, Action<string> logWriter)
         {
-            DisableFeatures(pbReporter, curOpReporter);
+            DisableFeatures(pbReporter, curOpReporter, logWriter);
         }
 
-        private void DisableFeatures(Action<int> pbReporter, Action<string> curOpReporter)
+        private void DisableFeatures(Action<int> pbReporter, Action<string> curOpReporter, Action<string> logWriter)
         {
             curOpReporter.Invoke("Getting image features...");
             DismFeatureCollection allFeatures = GetFeatureList();
 
             if (allFeatures is null) return;
 
+            logWriter.Invoke($"Amount of features in image: {allFeatures.Count}");
+
             curOpReporter.Invoke("Filtering image features...");
             IEnumerable<string> featuresToDisable = allFeatures
                 .Where(feature => ! new DismPackageFeatureState[3] { DismPackageFeatureState.NotPresent, DismPackageFeatureState.UninstallPending, DismPackageFeatureState.Staged }.Contains(feature.State))
                 .Select(feature => feature.FeatureName)
                 .Where(feature => !excludedItems.Any(entry => feature.IndexOf(entry, StringComparison.OrdinalIgnoreCase) >= 0));
+
+            logWriter.Invoke($"Features to disable: {featuresToDisable.Count()}");
 
             try
             {
@@ -58,6 +62,7 @@ namespace MicroWin.functions.dism
                     }
                     catch (Exception ex)
                     {
+                        logWriter.Invoke($"Feature {featureToDisable} could not be disabled: {ex.Message}");
                         DynaLog.logMessage($"ERROR: Failed to disable {featureToDisable}: {ex.Message}");
                     }
                     idx++;
