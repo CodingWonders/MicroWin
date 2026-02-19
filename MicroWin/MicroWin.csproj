@@ -90,6 +90,7 @@
     <Compile Include="functions\Helpers\DeleteFiles\DeleteFile.cs" />
     <Compile Include="functions\Helpers\DesktopWindowManager\WindowHelper.cs" />
     <Compile Include="functions\Helpers\DynaLog\DynaLog.cs" />
+    <Compile Include="functions\Helpers\PropertyCheckers\VersionComparer.cs" />
     <Compile Include="functions\Helpers\RegistryHelpers\RegistryHelper.cs" />
     <Compile Include="functions\Helpers\RegistryHelpers\RegistryItem.cs" />
     <Compile Include="functions\Helpers\RegistryHelpers\ValueKind.cs" />

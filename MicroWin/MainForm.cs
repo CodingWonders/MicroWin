@@ -5,6 +5,7 @@ using MicroWin.functions.dism;
 using MicroWin.functions.Helpers.DeleteFile;
 using MicroWin.functions.Helpers.DesktopWindowManager;
 using MicroWin.functions.Helpers.Loggers;
+using MicroWin.functions.Helpers.PropertyCheckers;
 using MicroWin.functions.Helpers.RegistryHelpers;
 using MicroWin.functions.iso;
 using MicroWin.functions.UI;
@@ -33,6 +34,9 @@ namespace MicroWin
         ];
 
         private bool BusyCannotClose = false;
+        private DismImageInfoCollection imageInfo;
+
+        private DismImageInfo installImageInfo;
 
         public MainForm()
         {
@@ -137,6 +141,8 @@ namespace MicroWin
                         MessageBox.Show("Please specify an image to modify and try again.");
                         return false;
                     }
+                    // Store information about the selected image only. We can access it later if we see fit
+                    installImageInfo = imageInfo.ElementAtOrDefault(AppState.SelectedImageIndex - 1);
                     break;
                 case WizardPage.Page.UserAccountsPage:
                     // Default to "User" if no name is set
@@ -236,7 +242,7 @@ namespace MicroWin
 
             if (File.Exists(wimPath))
             {
-                DismImageInfoCollection imageInfo = DismManager.GetImageInformation(wimPath);
+                imageInfo = DismManager.GetImageInformation(wimPath);
                 if (imageInfo is null)
                     return;
 
@@ -474,26 +480,11 @@ namespace MicroWin
                 WriteLogMessage("Setting execution policies...");
                 RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\PowerShell\\1\\ShellIds\\Microsoft.PowerShell", new RegistryItem("ExecutionPolicy", ValueKind.REG_SZ, "RemoteSigned"));
 
-                // int majorver = Convert.ToInt32(RegistryHelper.QueryRegistryValue("HKLM\\zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentMajorVersionNumber"));
-                // int minorver = Convert.ToInt32(RegistryHelper.QueryRegistryValue("HKLM\\zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentMinorVersionNumber"));
-                // string build = Convert.ToString(RegistryHelper.QueryRegistryValue("HKLM\\zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "CurrentBuild"));
-                // string ubr = Convert.ToString(RegistryHelper.QueryRegistryValue("HKLM\\zSOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", "UBR"));
-
-                //if (majorver == 10 && minorver == 0 && build == "26100" && ubr == "1")
-                //{
-                //try
-                //{
-                //DismApi.Initialize(DismLogLevel.LogErrors);
-                //using DismSession session = DismApi.OpenOfflineSession(AppState.ScratchPath);
-
-                //DismApi.EnableFeature(session, "Recall", false, true);
-                //DismApi.Shutdown();
-                //}
-                //catch
-                //{
-                // Add logging
-                //}
-                //}
+                if (VersionComparer.IsBetweenVersionRange(installImageInfo.ProductVersion, VersionComparer.VERCONST_WIN11_24H2, VersionComparer.VERCONST_WIN11_25H2))
+                {
+                    // TODO for now this is here only to show if the image is within that version range. Add the code to add AppRuntime.CBS as a dependency of FileExp.
+                    WriteLogMessage("TEST: Touching up fileexp...");
+                }
 
                 UpdateCurrentProgressBar(50);
                 using (var client = new HttpClient())
@@ -547,9 +538,23 @@ namespace MicroWin
                 RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\MoSetup", new RegistryItem("AllowUpgradesWithUnsupportedTPMOrCPU", ValueKind.REG_DWORD, 1));
                 RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\Status\\ChildCompletion", new RegistryItem("setup.exe", ValueKind.REG_DWORD, 3));
 
-                UpdateCurrentProgressBar(75);
-                WriteLogMessage("Imposing old Setup...");
-                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup", new RegistryItem("CmdLine", ValueKind.REG_SZ, "\\sources\\setup.exe"));
+                // Old Setup should only be imposed on 24H2 and later (builds 26040 and later). Get this information
+                bool shouldUsePanther = false;
+
+                DismImageInfoCollection bootImageInfo = DismManager.GetImageInformation(bootwimPath);
+                if (bootImageInfo is not null)
+                {
+                    // Get the second index then get version
+                    DismImageInfo setupImage = bootImageInfo.ElementAtOrDefault(1);
+                    shouldUsePanther = VersionComparer.IsNewerThanVersion(setupImage?.ProductVersion, new(10, 0, 26040, 0));
+                }
+
+                if (shouldUsePanther)
+                {
+                    UpdateCurrentProgressBar(75);
+                    WriteLogMessage("Imposing old Setup...");
+                    RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup", new RegistryItem("CmdLine", ValueKind.REG_SZ, "\\sources\\setup.exe"));
+                }
 
                 UpdateCurrentProgressBar(95);
                 WriteLogMessage("Unloading image registry hives...");
