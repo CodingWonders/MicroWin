@@ -32,6 +32,8 @@ namespace MicroWin
             WizardPage.Page.UserAccountsPage
         ];
 
+        private bool BusyCannotClose = false;
+
         public MainForm()
         {
             InitializeComponent();
@@ -266,6 +268,7 @@ namespace MicroWin
             {
                 isoPickerBtn.Enabled = false;
                 AppState.IsoPath = isoPathTB.Text;
+                BusyCannotClose = true;
 
                 ButtonPanel.Enabled = false;
                 WindowHelper.DisableCloseCapability(Handle);
@@ -289,7 +292,7 @@ namespace MicroWin
                     InvokeIsoExtractionUIUpdate("Extraction complete. Click Next to continue.", 100);
                 });
                 isoPickerBtn.Enabled = true;
-
+                BusyCannotClose = false;
                 ButtonPanel.Enabled = true;
                 WindowHelper.EnableCloseCapability(Handle);
             }
@@ -416,6 +419,7 @@ namespace MicroWin
 ";
 
             WindowHelper.DisableCloseCapability(Handle);
+            BusyCannotClose = true;
 
             await Task.Run(async () => {
                 string installwimPath = Path.Combine(AppState.MountPath, "sources", "install.wim");
@@ -574,6 +578,7 @@ namespace MicroWin
             UpdateCurrentStatus("Generation complete");
             UpdateOverallProgressBar(100);
             UpdateCurrentProgressBar(100);
+            BusyCannotClose = false;
             ChangePage(WizardPage.Page.FinishPage);
         }
 
@@ -591,6 +596,23 @@ namespace MicroWin
         {
             Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "explorer.exe"),
                 $"/select,\"{AppState.SaveISO}\"");
+        }
+
+        private void MainForm_SizeChanged(object sender, EventArgs e)
+        {
+            if (BusyCannotClose)
+                WindowHelper.DisableCloseCapability(Handle);
+            else
+                WindowHelper.EnableCloseCapability(Handle);
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (BusyCannotClose)
+            {
+                e.Cancel = true;
+                return;
+            }
         }
     }
 }
