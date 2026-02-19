@@ -33,33 +33,44 @@ namespace MicroWin.functions.dism
                 "CrossDevice"
             ];
 
-        public override void RunTask()
+        public override void RunTask(Action<int> pbReporter, Action<string> curOpReporter, Action<string> logWriter)
         {
-            RemoveStoreApps();
+            RemoveStoreApps(pbReporter, curOpReporter, logWriter);
         }
 
-        private void RemoveStoreApps()
+        private void RemoveStoreApps(Action<int> pbReporter, Action<string> curOpReporter, Action<string> logWriter)
         {
+            curOpReporter.Invoke("Getting image AppX packages...");
             DismAppxPackageCollection allStoreApps = GetStoreAppsList();
             if (allStoreApps is null) return;
 
+            logWriter.Invoke($"Amount of AppX packages in image: {allStoreApps.Count}");
+
+            curOpReporter.Invoke("Filtering image AppX packages...");
             IEnumerable<string> appsToRemove = allStoreApps.Select(appx => appx.PackageName).Where(appx =>
                 !excludedItems.Any(entry => appx.IndexOf(entry, StringComparison.OrdinalIgnoreCase) >= 0));
+
+            logWriter.Invoke($"AppX packages to remove: {appsToRemove.Count()}");
 
             try
             {
                 DismApi.Initialize(DismLogLevel.LogErrors);
                 using DismSession session = DismApi.OpenOfflineSession(AppState.ScratchPath);
+                int idx = 0;
                 foreach (string appToRemove in appsToRemove)
                 {
+                    curOpReporter.Invoke($"Removing AppX package {appToRemove}...");
+                    pbReporter.Invoke((int)(((double)idx / appsToRemove.ToList().Count) * 100));
                     try
                     {
                         DismApi.RemoveProvisionedAppxPackage(session, appToRemove);
                     }
                     catch (Exception ex)
                     {
+                        logWriter.Invoke($"AppX package {appToRemove} could not be removed: {ex.Message}");
                         DynaLog.logMessage($"ERROR: Failed to remove {appToRemove}: {ex.Message}");
                     }
+                    idx++;
                 }
             }
             catch (Exception)
@@ -68,6 +79,7 @@ namespace MicroWin.functions.dism
             }
             finally
             {
+                pbReporter.Invoke(100);
                 try
                 {
                     DismApi.Shutdown();

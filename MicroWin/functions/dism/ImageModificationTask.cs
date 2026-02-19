@@ -10,6 +10,6 @@ namespace MicroWin.functions.dism
     {
         public virtual List<string> excludedItems { get; protected set; } = [];
 
-        public abstract void RunTask();
+        public abstract void RunTask(Action<int> pbReporter, Action<string> curOpReporter, Action<string> logWriter);
     }
 }

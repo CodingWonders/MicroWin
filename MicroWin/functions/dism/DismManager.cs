@@ -1,36 +1,22 @@
 ﻿using Microsoft.Dism;
+using MicroWin.functions.Helpers.Loggers;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace MicroWin.functions.dism
 {
     public static class DismManager
     {
 
-        public static Dictionary<int, string> GetWimVersions(string wimPath)
-        {
-            Dictionary<int, string> versions = new Dictionary<int, string>();
-
-            DismImageInfoCollection imageInfoCollection = GetImageInformation(wimPath);
-            if (imageInfoCollection is null)
-                return versions;
-
-            foreach (DismImageInfo imageInfo in imageInfoCollection)
-            {
-                versions.Add(imageInfo.ImageIndex, imageInfo.ImageName);
-            }
-
-            return versions;
-        }
-
-        public static void MountImage(string wimPath, int index, string mountPath, Action<int> progress)
+        public static void MountImage(string wimPath, int index, string mountPath, Action<int> progress, Action<string> logMessage)
         {
             // Check whether the file exists, then the index, then the mount path.
-
+            logMessage.Invoke($"Preparing to mount image {Path.GetFileName(wimPath)} (index {index})...");
             if (!File.Exists(wimPath))
                 return;
 
@@ -53,23 +39,26 @@ namespace MicroWin.functions.dism
             // exception.
             if ((File.GetAttributes(wimPath) & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
             {
+                DynaLog.logMessage("Removing readonly...");
                 File.SetAttributes(wimPath, (File.GetAttributes(wimPath) & ~FileAttributes.ReadOnly));
             }
 
             try
             {
+                logMessage.Invoke("Beginning mount operation...");
                 DismApi.Initialize(DismLogLevel.LogErrors);
                 DismApi.MountImage(wimPath, mountPath, index, false, DismMountImageOptions.None, (currentProgress) =>
                 {
                     progress(currentProgress.Current);
                 });
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
+                DynaLog.logMessage($"Image could not be mounted. Message: {ex.Message}");
             }
             finally
             {
+                logMessage.Invoke("Finishing mount operation...");
                 try
                 {
                     DismApi.Shutdown();
@@ -110,7 +99,7 @@ namespace MicroWin.functions.dism
             return mountedImages;
         }
 
-        private static DismImageInfoCollection GetImageInformation(string wimFile)
+        public static DismImageInfoCollection GetImageInformation(string wimFile)
         {
             DismImageInfoCollection imageInfo = null;
 
@@ -138,8 +127,9 @@ namespace MicroWin.functions.dism
             return imageInfo;
         }
 
-        public static void UnmountAndSave(string mountPath, Action<int> progress)
+        public static void UnmountAndSave(string mountPath, Action<int> progress, Action<string> logMessage)
         {
+            logMessage.Invoke($"Preparing to unmount image...");
             if (!Directory.Exists(mountPath))
             {
                 // TODO log this; we immediately return if it doesn't exist.
@@ -157,6 +147,7 @@ namespace MicroWin.functions.dism
             {
                 DismApi.Initialize(DismLogLevel.LogErrors);
 
+                logMessage.Invoke($"Saving and unmounting image...");
                 DismProgressCallback progressCallback = (currentProgress) =>
                 {
                     int scaledProgress = (currentProgress.Current / 2);

@@ -35,26 +35,35 @@ namespace MicroWin.functions.dism
                 "PMCPPC"
             ];
 
-        public override void RunTask()
+        public override void RunTask(Action<int> pbReporter, Action<string> curOpReporter, Action<string> logWriter)
         {
-            RemoveUnwantedPackages();
+            RemoveUnwantedPackages(pbReporter, curOpReporter, logWriter);
         }
 
-        private void RemoveUnwantedPackages()
+        private void RemoveUnwantedPackages(Action<int> pbReporter, Action<string> curOpReporter, Action<string> logWriter)
         {
+            curOpReporter.Invoke("Getting image packages...");
             DismPackageCollection allPackages = GetPackageList();
 
-            List<string> selectedNames = AppState.SelectedPackages.ToList();
+            if (allPackages is null) return;
 
+            logWriter.Invoke($"Amount of packages in image: {allPackages.Count}");
+
+            curOpReporter.Invoke("Filtering image packages...");
             IEnumerable<string> packagesToRemove = allPackages.Select(pkg => pkg.PackageName).Where(pkg =>
                 !excludedItems.Any(entry => pkg.IndexOf(entry, StringComparison.OrdinalIgnoreCase) >= 0));
+
+            logWriter.Invoke($"Packages to remove: {packagesToRemove.Count()}");
 
             try
             {
                 DismApi.Initialize(DismLogLevel.LogErrors);
                 using DismSession session = DismApi.OpenOfflineSession(AppState.ScratchPath);
+                int idx = 0;
                 foreach (string packageToRemove in packagesToRemove)
                 {
+                    curOpReporter.Invoke($"Removing package {packageToRemove}...");
+                    pbReporter.Invoke((int)(((double)idx / packagesToRemove.ToList().Count) * 100));
                     // we have this because the API throws an exception on removal error
                     try
                     {
@@ -62,8 +71,10 @@ namespace MicroWin.functions.dism
                     }
                     catch (Exception ex)
                     {
+                        logWriter.Invoke($"Package {packageToRemove} could not be removed: {ex.Message}");
                         DynaLog.logMessage($"ERROR: Failed to remove {packageToRemove}: {ex.Message}");
                     }
+                    idx++;
                 }
             }
             catch (Exception)
@@ -72,6 +83,7 @@ namespace MicroWin.functions.dism
             }
             finally
             {
+                pbReporter.Invoke(100);
                 try
                 {
                     DismApi.Shutdown();
