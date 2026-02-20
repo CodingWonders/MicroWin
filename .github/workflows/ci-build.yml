@@ -1,0 +1,28 @@
+name: CI Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        uses: nuget/setup-nuget@v2
+
+      - name: Restore packages
+        run: nuget restore MicroWin/MicroWin.csproj -PackagesDirectory packages
+
+      - name: Build Release
+        run: msbuild MicroWin/MicroWin.csproj /p:Configuration=Release /p:Platform=AnyCPU /verbosity:minimal
