@@ -25,7 +25,7 @@ if not exist "%HELPER_PS1%" (
     pause
     exit /b 1
 )
-
+cd /d "%~dp0"
 powershell -NoProfile -ExecutionPolicy Bypass -File "%HELPER_PS1%" -Action Build -ScriptDir "%SCRIPT_DIR_SAFE%"
 set "EXIT_CODE=%errorLevel%"
 
