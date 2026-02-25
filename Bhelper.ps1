@@ -11,8 +11,7 @@ $LogFile = '.\BuildLog.txt'
 # Overwrite BuildLog.txt at the start of each run
 if (Test-Path $LogFile) {
     Clear-Content -Path $LogFile -ErrorAction SilentlyContinue
-}
-else {
+} else {
     New-Item -Path $LogFile -ItemType File -Force | Out-Null
 }
 
@@ -34,118 +33,91 @@ Write-LogLine "Working directory: $((Get-Location).Path)"
 Write-LogLine '=================================================='
 Add-Content -Path $LogFile -Value "`r`n" -Encoding UTF8
 
-#NUGET
-Write-LogLine "Downloading Nuget Package From https://www.nuget.org/packages/MicroWin/"
-# NuGet command line tool download link
-$NugetURL = 'https://dist.nuget.org/win-x86-commandline/latest/nuget.exe'
-$NugetInstall = Join-Path (Get-Location) 'nugetinstall.exe'
+#################################################################################################
+# --- 1. SETUP PATHS ---
+$InstallDir = Get-Location
+$NuGetExe = Join-Path $InstallDir 'nuget.exe'
+$DevToolsOutfile = Join-Path $InstallDir 'DevToolsInstall.exe'
+$BuildToolsInstall = Join-Path $InstallDir 'vs_BuildTools.exe'
 
-#DEVTOOLS
-Write-LogLine "Downloading .NET 4.8 Developer Pack from https://go.microsoft.com/fwlink/?linkid=2088517"
-# .NET 4.8 Developer Pack download link
-$DevTools = 'https://go.microsoft.com/fwlink/?linkid=2088517'
-$DevToolsOutfile = Join-Path (Get-Location) 'DevToolsInstall.exe'
+# URLs
+$NugetURL = 'https://dist.nuget.org'
+$DevToolsURL = 'https://go.microsoft.com'
+$BuildToolsURL = 'https://aka.ms'
 
-#MSBUILD
-Write-LogLine "Downloading MSBuildTools from https://aka.ms/vs/17/release/vs_BuildTools.exe"
+# --- 2. DOWNLOAD & INSTALL TOOLS ---
+
+# Download MSBuild Tools installer
 if (!(Test-Path $BuildToolsInstall)) {
+    Write-LogLine "Downloading MSBuildTools..."
     Invoke-WebRequest -Uri $BuildToolsURL -OutFile $BuildToolsInstall
-    Write-LogLine "MSBuildTools downloaded successfully."
 }
-else {
-    Write-LogLine "MSBuildTools already exists, skipping download."
-}
+Write-LogLine "Ensuring MSBuild Workload is installed..."
 Start-Process -FilePath $BuildToolsInstall -ArgumentList '--quiet --wait --norestart --add Microsoft.VisualStudio.Workload.MSBuildTools' -Wait
 
-
-#Download NuGet command line tool
-if (!(Test-Path $NugetInstall)) {
-    Invoke-WebRequest -Uri $NugetURL -OutFile $NugetInstall
-    Write-LogLine "NuGet command line tool downloaded successfully."
+# Download NuGet CLI
+if (!(Test-Path $NuGetExe)) {
+    Write-LogLine "Downloading NuGet CLI..."
+    Invoke-WebRequest -Uri $NugetURL -OutFile $NuGetExe
 }
-else {
-    Write-LogLine "NuGet command line tool already exists, skipping download."
-}
-# NuGet should now be downloaded to the project dir
 
-# Download .NET 4.8 Developer Pack installer
-Write-LogLine "Downloading .NET 4.8 Developer Pack installer from https://aka.ms/vs/17/release/vs_BuildTools.exe..."
+# Download & Install .NET 4.8 Dev Pack
 if (!(Test-Path $DevToolsOutfile)) {
-    try {
-        Invoke-WebRequest -Uri $DevTools -OutFile $DevToolsOutfile
-        Write-LogLine ".NET 4.8 Developer Pack installer downloaded successfully."
-    }
-    catch {
-        Write-LogLine "ERROR: Failed to download .NET 4.8 Developer Pack installer. $_"
-    }
+    Write-LogLine "Downloading .NET 4.8 Developer Pack..."
+    Invoke-WebRequest -Uri $DevToolsURL -OutFile $DevToolsOutfile
 }
-else {
-    Write-LogLine ".NET 4.8 Developer Pack installer already exists, skipping download."
-}
-# The .NET 4.8 Developer Pack installer is now downloaded to the project dir.
+Write-LogLine "Running DevPack installer..."
+Start-Process -FilePath $DevToolsOutfile -ArgumentList '/quiet /norestart' -Wait
 
-#Install all tools
-if (Test-Path $BuildToolsInstall) {
-    Start-Process -FilePath $BuildToolsInstall -ArgumentList '--quiet --wait --norestart --add Microsoft.VisualStudio.Workload.MSBuildTools' -Wait
-}
-else {
-    Write-LogLine " MSBuildTools installer already installed $BuildToolsInstall"
-}
-if (Test-Path $DevToolsOutfile) {
-    # Check if DevToolsInstall.exe exists in source dir
-    $srcDevTools = Join-Path (Get-Location) 'src/DevToolsInstall.exe'
-    if (Test-Path $srcDevTools) {
-        Write-LogLine "DevPack installer exists in source dir, skipping install."
-    }
-    else {
-        Write-LogLine "Running DevPack installer..."
-        Start-Process -FilePath $DevToolsOutfile -ArgumentList '/quiet' -Wait
-        Write-LogLine "DevPack installer finished."
-    }
-}
-else {
-    Write-LogLine "ERROR: DevPack installer not found, skipping install."
-}
-# NuGet CLI does not require installation, just use the downloaded exe for package restore
+# --- 3. LOCATE MSBUILD EXE ---
+$vswherePath = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+$VSPath = & $vswherePath -latest -products * -requires Microsoft.Component.MSBuild -property installationPath
 
+if (-not $VSPath) {
+    Write-LogLine "ERROR: Visual Studio installation path not found."
+    exit 1
+}
+$MSBuildExe = Join-Path $VSPath "MSBuild\Current\Bin\MSBuild.exe"
 
-# Log the build command
-$MSBuildExe = $MsbuildPath + 'MSBuild.exe'
-$buildCmd = "$MSBuildExe './MicroWin/MicroWin.csproj' /p:Configuration=Release /p:Platform=AnyCPU /verbosity:minimal"
-Write-LogLine "Build command: $buildCmd"
+# --- 4. RESTORE & BUILD ---
+# We use -restore and explicitly define SolutionDir because there is no .sln file.
+# This ensures NuGet packages are restored to the correct root folder.
+$currentDir = Get-Location
+$buildArgs = @(
+    "./MicroWin/MicroWin.csproj",
+    "-restore",
+    "/t:Build",
+    "/p:Configuration=Release",
+    "/p:Platform=AnyCPU",
+    "/p:RestorePackagesConfig=true",
+    "/p:SolutionDir=$currentDir\",    # <--- Crucial fix for "No solution found"
+    "/verbosity:minimal"
+)
 
-# Run MSBuild and capture result
-#buildResult = & $MSBuildExe './MicroWin/MicroWin.csproj' /p:Configuration=Release /p:Platform=AnyCPU /verbosity:minimal
+Write-LogLine "Starting integrated restore and build for MicroWin..."
+Write-LogLine "Command: $MSBuildExe $($buildArgs -join ' ')"
 
-# Check if built MicroWin.exe exists
-$builtExe = Join-Path (Get-Location) 'MicroWin/bin/Release/MicroWin.exe'
+# Execute the integrated Restore and Build
+& $MSBuildExe $buildArgs
+
+# --- 5. VERIFY & MOVE OUTPUT ---
+$builtExe = Join-Path $InstallDir 'MicroWin/bin/Release/MicroWin.exe'
+
 if (Test-Path $builtExe) {
     Write-LogLine "Build completed successfully."
-}
-else {
-    Write-LogLine "ERROR: Cannot find built file MicroWin.exe. Build failed."
+    $dateTime = Get-Date -Format 'dd-MM-yyyy_HH-mm-ss'
+    $targetFolder = Join-Path ([Environment]::GetFolderPath('Desktop')) "MicroWin Build $dateTime"
+    New-Item -Path $targetFolder -ItemType Directory -Force | Out-Null
+    
+    $sourceFolder = Join-Path $InstallDir 'MicroWin/bin/Release/*'
+    Copy-Item -Path $sourceFolder -Destination $targetFolder -Recurse -Force
+    Write-LogLine "MicroWin files moved to $targetFolder."
+} else {
+    Write-LogLine "ERROR: Build failed. MicroWin.exe not found at $builtExe"
     exit 1
 }
 
-
-$buildDuration = (Get-Date) - $BuildStartTime
-$minutes = [int]$buildDuration.TotalMinutes
-$seconds = [math]::Round($buildDuration.Seconds + $buildDuration.Milliseconds / 1000, 1)
-Write-LogLine "Build process completed. Total Build Time: $minutes min $seconds sec`n`n"
-
-# Check if built MicroWin.exe exists
-$builtExe = Join-Path (Get-Location) 'MicroWin/bin/Release/MicroWin.exe'
-if (!(Test-Path $builtExe)) {
-    Write-LogLine "ERROR: Cannot find built file MicroWin.exe. Exiting."
-    exit 1
-}
-$dateTime = Get-Date -Format 'dd-MM-yyyy_HH-mm-ss'
-$desktop = [Environment]::GetFolderPath('Desktop')
-$targetFolder = Join-Path $desktop "MicroWin Build $dateTime"
-New-Item -Path $targetFolder -ItemType Directory -Force | Out-Null
-$sourceFolder = Join-Path (Get-Location) 'MicroWin/bin/Release/*'
-Copy-Item -Path $sourceFolder -Destination $targetFolder -Recurse -Force
-Write-LogLine "MicroWin files moved to $targetFolder.`n`n"
+########################################################################################################
 
 # Prompt user to uninstall build tools
 $uninstallQuestion = "Uninstall Files Used To Build MicroWin? `n Not Recommended If You Are Planning To Build MicroWin Again (y/n)`n"
@@ -169,21 +141,19 @@ if ($uninstallPrompt -eq 'y') {
         # Verification after uninstall
         Start-Sleep -Seconds 3
         $msbuildRegCheck = Get-ChildItem 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall' |
-        Get-ItemProperty |
-        Where-Object { $_.DisplayName -like '*Build Tools*' -or $_.DisplayName -like '*MSBuild*' }
+            Get-ItemProperty |
+            Where-Object { $_.DisplayName -like '*Build Tools*' -or $_.DisplayName -like '*MSBuild*' }
         if ($msbuildRegCheck) {
             Write-LogLine "MSBuildTools still detected in registry after uninstall attempt. Manual removal may be required."
-        }
-        else {
+        } else {
             Write-LogLine "MSBuildTools successfully uninstalled (not detected in registry)."
         }
-    }
-    else {
+    } else {
         Write-LogLine "Visual Studio Installer not found. Attempting to uninstall MSBuildTools via msiexec..."
         $msbuildReg = Get-ChildItem 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall' |
-        Get-ItemProperty |
-        Where-Object { $_.DisplayName -like '*Build Tools*' -or $_.DisplayName -like '*MSBuild*' } |
-        Select-Object -First 1
+            Get-ItemProperty |
+            Where-Object { $_.DisplayName -like '*Build Tools*' -or $_.DisplayName -like '*MSBuild*' } |
+            Select-Object -First 1
         if ($msbuildReg -and $msbuildReg.PSChildName) {
             $msbuildProductCode = $msbuildReg.PSChildName
             Start-Process msiexec.exe -ArgumentList "/x $msbuildProductCode /quiet /norestart" -Wait
@@ -191,16 +161,14 @@ if ($uninstallPrompt -eq 'y') {
             # Verification after uninstall
             Start-Sleep -Seconds 3
             $msbuildRegCheck = Get-ChildItem 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall' |
-            Get-ItemProperty |
-            Where-Object { $_.DisplayName -like '*Build Tools*' -or $_.DisplayName -like '*MSBuild*' }
+                Get-ItemProperty |
+                Where-Object { $_.DisplayName -like '*Build Tools*' -or $_.DisplayName -like '*MSBuild*' }
             if ($msbuildRegCheck) {
                 Write-LogLine "MSBuildTools still detected in registry after uninstall attempt. Manual removal may be required."
-            }
-            else {
+            } else {
                 Write-LogLine "MSBuildTools successfully uninstalled (not detected in registry)."
             }
-        }
-        else {
+        } else {
             Write-LogLine "Could not find MSBuildTools ProductCode in registry. Please uninstall manually if needed."
         }
     }
@@ -214,18 +182,16 @@ if ($uninstallPrompt -eq 'y') {
         # Verification after uninstall
         Start-Sleep -Seconds 3
         $devPackRegCheck = Get-ChildItem 'HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall' |
-        Get-ItemProperty |
-        Where-Object { $_.DisplayName -like '*Developer Pack*' -or $_.DisplayName -like '*Framework 4.8*' }
+            Get-ItemProperty |
+            Where-Object { $_.DisplayName -like '*Developer Pack*' -or $_.DisplayName -like '*Framework 4.8*' }
         if ($devPackRegCheck) {
             Write-LogLine ".NET Framework 4.8 Developer Pack still detected in registry after uninstall attempt. Manual removal may be required."
-        }
-        else {
+        } else {
             Write-LogLine ".NET Framework 4.8 Developer Pack successfully uninstalled (not detected in registry)."
         }
     }
     Write-LogLine "Build tools and installer files deleted.`n`n"
-}
-else {
+} else {
     Write-LogLine "Deletion of build tools skipped by user.`n`n"
 }
 
