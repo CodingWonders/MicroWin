@@ -1,6 +1,10 @@
-Invoke-WebRequest -Uri "https://github.com/CodingWonders/MicroWin/releases/download/latest/MicroWin.zip" -OutFile "$env:TEMP\MicroWinDownload.zip"
+$tempPath = [System.IO.Path]::GetTempPath()
+$zipFile = Join-Path $tempPath "MicroWinDownload.zip"
+$extractPath = Join-Path $tempPath "MicroWinExtract"
 
-Expand-Archive -Path "$env:TEMP\MicroWinDownload.zip" -DestinationPath "$env:TEMP\MicroWinExtract" -Force
-Remove-Item "$env:TEMP\MicroWinDownload.zip"
+Invoke-WebRequest -Uri "https://github.com/CodingWonders/MicroWin/releases/download/latest/MicroWin.zip" -OutFile $zipFile
 
-Start-Process -FilePath "$env:TEMP\MicroWinExtract\MicroWin.exe" -Wait
+Expand-Archive -Path $zipFile -DestinationPath $extractPath -Force
+Remove-Item $zipFile
+
+Start-Process -FilePath (Join-Path $extractPath "MicroWin.exe") -Wait
