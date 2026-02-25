@@ -22,7 +22,7 @@ This is, currently, in **ALPHA** stages and contains bugs. We are working hard o
 
 Alternatively you can run the following command:
 ``` ps1
-powershell -ExecutionPolicy Bypass -Command "iwr -useb https://raw.githubusercontent.com/CodingWonders/MicroWin/main/install.ps1 | iex"
+powershell -ExecutionPolicy Bypass -Command "iwr -useb https://raw.githubusercontent.com/CodingWonders/MicroWin/main/microwin.ps1 | iex"
 ```
 
 ## Contributing to the repository
