@@ -4,6 +4,7 @@ using MicroWin.Classes;
 using MicroWin.functions.dism;
 using MicroWin.functions.Helpers.DeleteFile;
 using MicroWin.functions.Helpers.DesktopWindowManager;
+using MicroWin.functions.Helpers.DriverHelpers;
 using MicroWin.functions.Helpers.Loggers;
 using MicroWin.functions.Helpers.PropertyCheckers;
 using MicroWin.functions.Helpers.RegistryHelpers;
@@ -428,6 +429,9 @@ namespace MicroWin
             BusyCannotClose = true;
 
             await Task.Run(async () => {
+                string bootDriverPath = $"{Environment.GetEnvironmentVariable("SYSTEMDRIVE")}\\MicroWin\\BootDrivers";
+                string allDriversPath = $"{Environment.GetEnvironmentVariable("SYSTEMDRIVE")}\\MicroWin\\AllDrivers";
+
                 string installwimPath = Path.Combine(AppState.MountPath, "sources", "install.wim");
                 if (!File.Exists(installwimPath)) installwimPath = Path.Combine(AppState.MountPath, "sources", "install.esd");
 
@@ -438,6 +442,20 @@ namespace MicroWin
 
                 WriteLogMessage("Creating unattended answer file...");
                 UnattendGenerator.CreateUnattend($"{Path.Combine(AppState.ScratchPath, "Windows", "Panther")}");
+
+                if (AppState.DriverExportMode > DriverExportMode.NoExport)
+                {
+
+                    DriverExportHelper.ExportDrivers(bootDriverPath, "SCSIAdapter");
+                    if (AppState.DriverExportMode == DriverExportMode.ExportAll)
+                        DriverExportHelper.ExportDrivers(allDriversPath);
+
+                    if (Directory.Exists(bootDriverPath))
+                        DriverInstallHelper.InstallDrivers(AppState.ScratchPath, bootDriverPath);
+
+                    if (Directory.Exists(allDriversPath))
+                        DriverInstallHelper.InstallDrivers(AppState.ScratchPath, allDriversPath);
+                }
 
                 UpdateOverallProgressBar(10);
                 new OsFeatureDisabler().RunTask((p) => UpdateCurrentProgressBar(p), (msg) => UpdateCurrentStatus(msg, false), (msg) => WriteLogMessage(msg));
@@ -563,6 +581,9 @@ namespace MicroWin
                 RegistryHelper.UnloadRegistryHive("zDEFAULT");
                 RegistryHelper.UnloadRegistryHive("zNTUSER");
 
+                if (Directory.Exists(bootDriverPath))
+                    DriverInstallHelper.InstallDrivers(AppState.ScratchPath, bootDriverPath);
+
                 UpdateCurrentStatus("Unmounting boot image...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
 
@@ -576,6 +597,24 @@ namespace MicroWin
                 UpdateCurrentStatus("Finishing up...");
                 WriteLogMessage("Deleting temporary files...");
                 DeleteFiles.SafeDeleteDirectory(AppState.TempRoot);
+
+                if (Directory.Exists(bootDriverPath))
+                {
+                    try
+                    {
+                        Directory.Delete(bootDriverPath, true);
+                    }
+                    catch { }
+                }
+
+                if (Directory.Exists(allDriversPath))
+                {
+                    try
+                    {
+                        Directory.Delete(allDriversPath, true);
+                    }
+                    catch { }
+                }
             });
 
             WindowHelper.EnableCloseCapability(Handle);

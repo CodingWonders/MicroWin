@@ -35,15 +35,6 @@
             this.Next_Button = new System.Windows.Forms.Button();
             this.Cancel_Button = new System.Windows.Forms.Button();
             this.PageContainerPanel = new System.Windows.Forms.Panel();
-            this.ImageChooserPage = new System.Windows.Forms.Panel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.lvVersions = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.label3 = new System.Windows.Forms.Label();
             this.FinishPage = new System.Windows.Forms.Panel();
             this.lnkViewCreationLogs = new System.Windows.Forms.LinkLabel();
             this.lnkOpenIsoLoc = new System.Windows.Forms.LinkLabel();
@@ -91,6 +82,15 @@
             this.usrPasswordRevealCB = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.ImageChooserPage = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.lvVersions = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label3 = new System.Windows.Forms.Label();
             this.IsoChooserPage = new System.Windows.Forms.Panel();
             this.isoExtractionPB = new System.Windows.Forms.ProgressBar();
             this.isoPickerBtn = new System.Windows.Forms.Button();
@@ -108,7 +108,6 @@
             this.ButtonPanel.SuspendLayout();
             this.TableLayoutPanel1.SuspendLayout();
             this.PageContainerPanel.SuspendLayout();
-            this.ImageChooserPage.SuspendLayout();
             this.FinishPage.SuspendLayout();
             this.panel4.SuspendLayout();
             this.IsoCreationPage.SuspendLayout();
@@ -122,6 +121,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panel2.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
+            this.ImageChooserPage.SuspendLayout();
             this.IsoChooserPage.SuspendLayout();
             this.WelcomePage.SuspendLayout();
             this.SuspendLayout();
@@ -203,89 +203,6 @@
             this.PageContainerPanel.Name = "PageContainerPanel";
             this.PageContainerPanel.Size = new System.Drawing.Size(1008, 521);
             this.PageContainerPanel.TabIndex = 3;
-            // 
-            // ImageChooserPage
-            // 
-            this.ImageChooserPage.Controls.Add(this.label2);
-            this.ImageChooserPage.Controls.Add(this.lvVersions);
-            this.ImageChooserPage.Controls.Add(this.label3);
-            this.ImageChooserPage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.ImageChooserPage.Location = new System.Drawing.Point(0, 0);
-            this.ImageChooserPage.Name = "ImageChooserPage";
-            this.ImageChooserPage.Size = new System.Drawing.Size(1008, 521);
-            this.ImageChooserPage.TabIndex = 4;
-            // 
-            // label2
-            // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(80, 448);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(529, 15);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "We have automatically picked the Pro edition for you. However, you can still sele" +
-    "ct another edition.";
-            // 
-            // lvVersions
-            // 
-            this.lvVersions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvVersions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.lvVersions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3,
-            this.columnHeader4,
-            this.columnHeader5});
-            this.lvVersions.FullRowSelect = true;
-            this.lvVersions.HideSelection = false;
-            this.lvVersions.Location = new System.Drawing.Point(80, 89);
-            this.lvVersions.MultiSelect = false;
-            this.lvVersions.Name = "lvVersions";
-            this.lvVersions.Size = new System.Drawing.Size(849, 352);
-            this.lvVersions.TabIndex = 3;
-            this.lvVersions.UseCompatibleStateImageBehavior = false;
-            this.lvVersions.View = System.Windows.Forms.View.Details;
-            this.lvVersions.SelectedIndexChanged += new System.EventHandler(this.lvVersions_SelectedIndexChanged);
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "#";
-            this.columnHeader1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.columnHeader1.Width = 32;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "Name";
-            this.columnHeader2.Width = 200;
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "Description";
-            this.columnHeader3.Width = 256;
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "Architecture";
-            this.columnHeader4.Width = 84;
-            // 
-            // columnHeader5
-            // 
-            this.columnHeader5.Text = "Last Modified";
-            this.columnHeader5.Width = 160;
-            // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoEllipsis = true;
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(14, 12);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(980, 45);
-            this.label3.TabIndex = 2;
-            this.label3.Text = "Choose the image to modify";
             // 
             // FinishPage
             // 
@@ -864,6 +781,89 @@
             this.label4.TabIndex = 3;
             this.label4.Text = "Who will use the computer?";
             // 
+            // ImageChooserPage
+            // 
+            this.ImageChooserPage.Controls.Add(this.label2);
+            this.ImageChooserPage.Controls.Add(this.lvVersions);
+            this.ImageChooserPage.Controls.Add(this.label3);
+            this.ImageChooserPage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.ImageChooserPage.Location = new System.Drawing.Point(0, 0);
+            this.ImageChooserPage.Name = "ImageChooserPage";
+            this.ImageChooserPage.Size = new System.Drawing.Size(1008, 521);
+            this.ImageChooserPage.TabIndex = 4;
+            // 
+            // label2
+            // 
+            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(80, 448);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(529, 15);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "We have automatically picked the Pro edition for you. However, you can still sele" +
+    "ct another edition.";
+            // 
+            // lvVersions
+            // 
+            this.lvVersions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvVersions.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.lvVersions.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4,
+            this.columnHeader5});
+            this.lvVersions.FullRowSelect = true;
+            this.lvVersions.HideSelection = false;
+            this.lvVersions.Location = new System.Drawing.Point(80, 89);
+            this.lvVersions.MultiSelect = false;
+            this.lvVersions.Name = "lvVersions";
+            this.lvVersions.Size = new System.Drawing.Size(849, 352);
+            this.lvVersions.TabIndex = 3;
+            this.lvVersions.UseCompatibleStateImageBehavior = false;
+            this.lvVersions.View = System.Windows.Forms.View.Details;
+            this.lvVersions.SelectedIndexChanged += new System.EventHandler(this.lvVersions_SelectedIndexChanged);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "#";
+            this.columnHeader1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.columnHeader1.Width = 32;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Name";
+            this.columnHeader2.Width = 200;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Description";
+            this.columnHeader3.Width = 256;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Architecture";
+            this.columnHeader4.Width = 84;
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "Last Modified";
+            this.columnHeader5.Width = 160;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.AutoEllipsis = true;
+            this.label3.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(14, 12);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(980, 45);
+            this.label3.TabIndex = 2;
+            this.label3.Text = "Choose the image to modify";
+            // 
             // IsoChooserPage
             // 
             this.IsoChooserPage.Controls.Add(this.isoExtractionPB);
@@ -1038,8 +1038,6 @@
             this.ButtonPanel.ResumeLayout(false);
             this.TableLayoutPanel1.ResumeLayout(false);
             this.PageContainerPanel.ResumeLayout(false);
-            this.ImageChooserPage.ResumeLayout(false);
-            this.ImageChooserPage.PerformLayout();
             this.FinishPage.ResumeLayout(false);
             this.FinishPage.PerformLayout();
             this.panel4.ResumeLayout(false);
@@ -1062,6 +1060,8 @@
             this.panel2.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
+            this.ImageChooserPage.ResumeLayout(false);
+            this.ImageChooserPage.PerformLayout();
             this.IsoChooserPage.ResumeLayout(false);
             this.IsoChooserPage.PerformLayout();
             this.WelcomePage.ResumeLayout(false);

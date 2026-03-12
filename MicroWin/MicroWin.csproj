@@ -89,6 +89,8 @@
     <Compile Include="functions\dism\UnattendGenerator.cs" />
     <Compile Include="functions\Helpers\DeleteFiles\DeleteFile.cs" />
     <Compile Include="functions\Helpers\DesktopWindowManager\WindowHelper.cs" />
+    <Compile Include="functions\Helpers\DriverHelpers\DriverExportHelper.cs" />
+    <Compile Include="functions\Helpers\DriverHelpers\DriverInstallHelper.cs" />
     <Compile Include="functions\Helpers\DynaLog\DynaLog.cs" />
     <Compile Include="functions\Helpers\PropertyCheckers\VersionComparer.cs" />
     <Compile Include="functions\Helpers\RegistryHelpers\RegistryHelper.cs" />
