@@ -429,8 +429,9 @@ namespace MicroWin
             BusyCannotClose = true;
 
             await Task.Run(async () => {
-                string bootDriverPath = $"{Environment.GetEnvironmentVariable("SYSTEMDRIVE")}\\MicroWin\\BootDrivers";
-                string allDriversPath = $"{Environment.GetEnvironmentVariable("SYSTEMDRIVE")}\\MicroWin\\AllDrivers";
+                string mwTempFilePath = $"{Environment.GetEnvironmentVariable("SYSTEMDRIVE")}\\MicroWin";
+                string bootDriverPath = $"{mwTempFilePath}\\BootDrivers";
+                string allDriversPath = $"{mwTempFilePath}\\AllDrivers";
 
                 string installwimPath = Path.Combine(AppState.MountPath, "sources", "install.wim");
                 if (!File.Exists(installwimPath)) installwimPath = Path.Combine(AppState.MountPath, "sources", "install.esd");
@@ -445,16 +446,20 @@ namespace MicroWin
 
                 if (AppState.DriverExportMode > DriverExportMode.NoExport)
                 {
-
+                    WriteLogMessage("Beginning driver export...");
                     DriverExportHelper.ExportDrivers(bootDriverPath, "SCSIAdapter");
                     if (AppState.DriverExportMode == DriverExportMode.ExportAll)
                         DriverExportHelper.ExportDrivers(allDriversPath);
+
+                    WriteLogMessage("Driver export complete. Beginning driver import...");
 
                     if (Directory.Exists(bootDriverPath))
                         DriverInstallHelper.InstallDrivers(AppState.ScratchPath, bootDriverPath);
 
                     if (Directory.Exists(allDriversPath))
                         DriverInstallHelper.InstallDrivers(AppState.ScratchPath, allDriversPath);
+
+                    WriteLogMessage("Driver import complete.");
                 }
 
                 UpdateOverallProgressBar(10);
@@ -612,6 +617,15 @@ namespace MicroWin
                     try
                     {
                         Directory.Delete(allDriversPath, true);
+                    }
+                    catch { }
+                }
+
+                if (Directory.Exists(mwTempFilePath))
+                {
+                    try
+                    {
+                        Directory.Delete(mwTempFilePath, true);
                     }
                     catch { }
                 }
