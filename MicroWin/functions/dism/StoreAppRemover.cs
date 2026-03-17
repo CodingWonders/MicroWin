@@ -41,7 +41,7 @@ namespace MicroWin.functions.dism
         private void RemoveStoreApps(Action<int> pbReporter, Action<string> curOpReporter, Action<string> logWriter)
         {
             curOpReporter.Invoke("Getting image AppX packages...");
-            DismAppxPackageCollection allStoreApps = GetStoreAppsList();
+            DismAppxPackageCollection? allStoreApps = GetStoreAppsList();
             if (allStoreApps is null) return;
 
             logWriter.Invoke($"Amount of AppX packages in image: {allStoreApps.Count}");
@@ -88,9 +88,9 @@ namespace MicroWin.functions.dism
             }
         }
 
-        private DismAppxPackageCollection GetStoreAppsList()
+        private DismAppxPackageCollection? GetStoreAppsList()
         {
-            DismAppxPackageCollection storeApps = null;
+            DismAppxPackageCollection? storeApps = null;
 
             try
             {

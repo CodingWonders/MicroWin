@@ -1,15 +1,17 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using MicroWin.functions.Helpers.Loggers;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
 using System.IO;
-using Microsoft.Win32;
-using MicroWin.functions.Helpers.Loggers;
+using System.Linq;
+using System.Runtime.Versioning;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MicroWin.functions.Helpers.RegistryHelpers
 {
+    [SupportedOSPlatform("Windows")]
     public static class RegistryHelper
     {
         /// <summary>
@@ -73,7 +75,7 @@ namespace MicroWin.functions.Helpers.RegistryHelpers
         /// </summary>
         /// <param name="valueKind">The registry value kind from the Win32 namespace</param>
         /// <returns>The value kind for the native namespace.</returns>
-        private static ValueKind GetValueKindEnumValue(RegistryValueKind valueKind)
+        private static ValueKind GetValueKindEnumValue(RegistryValueKind? valueKind)
         {
             switch (valueKind)
             {
@@ -153,17 +155,17 @@ namespace MicroWin.functions.Helpers.RegistryHelpers
         /// <param name="keyPath">The path to the key containing the value to query</param>
         /// <param name="valueName">The name of the value to query</param>
         /// <returns>A <see cref="RegistryItem"/> object containing the registry value name, kind, and data.</returns>
-        public static RegistryItem QueryRegistryValue(string keyPath, string valueName = "")
+        public static RegistryItem? QueryRegistryValue(string keyPath, string valueName = "")
         {
-            RegistryItem item = null;
-            RegistryKey registryKey = null;
+            RegistryItem? item = null;
+            RegistryKey? registryKey = null;
 
             // This is an exemption from the rule of no .NET API. We can safely query stuff with it
             try
             {
                 registryKey = Registry.LocalMachine.OpenSubKey(keyPath, false);
-                object regValueData = registryKey.GetValue(valueName != "" ? valueName : null);
-                RegistryValueKind regValueKind = registryKey.GetValueKind(valueName != "" ? valueName : null);
+                object? regValueData = registryKey?.GetValue(valueName != "" ? valueName : null);
+                RegistryValueKind? regValueKind = registryKey?.GetValueKind(valueName != "" ? valueName : null);
                 item = new RegistryItem(valueName, GetValueKindEnumValue(regValueKind), regValueData);
             }
             catch (Exception)
@@ -215,7 +217,7 @@ namespace MicroWin.functions.Helpers.RegistryHelpers
                 regArgs += $"/v \"{value.Name.Replace("\"", "")}\" ";
             }
 
-            regArgs += $"/t {GetValueKindString(value.Kind)} /d \"{value.Data.ToString()}\"";
+            regArgs += $"/t {GetValueKindString(value.Kind)} /d \"{value?.Data?.ToString()}\"";
 
             return RunRegProcess(regArgs) == ERROR_SUCCESS;
         }

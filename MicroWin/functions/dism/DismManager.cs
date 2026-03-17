@@ -20,7 +20,7 @@ namespace MicroWin.functions.dism
             if (!File.Exists(wimPath))
                 return;
 
-            DismImageInfoCollection imageInfo = GetImageInformation(wimPath);
+            DismImageInfoCollection? imageInfo = GetImageInformation(wimPath);
             if (imageInfo is null || (index < 1 || index > imageInfo.Count))
                 return;
 
@@ -71,9 +71,9 @@ namespace MicroWin.functions.dism
             }
         }
 
-        private static DismMountedImageInfoCollection GetMountedImages()
+        private static DismMountedImageInfoCollection? GetMountedImages()
         {
-            DismMountedImageInfoCollection mountedImages = null;
+            DismMountedImageInfoCollection? mountedImages = null;
 
             try
             {
@@ -99,9 +99,9 @@ namespace MicroWin.functions.dism
             return mountedImages;
         }
 
-        public static DismImageInfoCollection GetImageInformation(string wimFile)
+        public static DismImageInfoCollection? GetImageInformation(string wimFile)
         {
-            DismImageInfoCollection imageInfo = null;
+            DismImageInfoCollection? imageInfo = null;
 
             try
             {
@@ -137,7 +137,7 @@ namespace MicroWin.functions.dism
             }
 
             // To be sure, we'll check the mounted images for this one.
-            DismMountedImageInfoCollection mountedImages = GetMountedImages();
+            DismMountedImageInfoCollection? mountedImages = GetMountedImages();
             if ((mountedImages is null) || (!mountedImages.Any(image => image.MountPath == mountPath)))
             {
                 return;
@@ -178,7 +178,7 @@ namespace MicroWin.functions.dism
             }
 
             // To be sure, we'll check the mounted images for this one.
-            DismMountedImageInfoCollection mountedImages = GetMountedImages();
+            DismMountedImageInfoCollection? mountedImages = GetMountedImages();
             if ((mountedImages is null) || (!mountedImages.Any(image => image.MountPath == mountPath)))
             {
                 return;

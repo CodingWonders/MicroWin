@@ -29,7 +29,7 @@ namespace MicroWin.functions.Helpers.DriverHelpers
             return dismProc.ExitCode;
         }
 
-        private static bool CopyRecursive(string SourceDirectory, string DestinationDirectory)
+        private static bool CopyRecursive(string? SourceDirectory, string DestinationDirectory)
         {
             if (!Directory.Exists(SourceDirectory))
                 return false;
@@ -74,9 +74,9 @@ namespace MicroWin.functions.Helpers.DriverHelpers
             return true;
         }
 
-        private static DismDriverPackageCollection GetOnlineDrivers()
+        private static DismDriverPackageCollection? GetOnlineDrivers()
         {
-            DismDriverPackageCollection drivers = null;
+            DismDriverPackageCollection? drivers = null;
             try
             {
                 DismApi.Initialize(DismLogLevel.LogErrors);
@@ -118,7 +118,7 @@ namespace MicroWin.functions.Helpers.DriverHelpers
 
         public static bool ExportDrivers(string DestinationDir, string ClassName)
         {
-            DismDriverPackageCollection onlineDrivers = GetOnlineDrivers();
+            DismDriverPackageCollection? onlineDrivers = GetOnlineDrivers();
             if (onlineDrivers is null)
                 return false;
 

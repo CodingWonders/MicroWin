@@ -8,8 +8,8 @@ namespace MicroWin.Classes
 {
     public class UserAccount
     {
-        public string Name { get; set; }
-        public string Password { get; set; }
-        public string Role { get; set; }
+        public string Name { get; set; } = "";
+        public string Password { get; set; } = "";
+        public string Role { get; set; } = "";
     }
 }

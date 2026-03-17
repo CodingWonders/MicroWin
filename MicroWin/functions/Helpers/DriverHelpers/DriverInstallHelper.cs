@@ -1,6 +1,7 @@
 ﻿using Microsoft.Dism;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,13 +26,13 @@ namespace MicroWin.functions.Helpers.DriverHelpers
 					}
 					catch (Exception ex)
 					{
-						// TODO log
+						Debug.WriteLine(ex);
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				// TODO log
+				Debug.WriteLine(ex);
 			}
 			finally
 			{

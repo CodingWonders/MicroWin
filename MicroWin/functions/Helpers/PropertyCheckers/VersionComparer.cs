@@ -16,17 +16,17 @@ namespace MicroWin.functions.Helpers.PropertyCheckers
         public static readonly Version VERCONST_WIN11_25H2 = new(10, 0, 26200, 6584);
         public static readonly Version VERCONST_WIN11_26H1 = new(10, 0, 28000, 1575);
 
-        public static bool IsNewerThanVersion(Version versionToCompare, Version minimumThreshold)
+        public static bool IsNewerThanVersion(Version? versionToCompare, Version? minimumThreshold)
         {
             return versionToCompare >= minimumThreshold;
         }
 
-        public static bool IsOlderThanVersion(Version versionToCompare, Version maximumThreshold)
+        public static bool IsOlderThanVersion(Version? versionToCompare, Version? maximumThreshold)
         {
             return versionToCompare < maximumThreshold;
         }
 
-        public static bool IsBetweenVersionRange(Version versionToCompare, Version lowerBound, Version upperBound)
+        public static bool IsBetweenVersionRange(Version? versionToCompare, Version? lowerBound, Version? upperBound)
         {
             return (versionToCompare >= lowerBound) && (versionToCompare < upperBound);
         }
