@@ -681,12 +681,20 @@ namespace MicroWin
 
         private void lnkUseDT_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://github.com/CodingWonders/DISMTools");
+            Process.Start(new ProcessStartInfo("https://github.com/CodingWonders/DISMTools")
+            {
+                UseShellExecute = true,
+                Verb = "open"
+            });
         }
 
         private void lnkUseNtLite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://ntlite.com");
+            Process.Start(new ProcessStartInfo("https://ntlite.com")
+            {
+                UseShellExecute = true,
+                Verb = "open"
+            });
         }
 
         private void lnkOpenIsoLoc_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
