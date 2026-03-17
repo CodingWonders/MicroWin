@@ -33,7 +33,7 @@ namespace MicroWin.functions.dism
         private void DisableFeatures(Action<int> pbReporter, Action<string> curOpReporter, Action<string> logWriter)
         {
             curOpReporter.Invoke("Getting image features...");
-            DismFeatureCollection allFeatures = GetFeatureList();
+            DismFeatureCollection? allFeatures = GetFeatureList();
 
             if (allFeatures is null) return;
 
@@ -58,7 +58,9 @@ namespace MicroWin.functions.dism
                     pbReporter.Invoke((int)(((double)idx / featuresToDisable.ToList().Count) * 100));
                     try
                     {
+#pragma warning disable CS8625
                         DismApi.DisableFeature(session, featureToDisable, null, true);
+#pragma warning restore CS8625
                     }
                     catch (Exception ex)
                     {
@@ -83,9 +85,9 @@ namespace MicroWin.functions.dism
             }
         }
 
-        private DismFeatureCollection GetFeatureList()
+        private DismFeatureCollection? GetFeatureList()
         {
-            DismFeatureCollection featureList = null;
+            DismFeatureCollection? featureList = null;
 
             try
             {

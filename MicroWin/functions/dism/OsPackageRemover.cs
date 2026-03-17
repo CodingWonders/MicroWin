@@ -43,7 +43,7 @@ namespace MicroWin.functions.dism
         private void RemoveUnwantedPackages(Action<int> pbReporter, Action<string> curOpReporter, Action<string> logWriter)
         {
             curOpReporter.Invoke("Getting image packages...");
-            DismPackageCollection allPackages = GetPackageList();
+            DismPackageCollection? allPackages = GetPackageList();
 
             if (allPackages is null) return;
 
@@ -92,9 +92,9 @@ namespace MicroWin.functions.dism
             }
         }
 
-        private DismPackageCollection GetPackageList()
+        private DismPackageCollection? GetPackageList()
         {
-            DismPackageCollection packages = null;
+            DismPackageCollection? packages = null;
 
             try
             {

@@ -4,15 +4,17 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Runtime.Versioning;
 using System.Windows.Forms;
 
 namespace MicroWin.OSCDIMG
 {
+    [SupportedOSPlatform("Windows")]
     public static class OscdimgUtilities
     {
-        public static string peToolsPath;
-        public static string adkKitsRoot => GetKitsRoot(false);
-        public static string adkKitsRoot_WOW64Environ => GetKitsRoot(true);
+        public static string peToolsPath = "";
+        public static string adkKitsRoot => GetKitsRoot(false) ?? "";
+        public static string adkKitsRoot_WOW64Environ => GetKitsRoot(true) ?? "";
 
         public static string expectedADKPath => Path.Combine(adkKitsRoot, "Assessment and Deployment Kit");
         public static string expectedADKPath_WOW64Environ => Path.Combine(adkKitsRoot_WOW64Environ, "Assessment and Deployment Kit");
@@ -60,10 +62,10 @@ namespace MicroWin.OSCDIMG
             DynaLog.logMessage($"Process exited with code {oscdimgProc.ExitCode}.");
         }
 
-        public static string GetKitsRoot(bool wow64environment)
+        public static string? GetKitsRoot(bool wow64environment)
         {
-            string adk10KitsRoot = string.Empty;
-            string regPath;
+            string? adk10KitsRoot = string.Empty;
+            string? regPath;
 
             // if we set the wow64 bit on and we're on a 32-bit system, then we prematurely return the value
             if (wow64environment && !Environment.Is64BitOperatingSystem) 
@@ -85,7 +87,7 @@ namespace MicroWin.OSCDIMG
             }
 
             try {
-                adk10KitsRoot = RegistryHelper.QueryRegistryValue(regPath, "KitsRoot10").Data.ToString() ; // Get-ItemPropertyValue -Path $regPath -Name "KitsRoot10" -ErrorAction Stop
+                adk10KitsRoot = RegistryHelper.QueryRegistryValue(regPath, "KitsRoot10")?.Data?.ToString() ; // Get-ItemPropertyValue -Path $regPath -Name "KitsRoot10" -ErrorAction Stop
             } catch {
                 // Add logging
             }

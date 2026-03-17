@@ -18,6 +18,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.Versioning;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -35,20 +36,21 @@ namespace MicroWin
         ];
 
         private bool BusyCannotClose = false;
-        private DismImageInfoCollection imageInfo;
+        private DismImageInfoCollection? imageInfo;
 
-        private DismImageInfo installImageInfo;
+        private DismImageInfo? installImageInfo;
 
         public MainForm()
         {
             InitializeComponent();
         }
 
+        [SupportedOSPlatform("Windows")]
         private void SetColorMode()
         {
-            RegistryKey colorRk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
-            int colorVal = (int)colorRk.GetValue("AppsUseLightTheme", 1);
-            colorRk.Close();
+            RegistryKey? colorRk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
+            int? colorVal = (int?)colorRk?.GetValue("AppsUseLightTheme", 1);
+            colorRk?.Close();
             if (colorVal == 0)
             {
                 BackColor = Color.FromArgb(35, 38, 41);
@@ -77,6 +79,7 @@ namespace MicroWin
             WindowHelper.ToggleDarkTitleBar(Handle, colorVal == 0);
         }
 
+        [SupportedOSPlatform("Windows")]
         private void ChangePage(WizardPage.Page newPage)
         {
             DynaLog.logMessage("Changing current page of the wizard...");
@@ -125,6 +128,7 @@ namespace MicroWin
             }
         }
 
+        [SupportedOSPlatform("Windows")]
         private bool VerifyOptionsInPage(WizardPage.Page wizardPage)
         {
             switch (wizardPage)
@@ -143,7 +147,7 @@ namespace MicroWin
                         return false;
                     }
                     // Store information about the selected image only. We can access it later if we see fit
-                    installImageInfo = imageInfo.ElementAtOrDefault(AppState.SelectedImageIndex - 1);
+                    installImageInfo = imageInfo?.ElementAtOrDefault(AppState.SelectedImageIndex - 1 ?? 0);
                     break;
                 case WizardPage.Page.UserAccountsPage:
                     // Default to "User" if no name is set
@@ -164,6 +168,7 @@ namespace MicroWin
             return true;
         }
 
+        [SupportedOSPlatform("Windows")]
         private void MainForm_Load(object sender, EventArgs e)
         {
             Text = $"MicroWin .NET ({swStatus} 0.2)";
@@ -193,6 +198,7 @@ namespace MicroWin
             DriverExportCombo.SelectedIndexChanged += DriverExportCombo_SelectedIndexChanged;
         }
 
+        [SupportedOSPlatform("Windows")]
         private void Next_Button_Click(object sender, EventArgs e)
         {
             if (CurrentWizardPage.wizardPage == WizardPage.Page.FinishPage)
@@ -204,22 +210,26 @@ namespace MicroWin
                 ChangePage(CurrentWizardPage.wizardPage + 1);
             }
         }
-
+        
+        [SupportedOSPlatform("Windows")]
         private void Back_Button_Click(object sender, EventArgs e)
         {
             ChangePage(CurrentWizardPage.wizardPage - 1);
         }
 
+        [SupportedOSPlatform("Windows")]
         private void isoPickerBtn_Click(object sender, EventArgs e)
         {
             isoPickerOFD.ShowDialog(this);
         }
-
+        
+        [SupportedOSPlatform("Windows")]
         private void isoPickerOFD_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
             isoPathTB.Text = isoPickerOFD.FileName;
         }
 
+        [SupportedOSPlatform("Windows")]
         private void InvokeIsoExtractionUIUpdate(string status, int progress)
         {
             if (InvokeRequired)
@@ -236,6 +246,7 @@ namespace MicroWin
             }
         }
 
+        [SupportedOSPlatform("Windows")]
         private void LoadWimData()
         {
             string wimPath = Path.Combine(AppState.MountPath, "sources", "install.wim");
@@ -248,11 +259,23 @@ namespace MicroWin
                     return;
 
                 lvVersions.Items.Clear();
-                lvVersions.Items.AddRange(imageInfo.Select(image => new ListViewItem([image.ImageIndex.ToString(), 
-                    image.ImageName, image.ImageDescription, 
-                    image.Architecture.ToString(), 
-                    image.CustomizedInfo?.ModifiedTime.ToString("dd/MM/yyyy HH:mm:ss")])).ToArray());
-                if (imageInfo.Any())
+
+                var items = imageInfo.Select(image =>
+                {
+                    string modified = image.CustomizedInfo?.ModifiedTime.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
+                    return new ListViewItem(new[]
+                    {
+                        image.ImageIndex.ToString(),
+                        image.ImageName ?? string.Empty,
+                        image.ImageDescription ?? string.Empty,
+                        image.Architecture.ToString(),
+                        modified
+                    });
+                }).ToArray();
+
+                lvVersions.Items.AddRange(items);
+
+                if (imageInfo.Any() && lvVersions.Items.Count > 0)
                 {
                     // Get and select Pro automatically
                     lvVersions.SelectedIndexChanged -= lvVersions_SelectedIndexChanged;
@@ -269,6 +292,7 @@ namespace MicroWin
             }
         }
 
+        [SupportedOSPlatform("Windows")]
         private async void isoPathTB_TextChanged(object sender, EventArgs e)
         {
             if (File.Exists(isoPathTB.Text))
@@ -284,10 +308,10 @@ namespace MicroWin
                     var iso = new IsoManager();
                     InvokeIsoExtractionUIUpdate("Mounting ISO...", 5);
 
-                    char drive = iso.MountAndGetDrive(AppState.IsoPath);
+                    char? drive = iso.MountAndGetDrive(AppState.IsoPath);
                     if (drive != '\0')
                     {
-                        iso.ExtractIso(drive.ToString(), AppState.MountPath, (p) => {
+                        iso.ExtractIso(drive?.ToString(), AppState.MountPath, (p) => {
                             // Update the bar based on the 0-100 value from IsoManager
                             InvokeIsoExtractionUIUpdate($"Extracting: {p}%", p);
                         });
@@ -305,10 +329,11 @@ namespace MicroWin
             }
         }
 
-        private void lvVersions_SelectedIndexChanged(object sender, EventArgs e)
+        [SupportedOSPlatform("Windows")]
+        private void lvVersions_SelectedIndexChanged(object? sender, EventArgs e)
         {
             if (lvVersions.SelectedItems.Count == 1)
-                AppState.SelectedImageIndex = lvVersions.FocusedItem.Index + 1;
+                AppState.SelectedImageIndex = lvVersions.FocusedItem?.Index + 1;
         }
 
         private void lnkImmersiveAccounts_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -321,46 +346,55 @@ namespace MicroWin
             Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "lusrmgr.msc"));
         }
 
+        [SupportedOSPlatform("Windows")]
         private void usrNameTB_TextChanged(object sender, EventArgs e)
         {
             AppState.UserAccounts[0].Name = usrNameTB.Text;
         }
 
+        [SupportedOSPlatform("Windows")]
         private void b64CB_CheckedChanged(object sender, EventArgs e)
         {
             AppState.EncodeWithB64 = b64CB.Checked;
         }
 
+        [SupportedOSPlatform("Windows")]
         private void usrPasswordTB_TextChanged(object sender, EventArgs e)
         {
             AppState.UserAccounts[0].Password = usrPasswordTB.Text;
         }
 
+        [SupportedOSPlatform("Windows")]
         private void usrNameCurrentSysNameBtn_Click(object sender, EventArgs e)
         {
             usrNameTB.Text = Environment.UserName;
         }
 
+        [SupportedOSPlatform("Windows")]
         private void usrPasswordRevealCB_CheckedChanged(object sender, EventArgs e)
         {
             usrPasswordTB.PasswordChar = usrPasswordRevealCB.Checked ? '\0' : '*';
         }
 
-        private void DriverExportCombo_SelectedIndexChanged(object sender, EventArgs e)
+        [SupportedOSPlatform("Windows")]
+        private void DriverExportCombo_SelectedIndexChanged(object? sender, EventArgs e)
         {
             AppState.DriverExportMode = (DriverExportMode)DriverExportCombo.SelectedIndex;
         }
-
+        
+        [SupportedOSPlatform("Windows")]
         private void ReportToolCB_CheckedChanged(object sender, EventArgs e)
         {
             AppState.AddReportingToolShortcut = ReportToolCB.Checked;
         }
 
+        [SupportedOSPlatform("Windows")]
         private void UnattendCopyCB_CheckedChanged(object sender, EventArgs e)
         {
             AppState.CopyUnattendToFileSystem = UnattendCopyCB.Checked;
         }
 
+        [SupportedOSPlatform("Windows")]
         private void UpdateCurrentStatus(string text, bool resetBar = true)
         {
             if (InvokeRequired)
@@ -377,7 +411,8 @@ namespace MicroWin
                 if (resetBar) pbCurrent.Value = 0; 
             }
         }
-
+        
+        [SupportedOSPlatform("Windows")]
         private void UpdateCurrentProgressBar(int value)
         {
             int safeValue = Math.Max(0, Math.Min(value, 100));
@@ -385,19 +420,22 @@ namespace MicroWin
             else pbCurrent.Value = safeValue;
         }
 
+        [SupportedOSPlatform("Windows")]
         private void UpdateOverallStatus(string text)
         {
             if (this.InvokeRequired) this.Invoke(new Action(() => { lblOverallStatus.Text = text; }));
             else { lblOverallStatus.Text = text; }
         }
-
+        
+        [SupportedOSPlatform("Windows")]
         private void UpdateOverallProgressBar(int value)
         {
             int safeValue = Math.Max(0, Math.Min(value, 100));
             if (this.InvokeRequired) this.Invoke(new Action(() => pbOverall.Value = safeValue));
             else pbOverall.Value = safeValue;
         }
-
+        
+        [SupportedOSPlatform("Windows")]
         private void WriteLogMessage(string message)
         {
             string fullMsg = $"[{DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss")} UTC] {message}{Environment.NewLine}";
@@ -410,7 +448,8 @@ namespace MicroWin
                 logTB.AppendText(fullMsg);
             }
         }
-
+        
+        [SupportedOSPlatform("Windows")]
         private async void RunDeployment()
         {
             // Clear old results and write the cool banner
@@ -439,7 +478,7 @@ namespace MicroWin
                 UpdateOverallStatus("Customizing install image...");
                 UpdateOverallProgressBar(0);
                 UpdateCurrentStatus("Mounting install image...");
-                DismManager.MountImage(installwimPath, AppState.SelectedImageIndex, AppState.ScratchPath, (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
+                DismManager.MountImage(installwimPath, AppState.SelectedImageIndex ?? 1, AppState.ScratchPath, (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
 
                 WriteLogMessage("Creating unattended answer file...");
                 UnattendGenerator.CreateUnattend($"{Path.Combine(AppState.ScratchPath, "Windows", "Panther")}");
@@ -503,7 +542,7 @@ namespace MicroWin
                 WriteLogMessage("Setting execution policies...");
                 RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Microsoft\\PowerShell\\1\\ShellIds\\Microsoft.PowerShell", new RegistryItem("ExecutionPolicy", ValueKind.REG_SZ, "RemoteSigned"));
 
-                if (VersionComparer.IsBetweenVersionRange(installImageInfo.ProductVersion, VersionComparer.VERCONST_WIN11_24H2, VersionComparer.VERCONST_WIN11_25H2))
+                if (VersionComparer.IsBetweenVersionRange(installImageInfo?.ProductVersion, VersionComparer.VERCONST_WIN11_24H2, VersionComparer.VERCONST_WIN11_25H2))
                 {
                     // TODO for now this is here only to show if the image is within that version range. Add the code to add AppRuntime.CBS as a dependency of FileExp.
                     WriteLogMessage("TEST: Touching up fileexp...");
@@ -564,11 +603,11 @@ namespace MicroWin
                 // Old Setup should only be imposed on 24H2 and later (builds 26040 and later). Get this information
                 bool shouldUsePanther = false;
 
-                DismImageInfoCollection bootImageInfo = DismManager.GetImageInformation(bootwimPath);
+                DismImageInfoCollection? bootImageInfo = DismManager.GetImageInformation(bootwimPath);
                 if (bootImageInfo is not null)
                 {
                     // Get the second index then get version
-                    DismImageInfo setupImage = bootImageInfo.ElementAtOrDefault(1);
+                    DismImageInfo? setupImage = bootImageInfo.ElementAtOrDefault(1);
                     shouldUsePanther = VersionComparer.IsNewerThanVersion(setupImage?.ProductVersion, new(10, 0, 26040, 0));
                 }
 
@@ -642,12 +681,20 @@ namespace MicroWin
 
         private void lnkUseDT_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://github.com/CodingWonders/DISMTools");
+            Process.Start(new ProcessStartInfo("https://github.com/CodingWonders/DISMTools")
+            {
+                UseShellExecute = true,
+                Verb = "open"
+            });
         }
 
         private void lnkUseNtLite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("https://ntlite.com");
+            Process.Start(new ProcessStartInfo("https://ntlite.com")
+            {
+                UseShellExecute = true,
+                Verb = "open"
+            });
         }
 
         private void lnkOpenIsoLoc_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -656,6 +703,7 @@ namespace MicroWin
                 $"/select,\"{AppState.SaveISO}\"");
         }
 
+        [SupportedOSPlatform("Windows")]
         private void MainForm_SizeChanged(object sender, EventArgs e)
         {
             if (BusyCannotClose)

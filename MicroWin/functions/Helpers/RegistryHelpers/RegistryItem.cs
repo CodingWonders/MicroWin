@@ -16,7 +16,7 @@
         /// <summary>
         /// The data of the registry value
         /// </summary>
-        public object Data { get; set; }
+        public object? Data { get; set; }
 
         /// <summary>
         /// Creates a <see cref="RegistryItem"/> instance with name, kind, and data
@@ -25,7 +25,7 @@
         /// <param name="name">The name of the registry item</param>
         /// <param name="kind">The kind of the registry item</param>
         /// <param name="data">The data of the registry item</param>
-        public RegistryItem(string name, ValueKind kind, object data)
+        public RegistryItem(string name, ValueKind kind, object? data)
         {
             Name = name;
             Kind = kind;
