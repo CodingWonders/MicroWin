@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Runtime.Remoting.Messaging;
+// No longer using System.Runtime.Remoting.Messaging in .NET 10; remove reference
 
 namespace MicroWin.functions.Helpers.DesktopWindowManager
 {
