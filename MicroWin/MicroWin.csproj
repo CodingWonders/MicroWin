@@ -18,6 +18,7 @@
   <ItemGroup>
     <!-- Migrate Microsoft.Dism to PackageReference; keep pinned version from assessment -->
     <PackageReference Include="Microsoft.Dism" Version="4.0.7" />
+    <PackageReference Include="System.Management" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
