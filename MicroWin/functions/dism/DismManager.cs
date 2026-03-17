@@ -13,6 +13,22 @@ namespace MicroWin.functions.dism
     public static class DismManager
     {
 
+        private static int RunDismProcess(string? args)
+        {
+            Process dismProc = new()
+            {
+                StartInfo = new()
+                {
+                    FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "dism.exe"),
+                    Arguments = args
+                }
+            };
+
+            dismProc.Start();
+            dismProc.WaitForExit();
+            return dismProc.ExitCode;
+        }
+
         public static void MountImage(string wimPath, int index, string mountPath, Action<int> progress, Action<string> logMessage)
         {
             // Check whether the file exists, then the index, then the mount path.
@@ -202,6 +218,18 @@ namespace MicroWin.functions.dism
                 }
                 catch { }
             }
+        }
+
+        public static bool ExportImage(string? sourceImage, int? sourceIndex, string? destinationImage, string? compressionType)
+        {
+            if (!File.Exists(sourceImage))
+                return false;
+
+            DismImageInfoCollection? imageInfo = GetImageInformation(sourceImage);
+            if (imageInfo is null || (sourceIndex < 1 || sourceIndex > imageInfo.Count))
+                return false;
+
+            return RunDismProcess($"/english /export-image /sourceimagefile=\"{sourceImage}\" /sourceindex={sourceIndex} /destinationimagefile=\"{destinationImage}\" /compress={compressionType}") == 0;
         }
     }
 }

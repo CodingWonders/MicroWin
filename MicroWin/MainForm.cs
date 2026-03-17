@@ -572,6 +572,21 @@ namespace MicroWin
 
                 UpdateOverallProgressBar(50);
 
+                string exportedWimFile = $"{AppState.ScratchPath.TrimEnd("\\")}\\install2.wim";
+                UpdateCurrentStatus("Exporting install image...");
+                if (DismManager.ExportImage(installwimPath, AppState.SelectedImageIndex, exportedWimFile, "max"))
+                {
+                    try
+                    {
+                        UpdateCurrentStatus("Instating exported image...");
+                        File.Move(exportedWimFile, installwimPath, true);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+
                 string bootwimPath = Path.Combine(AppState.MountPath, "sources", "boot.wim");
                 if (!File.Exists(bootwimPath)) bootwimPath = Path.Combine(AppState.MountPath, "sources", "boot.esd");
 
