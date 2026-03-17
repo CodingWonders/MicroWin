@@ -11,6 +11,8 @@
     <Deterministic>true</Deterministic>
     <StartupObject>MicroWin.Program</StartupObject>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- Disable auto-generated assembly attributes to avoid duplication with Properties/AssemblyInfo.cs -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
 
   <ItemGroup>
