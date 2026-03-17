@@ -26,11 +26,7 @@
     <None Include="app.manifest" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
+  <!-- Resource files are included implicitly by the SDK; explicit EmbeddedResource entries removed to avoid duplicates -->
 
   <!-- Keep packages.config in the repository, but it's no longer used by SDK-style projects. -->
 
