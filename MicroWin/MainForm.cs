@@ -8,6 +8,7 @@ using MicroWin.functions.Helpers.DriverHelpers;
 using MicroWin.functions.Helpers.Loggers;
 using MicroWin.functions.Helpers.PropertyCheckers;
 using MicroWin.functions.Helpers.RegistryHelpers;
+using MicroWin.functions.Helpers.WMI;
 using MicroWin.functions.iso;
 using MicroWin.functions.UI;
 using MicroWin.OSCDIMG;
@@ -17,6 +18,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Management;
 using System.Net.Http;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
@@ -544,8 +546,50 @@ namespace MicroWin
 
                 if (VersionComparer.IsBetweenVersionRange(installImageInfo?.ProductVersion, VersionComparer.VERCONST_WIN11_24H2, VersionComparer.VERCONST_WIN11_25H2))
                 {
-                    // TODO for now this is here only to show if the image is within that version range. Add the code to add AppRuntime.CBS as a dependency of FileExp.
-                    WriteLogMessage("TEST: Touching up fileexp...");
+                    // We compare using a version range because, with .7019, they renamed the thing to AppRuntime.CBS.1.6 ... on 25H2 GA this issue doesn't seem to
+                    // happen anymore without the patch.
+
+                    try
+                    {
+                        WriteLogMessage("Adding AppX dependency...");
+                        string fileExpManifestPath = Path.Combine(AppState.ScratchPath, "Windows", "SystemApps", "MicrosoftWindows.Client.FileExp_cw5n1h2txyewy", "appxmanifest.xml");
+                        if (File.Exists(fileExpManifestPath))
+                        {
+                            /* Touch it up:
+                             * 1. takeown/icacls
+                             * 2. open/modify/save
+                             * 3. DONE!!!
+                             */
+
+                            Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "takeown.exe"), 
+                                $"/F \"{fileExpManifestPath}\" /A").WaitForExit();
+
+                            // since groups in Windows are localized, we need to grab the name of the Administrators group based on its SID
+                            ManagementObjectCollection? adminGroupMOC = WMIHelper.GetResultsFromManagementQuery("SELECT * FROM Win32_Group WHERE SID = \"S-1-5-32-544\"");
+                            if (adminGroupMOC is not null)
+                            {
+                                // I enjoy the simplicity of VB in some cases, such as this one. In there, ElementAtOrDefault works without having to cast stuff first...
+
+                                string? adminGroupName = WMIHelper.GetObjectValue(adminGroupMOC.Cast<ManagementObject>().ElementAtOrDefault(0), "Name")?.ToString();
+                                if (adminGroupName != "")
+                                    Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "icacls.exe"),
+                                        $"\"{fileExpManifestPath}\" /grant \"{adminGroupName}:(M)\"");
+
+                            }
+
+                            string[] manifestContents = File.ReadAllLines(fileExpManifestPath);
+                            // In that version range, the dependency declaration didn't really change; it's the 14th line
+                            string originalLine = manifestContents[13];
+                            string dependency = "\n        <PackageDependency Name=\"Microsoft.WindowsAppRuntime.CBS\" MinVersion=\"1.0.0.0\" Publisher=\"CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US\" />";
+                            manifestContents[13] = $"{originalLine}{dependency}";
+                            File.WriteAllLines(fileExpManifestPath, manifestContents, System.Text.Encoding.UTF8);
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DynaLog.logMessage(ex.Message);
+                    }
                 }
 
                 UpdateCurrentProgressBar(50);
