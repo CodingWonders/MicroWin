@@ -573,7 +573,7 @@ namespace MicroWin
                                 string? adminGroupName = WMIHelper.GetObjectValue(adminGroupMOC.Cast<ManagementObject>().ElementAtOrDefault(0), "Name")?.ToString();
                                 if (adminGroupName != "")
                                     Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "icacls.exe"),
-                                        $"\"{fileExpManifestPath}\" /grant \"{adminGroupName}:(M)\"");
+                                        $"\"{fileExpManifestPath}\" /grant \"{adminGroupName}:(M)\"").WaitForExit();
 
                             }
 
