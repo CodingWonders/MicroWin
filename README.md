@@ -5,7 +5,7 @@
 
 This repository contains the source code for the C# rewrite of MicroWin. This serves as the continuation of MicroWin from [WinUtil](https://github.com/ChrisTitusTech/winutil) that got removed recently.
 
-This is, currently, in **ALPHA** stages and contains bugs. We are working hard on fixing these, but we need your feedback.
+This is, currently, in **BETA** stages and contains bugs. We are working hard on fixing these, but we need your feedback.
 
 [Check out the roadmap](https://docs.google.com/spreadsheets/d/e/2PACX-1vT5jhIX1xnyttMb0go3HnUzX5iGpmBhbTtzA5gQP28o0CG1CuhhIExsToxvMgclf9Gpof6yNmNfgHnk/pubhtml)
 
