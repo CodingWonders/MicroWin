@@ -20,6 +20,11 @@ This is, currently, in **ALPHA** stages and contains bugs. We are working hard o
 > [!NOTE]
 > The application is not signed with code-signing certificates because of how expensive these are. Please turn off your antivirus or add an exclusion. We don't want any issue reports of that topic.
 
+Alternatively you can run the following command:
+``` ps1
+powershell -ExecutionPolicy Bypass -Command "iwr -useb https://raw.githubusercontent.com/CodingWonders/MicroWin/main/microwin.ps1 | iex"
+```
+
 ## Contributing to the repository
 
 **Requirements:**
