@@ -481,7 +481,7 @@ namespace MicroWin
                 DismManager.MountImage(installwimPath, AppState.SelectedImageIndex ?? 1, AppState.ScratchPath, (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
 
                 WriteLogMessage("Creating unattended answer file...");
-                UnattendGenerator.CreateUnattend($"{Path.Combine(AppState.ScratchPath, "Windows", "Panther")}");
+                UnattendGenerator.CreateUnattend($"{Path.Combine(AppState.ScratchPath, "Windows", "Panther")}", installImageInfo?.ProductVersion);
 
                 if (AppState.DriverExportMode > DriverExportMode.NoExport)
                 {
