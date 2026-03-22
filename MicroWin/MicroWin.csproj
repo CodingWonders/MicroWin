@@ -13,7 +13,12 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <!-- Disable auto-generated assembly attributes to avoid duplication with Properties/AssemblyInfo.cs -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ApplicationIcon>logo.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="logo.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <!-- Migrate Microsoft.Dism to PackageReference; keep pinned version from assessment -->
