@@ -154,7 +154,7 @@ namespace MicroWin.functions.Helpers.Loggers
                 {
                     fileLength = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "MW_DynaLog.log")).Length;
                 }
-                string messagePrefix = $"[{DateTime.UtcNow.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}] [PID {Process.GetCurrentProcess().Id}] [{new StackFrame(1).GetMethod().Name}{(getParentCaller ? $" ({new StackFrame(2).GetMethod().Name})" : "")}] ";
+                string messagePrefix = $"[{DateTime.UtcNow.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}] [PID {Process.GetCurrentProcess().Id}] [{new StackFrame(1)?.GetMethod()?.Name}{(getParentCaller ? $" ({new StackFrame(2)?.GetMethod()?.Name})" : "")}] ";
                 string messageLine = $"{messagePrefix}{message.Replace("\n", $"\n{messagePrefix}").Trim()}";
                 File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "MW_DynaLog.log"), $"{(fileLength > 0 ? "\n" : "")}{messageLine}");
             }
