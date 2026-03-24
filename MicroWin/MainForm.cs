@@ -185,6 +185,12 @@ namespace MicroWin
                 $"Thanks,\n" +
                 $"CWSOFTWARE and the rest of the team behind MicroWin.";
 
+            if (Environment.OSVersion.Version.Major < 10)
+            {
+                MessageBox.Show("MicroWin .NET is not supported on Windows 8.1 and earlier.", "Support Notice", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(1);
+            }
+
             lblDisclaimer.Text = disclaimerMessage;
 
             ChangePage(WizardPage.Page.WelcomePage);
@@ -418,14 +424,14 @@ namespace MicroWin
         private void UpdateCurrentProgressBar(int value)
         {
             int safeValue = Math.Max(0, Math.Min(value, 100));
-            if (this.InvokeRequired) this.Invoke(new Action(() => pbCurrent.Value = safeValue));
+            if (InvokeRequired) Invoke(new Action(() => pbCurrent.Value = safeValue));
             else pbCurrent.Value = safeValue;
         }
 
         [SupportedOSPlatform("Windows")]
         private void UpdateOverallStatus(string text)
         {
-            if (this.InvokeRequired) this.Invoke(new Action(() => { lblOverallStatus.Text = text; }));
+            if (InvokeRequired) Invoke(new Action(() => { lblOverallStatus.Text = text; }));
             else { lblOverallStatus.Text = text; }
         }
         
@@ -433,7 +439,7 @@ namespace MicroWin
         private void UpdateOverallProgressBar(int value)
         {
             int safeValue = Math.Max(0, Math.Min(value, 100));
-            if (this.InvokeRequired) this.Invoke(new Action(() => pbOverall.Value = safeValue));
+            if (InvokeRequired) Invoke(new Action(() => pbOverall.Value = safeValue));
             else pbOverall.Value = safeValue;
         }
         
