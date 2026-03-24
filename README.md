@@ -5,7 +5,7 @@
 
 This repository contains the source code for the C# rewrite of MicroWin. This serves as the continuation of MicroWin from [WinUtil](https://github.com/ChrisTitusTech/winutil) that got removed recently.
 
-This is, currently, in **ALPHA** stages and contains bugs. We are working hard on fixing these, but we need your feedback.
+This is, currently, in **BETA** stages and contains bugs. We are working hard on fixing these, but we need your feedback.
 
 [Check out the roadmap](https://docs.google.com/spreadsheets/d/e/2PACX-1vT5jhIX1xnyttMb0go3HnUzX5iGpmBhbTtzA5gQP28o0CG1CuhhIExsToxvMgclf9Gpof6yNmNfgHnk/pubhtml)
 
@@ -19,6 +19,11 @@ This is, currently, in **ALPHA** stages and contains bugs. We are working hard o
 
 > [!NOTE]
 > The application is not signed with code-signing certificates because of how expensive these are. Please turn off your antivirus or add an exclusion. We don't want any issue reports of that topic.
+
+Alternatively you can run the following command:
+``` ps1
+powershell -ExecutionPolicy Bypass -Command "iwr -useb https://raw.githubusercontent.com/CodingWonders/MicroWin/main/microwin.ps1 | iex"
+```
 
 ## Contributing to the repository
 

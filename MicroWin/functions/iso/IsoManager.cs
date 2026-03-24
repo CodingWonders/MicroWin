@@ -1,15 +1,17 @@
 ﻿using System;
 using System.IO;
 using System.Management;
+using System.Runtime.Versioning;
 using System.Threading;
 
 namespace MicroWin.functions.iso
 {
+    [SupportedOSPlatform("Windows")]
     public class IsoManager
     {
         private const string WmiScope = "root\\Microsoft\\Windows\\Storage";
         
-        public char MountAndGetDrive(string isoPath)
+        public char? MountAndGetDrive(string isoPath)
         {
             Console.WriteLine($"[DEBUG] Attempting to mount: {isoPath}");
 
@@ -26,16 +28,16 @@ namespace MicroWin.functions.iso
             isoObject.InvokeMethod("Mount", inParams, null);
 
             string volumeQuery = String.Format("ASSOCIATORS OF {{{0}}} WHERE ASSOCCLASS = MSFT_DiskImageToVolume RESULTCLASS = MSFT_Volume", isoObjectPath);
-            char driveLetter = '\0';
+            char? driveLetter = '\0';
 
             using ManagementObjectSearcher query = new(WmiScope, volumeQuery);
             while (driveLetter == '\0')
             {
                 Thread.Sleep(50);
                 using ManagementObjectCollection queryCollection = query.Get();
-                foreach (ManagementBaseObject item in queryCollection)
+                foreach (ManagementBaseObject? item in queryCollection)
                 {
-                    driveLetter = item["DriveLetter"].ToString()[0];
+                    driveLetter = item["DriveLetter"]?.ToString()?[0];
                 }
             }
 
@@ -47,7 +49,7 @@ namespace MicroWin.functions.iso
             return String.Format("MSFT_DiskImage.ImagePath={0},StorageType=1", $"\"{isoPath.Replace("\\", "\\\\")}\"");
         }
 
-        public void ExtractIso(string driveLetter, string destination, Action<int> progressCallback)
+        public void ExtractIso(string? driveLetter, string destination, Action<int> progressCallback)
         {
             string source = $"{driveLetter}:\\";
             Console.WriteLine($"[DEBUG] Starting extraction from {source} to {destination}");
@@ -62,9 +64,9 @@ namespace MicroWin.functions.iso
             {
                 try
                 {
-                    string destFile = file.Replace(source, $"{destination}\\");
-                    string destDir = Path.GetDirectoryName(destFile);
-                    if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
+                    string? destFile = file.Replace(source, $"{destination}\\");
+                    string? destDir = Path.GetDirectoryName(destFile);
+                    if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir ?? "");
 
                     File.Copy(file, destFile, true);
                     copiedFiles++;
