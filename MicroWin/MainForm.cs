@@ -173,7 +173,7 @@ namespace MicroWin
         [SupportedOSPlatform("Windows")]
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Text = $"MicroWin .NET ({swStatus} 0.2)";
+            Text = $"MicroWin .NET ({swStatus} 0.2.1)";
 
             string disclaimerMessage = $"Thank you for trying this {swStatus} release of MicroWin .NET.\n\n" +
                 $"Because this is a prerelease version of a rewrite of the original PowerShell version, bugs may happen. We expect improvements in quality " +
@@ -468,7 +468,7 @@ namespace MicroWin
   / /\/\ \| || (__ | |   | (_) | \  /\  / | || | | |
   \/    \/|_| \___||_|    \___/   \/  \/  |_||_| |_|
 
-                MicroWin .NET (BETA 0.2)
+              MicroWin .NET (BETA 0.2.1)
 
 ";
 
