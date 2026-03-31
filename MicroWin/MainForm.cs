@@ -26,6 +26,7 @@ using System.Windows.Forms;
 
 namespace MicroWin
 {
+    [SupportedOSPlatform("Windows")]
     public partial class MainForm : Form
     {
         private const string swStatus = "BETA";
@@ -47,7 +48,7 @@ namespace MicroWin
             InitializeComponent();
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void SetColorMode()
         {
             RegistryKey? colorRk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
@@ -81,7 +82,7 @@ namespace MicroWin
             WindowHelper.ToggleDarkTitleBar(Handle, colorVal == 0);
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void ChangePage(WizardPage.Page newPage)
         {
             DynaLog.logMessage("Changing current page of the wizard...");
@@ -130,7 +131,7 @@ namespace MicroWin
             }
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private bool VerifyOptionsInPage(WizardPage.Page wizardPage)
         {
             switch (wizardPage)
@@ -170,7 +171,6 @@ namespace MicroWin
             return true;
         }
 
-        [SupportedOSPlatform("Windows")]
         private void MainForm_Load(object sender, EventArgs e)
         {
             Text = $"MicroWin .NET ({swStatus} 0.2.1)";
@@ -206,7 +206,7 @@ namespace MicroWin
             DriverExportCombo.SelectedIndexChanged += DriverExportCombo_SelectedIndexChanged;
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void Next_Button_Click(object sender, EventArgs e)
         {
             if (CurrentWizardPage.wizardPage == WizardPage.Page.FinishPage)
@@ -219,25 +219,25 @@ namespace MicroWin
             }
         }
         
-        [SupportedOSPlatform("Windows")]
+        
         private void Back_Button_Click(object sender, EventArgs e)
         {
             ChangePage(CurrentWizardPage.wizardPage - 1);
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void isoPickerBtn_Click(object sender, EventArgs e)
         {
             isoPickerOFD.ShowDialog(this);
         }
         
-        [SupportedOSPlatform("Windows")]
+        
         private void isoPickerOFD_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
             isoPathTB.Text = isoPickerOFD.FileName;
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void InvokeIsoExtractionUIUpdate(string status, int progress)
         {
             if (InvokeRequired)
@@ -254,7 +254,7 @@ namespace MicroWin
             }
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void LoadWimData()
         {
             string wimPath = Path.Combine(AppState.MountPath, "sources", "install.wim");
@@ -300,7 +300,7 @@ namespace MicroWin
             }
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private async void isoPathTB_TextChanged(object sender, EventArgs e)
         {
             if (File.Exists(isoPathTB.Text))
@@ -337,7 +337,7 @@ namespace MicroWin
             }
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void lvVersions_SelectedIndexChanged(object? sender, EventArgs e)
         {
             if (lvVersions.SelectedItems.Count == 1)
@@ -354,55 +354,55 @@ namespace MicroWin
             Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "lusrmgr.msc"));
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void usrNameTB_TextChanged(object sender, EventArgs e)
         {
             AppState.UserAccounts[0].Name = usrNameTB.Text;
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void b64CB_CheckedChanged(object sender, EventArgs e)
         {
             AppState.EncodeWithB64 = b64CB.Checked;
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void usrPasswordTB_TextChanged(object sender, EventArgs e)
         {
             AppState.UserAccounts[0].Password = usrPasswordTB.Text;
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void usrNameCurrentSysNameBtn_Click(object sender, EventArgs e)
         {
             usrNameTB.Text = Environment.UserName;
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void usrPasswordRevealCB_CheckedChanged(object sender, EventArgs e)
         {
             usrPasswordTB.PasswordChar = usrPasswordRevealCB.Checked ? '\0' : '*';
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void DriverExportCombo_SelectedIndexChanged(object? sender, EventArgs e)
         {
             AppState.DriverExportMode = (DriverExportMode)DriverExportCombo.SelectedIndex;
         }
         
-        [SupportedOSPlatform("Windows")]
+        
         private void ReportToolCB_CheckedChanged(object sender, EventArgs e)
         {
             AppState.AddReportingToolShortcut = ReportToolCB.Checked;
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void UnattendCopyCB_CheckedChanged(object sender, EventArgs e)
         {
             AppState.CopyUnattendToFileSystem = UnattendCopyCB.Checked;
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void UpdateCurrentStatus(string text, bool resetBar = true)
         {
             if (InvokeRequired)
@@ -420,7 +420,7 @@ namespace MicroWin
             }
         }
         
-        [SupportedOSPlatform("Windows")]
+        
         private void UpdateCurrentProgressBar(int value)
         {
             int safeValue = Math.Max(0, Math.Min(value, 100));
@@ -428,14 +428,14 @@ namespace MicroWin
             else pbCurrent.Value = safeValue;
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void UpdateOverallStatus(string text)
         {
             if (InvokeRequired) Invoke(new Action(() => { lblOverallStatus.Text = text; }));
             else { lblOverallStatus.Text = text; }
         }
         
-        [SupportedOSPlatform("Windows")]
+        
         private void UpdateOverallProgressBar(int value)
         {
             int safeValue = Math.Max(0, Math.Min(value, 100));
@@ -443,7 +443,7 @@ namespace MicroWin
             else pbOverall.Value = safeValue;
         }
         
-        [SupportedOSPlatform("Windows")]
+        
         private void WriteLogMessage(string message)
         {
             string fullMsg = $"[{DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss")} UTC] {message}{Environment.NewLine}";
@@ -457,7 +457,7 @@ namespace MicroWin
             }
         }
         
-        [SupportedOSPlatform("Windows")]
+        
         private async void RunDeployment()
         {
             // Clear old results and write the cool banner
@@ -768,7 +768,7 @@ namespace MicroWin
                 $"/select,\"{AppState.SaveISO}\"");
         }
 
-        [SupportedOSPlatform("Windows")]
+        
         private void MainForm_SizeChanged(object sender, EventArgs e)
         {
             if (BusyCannotClose)
