@@ -34,6 +34,7 @@
             Back_Button = new Button();
             Next_Button = new Button();
             Cancel_Button = new Button();
+            About_Button = new Button();
             PageContainerPanel = new Panel();
             FinishPage = new Panel();
             lnkViewCreationLogs = new LinkLabel();
@@ -129,6 +130,7 @@
             // ButtonPanel
             // 
             ButtonPanel.Controls.Add(TableLayoutPanel1);
+            ButtonPanel.Controls.Add(About_Button);
             ButtonPanel.Dock = DockStyle.Bottom;
             ButtonPanel.Location = new Point(0, 521);
             ButtonPanel.Name = "ButtonPanel";
@@ -188,6 +190,18 @@
             Cancel_Button.TabIndex = 1;
             Cancel_Button.Text = "Cancel";
             // 
+            // About_Button
+            // 
+            About_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            About_Button.DialogResult = DialogResult.Cancel;
+            About_Button.FlatStyle = FlatStyle.System;
+            About_Button.Location = new Point(12, 9);
+            About_Button.Name = "About_Button";
+            About_Button.Size = new Size(64, 23);
+            About_Button.TabIndex = 1;
+            About_Button.Text = "About";
+            About_Button.Click += About_Button_Click;
+            // 
             // PageContainerPanel
             // 
             PageContainerPanel.Controls.Add(FinishPage);
@@ -229,6 +243,7 @@
             lnkViewCreationLogs.TabIndex = 12;
             lnkViewCreationLogs.TabStop = true;
             lnkViewCreationLogs.Text = "View ISO creation logs";
+            lnkViewCreationLogs.LinkClicked += lnkViewCreationLogs_LinkClicked;
             // 
             // lnkOpenIsoLoc
             // 
@@ -1095,5 +1110,6 @@
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.LinkLabel lnkUseNtLite;
         private System.Windows.Forms.LinkLabel lnkUseDT;
+        internal Button About_Button;
     }
 }

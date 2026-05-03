@@ -31,6 +31,7 @@ namespace MicroWin
     public partial class MainForm : Form
     {
         private const string swStatus = "BETA";
+        private const string appVer = "0.2.1";
 
         private WizardPage CurrentWizardPage = new();
         private List<WizardPage.Page> VerifyInPages = [
@@ -49,7 +50,7 @@ namespace MicroWin
             InitializeComponent();
         }
 
-        
+
         private void SetColorMode()
         {
             RegistryKey? colorRk = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
@@ -83,7 +84,7 @@ namespace MicroWin
             WindowHelper.ToggleDarkTitleBar(Handle, colorVal == 0);
         }
 
-        
+
         private void ChangePage(WizardPage.Page newPage)
         {
             DynaLog.logMessage("Changing current page of the wizard...");
@@ -132,7 +133,7 @@ namespace MicroWin
             }
         }
 
-        
+
         private bool VerifyOptionsInPage(WizardPage.Page wizardPage)
         {
             switch (wizardPage)
@@ -174,7 +175,7 @@ namespace MicroWin
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Text = $"MicroWin .NET ({swStatus} 0.2.1)";
+            Text = $"MicroWin .NET ({swStatus} {appVer})";
 
             string disclaimerMessage = $"Thank you for trying this {swStatus} release of MicroWin .NET.\n\n" +
                 $"Because this is a prerelease version of a rewrite of the original PowerShell version, bugs may happen. We expect improvements in quality " +
@@ -207,7 +208,7 @@ namespace MicroWin
             DriverExportCombo.SelectedIndexChanged += DriverExportCombo_SelectedIndexChanged;
         }
 
-        
+
         private void Next_Button_Click(object sender, EventArgs e)
         {
             if (CurrentWizardPage.wizardPage == WizardPage.Page.FinishPage)
@@ -219,31 +220,32 @@ namespace MicroWin
                 ChangePage(CurrentWizardPage.wizardPage + 1);
             }
         }
-        
-        
+
+
         private void Back_Button_Click(object sender, EventArgs e)
         {
             ChangePage(CurrentWizardPage.wizardPage - 1);
         }
 
-        
+
         private void isoPickerBtn_Click(object sender, EventArgs e)
         {
             isoPickerOFD.ShowDialog(this);
         }
-        
-        
+
+
         private void isoPickerOFD_FileOk(object sender, System.ComponentModel.CancelEventArgs e)
         {
             isoPathTB.Text = isoPickerOFD.FileName;
         }
 
-        
+
         private void InvokeIsoExtractionUIUpdate(string status, int progress)
         {
             if (InvokeRequired)
             {
-                Invoke(new Action(() => {
+                Invoke(new Action(() =>
+                {
                     lblExtractionStatus.Text = $"Status: {status}";
                     isoExtractionPB.Value = progress;
                 }));
@@ -255,7 +257,7 @@ namespace MicroWin
             }
         }
 
-        
+
         private void LoadWimData()
         {
             string wimPath = Path.Combine(AppState.MountPath, "sources", "install.wim");
@@ -301,7 +303,7 @@ namespace MicroWin
             }
         }
 
-        
+
         private async void isoPathTB_TextChanged(object sender, EventArgs e)
         {
             if (File.Exists(isoPathTB.Text))
@@ -313,14 +315,16 @@ namespace MicroWin
                 ButtonPanel.Enabled = false;
                 WindowHelper.DisableCloseCapability(Handle);
 
-                await Task.Run(() => {
+                await Task.Run(() =>
+                {
                     var iso = new IsoManager();
                     InvokeIsoExtractionUIUpdate("Mounting ISO...", 5);
 
                     char? drive = iso.MountAndGetDrive(AppState.IsoPath);
                     if (drive != '\0')
                     {
-                        iso.ExtractIso(drive?.ToString(), AppState.MountPath, (p) => {
+                        iso.ExtractIso(drive?.ToString(), AppState.MountPath, (p) =>
+                        {
                             // Update the bar based on the 0-100 value from IsoManager
                             InvokeIsoExtractionUIUpdate($"Extracting: {p}%", p);
                         });
@@ -338,7 +342,7 @@ namespace MicroWin
             }
         }
 
-        
+
         private void lvVersions_SelectedIndexChanged(object? sender, EventArgs e)
         {
             if (lvVersions.SelectedItems.Count == 1)
@@ -355,31 +359,31 @@ namespace MicroWin
             Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "lusrmgr.msc"));
         }
 
-        
+
         private void usrNameTB_TextChanged(object sender, EventArgs e)
         {
             AppState.UserAccounts[0].Name = usrNameTB.Text;
         }
 
-        
+
         private void b64CB_CheckedChanged(object sender, EventArgs e)
         {
             AppState.EncodeWithB64 = b64CB.Checked;
         }
 
-        
+
         private void usrPasswordTB_TextChanged(object sender, EventArgs e)
         {
             AppState.UserAccounts[0].Password = usrPasswordTB.Text;
         }
 
-        
+
         private void usrNameCurrentSysNameBtn_Click(object sender, EventArgs e)
         {
             usrNameTB.Text = Environment.UserName;
         }
 
-        
+
         private void usrPasswordRevealCB_CheckedChanged(object sender, EventArgs e)
         {
             // Let's add this bit right here so that Chris feels happy.
@@ -394,29 +398,29 @@ namespace MicroWin
                 {
                     // don't play this easter egg
                 }
-            }                
+            }
             usrPasswordTB.PasswordChar = usrPasswordRevealCB.Checked ? '\0' : '*';
         }
 
-        
+
         private void DriverExportCombo_SelectedIndexChanged(object? sender, EventArgs e)
         {
             AppState.DriverExportMode = (DriverExportMode)DriverExportCombo.SelectedIndex;
         }
-        
-        
+
+
         private void ReportToolCB_CheckedChanged(object sender, EventArgs e)
         {
             AppState.AddReportingToolShortcut = ReportToolCB.Checked;
         }
 
-        
+
         private void UnattendCopyCB_CheckedChanged(object sender, EventArgs e)
         {
             AppState.CopyUnattendToFileSystem = UnattendCopyCB.Checked;
         }
 
-        
+
         private void UpdateCurrentStatus(string text, bool resetBar = true)
         {
             if (InvokeRequired)
@@ -427,14 +431,14 @@ namespace MicroWin
                     if (resetBar) pbCurrent.Value = 0;
                 }));
             }
-            else 
-            { 
+            else
+            {
                 lblCurrentStatus.Text = text;
-                if (resetBar) pbCurrent.Value = 0; 
+                if (resetBar) pbCurrent.Value = 0;
             }
         }
-        
-        
+
+
         private void UpdateCurrentProgressBar(int value)
         {
             int safeValue = Math.Max(0, Math.Min(value, 100));
@@ -442,22 +446,22 @@ namespace MicroWin
             else pbCurrent.Value = safeValue;
         }
 
-        
+
         private void UpdateOverallStatus(string text)
         {
             if (InvokeRequired) Invoke(new Action(() => { lblOverallStatus.Text = text; }));
             else { lblOverallStatus.Text = text; }
         }
-        
-        
+
+
         private void UpdateOverallProgressBar(int value)
         {
             int safeValue = Math.Max(0, Math.Min(value, 100));
             if (InvokeRequired) Invoke(new Action(() => pbOverall.Value = safeValue));
             else pbOverall.Value = safeValue;
         }
-        
-        
+
+
         private void WriteLogMessage(string message)
         {
             string fullMsg = $"[{DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss")} UTC] {message}{Environment.NewLine}";
@@ -470,26 +474,27 @@ namespace MicroWin
                 logTB.AppendText(fullMsg);
             }
         }
-        
-        
+
+
         private async void RunDeployment()
         {
             // Clear old results and write the cool banner
             logTB.Clear();
-            logTB.Text = @"
+            logTB.Text = $"""
     /\/\  (_)  ___  _ __   ___  / / /\ \ \(_) _ __
    /    \ | | / __|| '__| / _ \ \ \/  \/ /| || '_ \
   / /\/\ \| || (__ | |   | (_) | \  /\  / | || | | |
   \/    \/|_| \___||_|    \___/   \/  \/  |_||_| |_|
 
-              MicroWin .NET (BETA 0.2.1)
+              MicroWin .NET (BETA {appVer})
 
-";
+""";
 
             WindowHelper.DisableCloseCapability(Handle);
             BusyCannotClose = true;
 
-            await Task.Run(async () => {
+            await Task.Run(async () =>
+            {
                 string mwTempFilePath = $"{Environment.GetEnvironmentVariable("SYSTEMDRIVE")}\\MicroWin";
                 string bootDriverPath = $"{mwTempFilePath}\\BootDrivers";
                 string allDriversPath = $"{mwTempFilePath}\\AllDrivers";
@@ -581,7 +586,7 @@ namespace MicroWin
                              * 3. DONE!!!
                              */
 
-                            Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "takeown.exe"), 
+                            Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "takeown.exe"),
                                 $"/F \"{fileExpManifestPath}\" /A").WaitForExit();
 
                             // since groups in Windows are localized, we need to grab the name of the Administrators group based on its SID
@@ -752,6 +757,15 @@ namespace MicroWin
                     }
                     catch { }
                 }
+
+                try
+                {
+                    File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "mw_operations.log"), logTB.Text);
+                }
+                catch
+                {
+                    // don't save operation logs then
+                }
             });
 
             WindowHelper.EnableCloseCapability(Handle);
@@ -787,7 +801,7 @@ namespace MicroWin
                 $"/select,\"{AppState.SaveISO}\"");
         }
 
-        
+
         private void MainForm_SizeChanged(object sender, EventArgs e)
         {
             if (BusyCannotClose)
@@ -803,6 +817,27 @@ namespace MicroWin
                 e.Cancel = true;
                 return;
             }
+        }
+
+        private void lnkViewCreationLogs_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "mw_operations.log")))
+            {
+                Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "notepad.exe"),
+                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "mw_operations.log"));
+            }
+        }
+
+        private void About_Button_Click(object sender, EventArgs e)
+        {
+            string aboutMsg = $"""
+                MicroWin .NET ({swStatus} {appVer})
+                --- Made by CodingWonders and Real-MullaC
+                (c) 2023-2026 CT Tech Group LLC
+                (c) 2026 CodingWonders Software
+                """;
+
+            MessageBox.Show(aboutMsg, "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }
