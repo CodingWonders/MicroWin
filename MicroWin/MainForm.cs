@@ -612,6 +612,11 @@ namespace MicroWin
                     }
                 }
 
+                // add values for unsigned rdp (taking effect with April cumulative updates for Windows 10, 11 and Server 2016/2019/2022/2025)
+                WriteLogMessage("Disabling unsigned RDP file warnings...");
+                RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services\\Client", new RegistryItem("RedirectionWarningDialogVersion", ValueKind.REG_DWORD, 1));
+                RegistryHelper.AddRegistryItem("HKLM\\zNTUSER\\Software\\Microsoft\\Terminal Server Client", new RegistryItem("RdpLaunchConsentAccepted", ValueKind.REG_DWORD, 1));
+
                 UpdateCurrentProgressBar(50);
                 using (var client = new HttpClient())
                 {
