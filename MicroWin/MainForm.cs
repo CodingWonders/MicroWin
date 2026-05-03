@@ -19,6 +19,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.Media;
 using System.Net.Http;
 using System.Runtime.Versioning;
 using System.Threading.Tasks;
@@ -381,6 +382,19 @@ namespace MicroWin
         
         private void usrPasswordRevealCB_CheckedChanged(object sender, EventArgs e)
         {
+            // Let's add this bit right here so that Chris feels happy.
+            if (usrPasswordRevealCB.Checked && usrNameTB.Text == "Subscribe" && usrPasswordTB.Text == "1234")
+            {
+                try
+                {
+                    using SoundPlayer player = new(Properties.Resources.yapper_password);
+                    player.Play();
+                }
+                catch
+                {
+                    // don't play this easter egg
+                }
+            }                
             usrPasswordTB.PasswordChar = usrPasswordRevealCB.Checked ? '\0' : '*';
         }
 
