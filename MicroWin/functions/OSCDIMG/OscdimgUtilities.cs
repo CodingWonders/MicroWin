@@ -22,7 +22,7 @@ namespace MicroWin.OSCDIMG
         public static string oscdimgPath { get; set; } = Path.Combine(AppState.TempRoot, "oscdimg.exe");
         public static bool oscdImgFound => File.Exists(oscdimgPath);
         
-        public static void checkoscdImg()
+        public static void CheckOscdimgBinaries()
         {
             if (!oscdImgFound && TestKitRootPaths(expectedADKPath, expectedADKPath_WOW64Environ))
             {
@@ -43,10 +43,10 @@ namespace MicroWin.OSCDIMG
                     File.WriteAllBytes(oscdimgPath, data);
                 }
             }
-            startInstall();
+            InvokeOscdimg();
         }
 
-        public static void startInstall()
+        private static void InvokeOscdimg()
         {
             // Start the ISO building
             Process oscdimgProc = new Process()
@@ -97,7 +97,7 @@ namespace MicroWin.OSCDIMG
 
         public static bool TestKitRootPaths(string adkKitsRootPath, string adkKitsRootPath_WOW64Environ)
         {
-            if (File.Exists(adkKitsRootPath) ^ File.Exists(adkKitsRootPath_WOW64Environ))
+            if (File.Exists(adkKitsRootPath) | File.Exists(adkKitsRootPath_WOW64Environ))
             {
                 return true;
             }

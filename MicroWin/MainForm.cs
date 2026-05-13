@@ -723,7 +723,7 @@ namespace MicroWin
                 UpdateOverallStatus("Generating ISO file...");
                 UpdateOverallProgressBar(90);
                 UpdateCurrentStatus("Generating ISO file...");
-                OscdimgUtilities.checkoscdImg();
+                OscdimgUtilities.CheckOscdimgBinaries();
 
                 UpdateOverallStatus("Finishing up...");
                 UpdateOverallProgressBar(95);
