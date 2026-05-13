@@ -6,6 +6,7 @@ using MicroWin.functions.Helpers.DeleteFile;
 using MicroWin.functions.Helpers.DesktopWindowManager;
 using MicroWin.functions.Helpers.DriverHelpers;
 using MicroWin.functions.Helpers.Loggers;
+using MicroWin.functions.Helpers.PowerManagement;
 using MicroWin.functions.Helpers.PropertyCheckers;
 using MicroWin.functions.Helpers.RegistryHelpers;
 using MicroWin.functions.Helpers.WMI;
@@ -493,6 +494,8 @@ namespace MicroWin
             WindowHelper.DisableCloseCapability(Handle);
             BusyCannotClose = true;
 
+            PowerManagementHelper.DisableSystemSleepMode();
+
             await Task.Run(async () =>
             {
                 string mwTempFilePath = $"{Environment.GetEnvironmentVariable("SYSTEMDRIVE")}\\MicroWin";
@@ -768,6 +771,7 @@ namespace MicroWin
                 }
             });
 
+            PowerManagementHelper.EnableSystemSleepMode();
             WindowHelper.EnableCloseCapability(Handle);
             WriteLogMessage("Finished.");
             UpdateCurrentStatus("Generation complete");
