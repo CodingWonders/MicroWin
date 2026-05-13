@@ -493,6 +493,8 @@ namespace MicroWin
             WindowHelper.DisableCloseCapability(Handle);
             BusyCannotClose = true;
 
+            PowerManagementHelper.DisableSystemSleepMode();
+
             await Task.Run(async () =>
             {
                 string mwTempFilePath = $"{Environment.GetEnvironmentVariable("SYSTEMDRIVE")}\\MicroWin";
@@ -768,6 +770,7 @@ namespace MicroWin
                 }
             });
 
+            PowerManagementHelper.EnableSystemSleepMode();
             WindowHelper.EnableCloseCapability(Handle);
             WriteLogMessage("Finished.");
             UpdateCurrentStatus("Generation complete");
