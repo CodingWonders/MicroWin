@@ -352,12 +352,12 @@ namespace MicroWin
 
         private void lnkImmersiveAccounts_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start("ms-settings:otherusers");
+            Process.Start(new ProcessStartInfo() { FileName = "ms-settings:otherusers", UseShellExecute = true });
         }
 
         private void lnkLusrMgr_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "lusrmgr.msc"));
+            Process.Start(new ProcessStartInfo() { FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "lusrmgr.msc"), UseShellExecute = true });
         }
 
 
