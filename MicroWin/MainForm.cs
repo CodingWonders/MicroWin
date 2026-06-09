@@ -651,7 +651,8 @@ namespace MicroWin
 
                 string exportedWimFile = $"{AppState.ScratchPath.TrimEnd("\\")}\\install2.wim";
                 UpdateCurrentStatus("Exporting install image...");
-                if (DismManager.ExportImage(installwimPath, AppState.SelectedImageIndex, exportedWimFile, "max"))
+#pragma warning disable CS8604
+                if (DismManager.ExportImage(installwimPath, AppState.SelectedImageIndex, exportedWimFile, "max", (p) => WriteLogMessage(p)))
                 {
                     try
                     {
@@ -663,6 +664,7 @@ namespace MicroWin
 
                     }
                 }
+#pragma warning restore CS8604
 
                 string bootwimPath = Path.Combine(AppState.MountPath, "sources", "boot.wim");
                 if (!File.Exists(bootwimPath)) bootwimPath = Path.Combine(AppState.MountPath, "sources", "boot.esd");
