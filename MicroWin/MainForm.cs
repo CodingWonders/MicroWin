@@ -726,7 +726,9 @@ namespace MicroWin
                 UpdateOverallStatus("Generating ISO file...");
                 UpdateOverallProgressBar(90);
                 UpdateCurrentStatus("Generating ISO file...");
-                OscdimgUtilities.CheckOscdimgBinaries();
+#pragma warning disable CS8604
+                OscdimgUtilities.CheckAndInvokeOscdimgBinaries((p) => WriteLogMessage(p));
+#pragma warning restore CS8604
 
                 UpdateOverallStatus("Finishing up...");
                 UpdateOverallProgressBar(95);

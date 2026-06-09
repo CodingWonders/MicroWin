@@ -22,7 +22,7 @@ namespace MicroWin.OSCDIMG
         public static string oscdimgPath { get; set; } = Path.Combine(AppState.TempRoot, "oscdimg.exe");
         public static bool oscdImgFound => File.Exists(oscdimgPath);
         
-        public static void CheckOscdimgBinaries()
+        public static void CheckAndInvokeOscdimgBinaries(Action<string?>? outputReporter = null)
         {
             if (!oscdImgFound && TestKitRootPaths(expectedADKPath, expectedADKPath_WOW64Environ))
             {
@@ -43,10 +43,10 @@ namespace MicroWin.OSCDIMG
                     File.WriteAllBytes(oscdimgPath, data);
                 }
             }
-            InvokeOscdimg();
+            InvokeOscdimg(outputReporter);
         }
 
-        private static void InvokeOscdimg()
+        private static void InvokeOscdimg(Action<string?>? actionReporter = null)
         {
             // Start the ISO building
             Process oscdimgProc = new Process()
@@ -57,7 +57,35 @@ namespace MicroWin.OSCDIMG
                     Arguments = $"-m -o -u2 -udfver102 -bootdata:2#p0,e,b{Path.Combine(AppState.MountPath, "boot", "etfsboot.com")}#pEF,e,b{Path.Combine(AppState.MountPath, "efi", "microsoft", "boot", "efisys.bin")} \"{AppState.MountPath}\" \"{AppState.SaveISO}\""
                 }
             };
+            if (actionReporter is not null)
+            {
+                oscdimgProc.StartInfo.CreateNoWindow = true;
+                oscdimgProc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                oscdimgProc.StartInfo.RedirectStandardOutput = true;
+                oscdimgProc.StartInfo.RedirectStandardError = true;
+                oscdimgProc.OutputDataReceived += (sender, e) =>
+                {
+                    if (!string.IsNullOrEmpty(e.Data))
+                    {
+                        actionReporter.Invoke(e.Data);
+                    }
+                };
+                // Weirdly enough, OSCDIMG progress ("n% complete") is reported via STDERR as opposed
+                // to STDOUT. That's why we have to capture STDERR too...
+                oscdimgProc.ErrorDataReceived += (sender, e) =>
+                {
+                    if (!string.IsNullOrEmpty(e.Data))
+                    {
+                        actionReporter.Invoke(e.Data);
+                    }
+                };
+            }
             oscdimgProc.Start();
+            if (actionReporter is not null)
+            {
+                oscdimgProc.BeginOutputReadLine();
+                oscdimgProc.BeginErrorReadLine();
+            }
             oscdimgProc.WaitForExit();
             DynaLog.logMessage($"Process exited with code {oscdimgProc.ExitCode}.");
         }
