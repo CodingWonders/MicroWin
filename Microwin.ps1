@@ -1,3 +1,5 @@
+[Net.ServicePointManager]::SecurityProtocol = "Tls12"
+
 $tempPath = [System.IO.Path]::GetTempPath()
 $zipFile = Join-Path $tempPath "MicroWinDownload.zip"
 $extractPath = Join-Path $tempPath "MicroWinExtract"
@@ -23,7 +25,10 @@ if ([Environment]::Is64BitOperatingSystem) {
     $downloadUri = ($assetData.assets | Where-Object { $_.browser_download_url.Contains("x86") }).browser_download_url
 }
 
+# To get rid of long delay times we will not show any progress output
+$ProgressPreference = 'SilentlyContinue'
 Invoke-WebRequest -Uri "$downloadUri" -OutFile $zipFile
+$ProgressPreference = 'Continue'
 
 Expand-Archive -Path $zipFile -DestinationPath $extractPath -Force
 Remove-Item $zipFile
