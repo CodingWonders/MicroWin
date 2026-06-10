@@ -13,7 +13,7 @@ namespace MicroWin.functions.dism
     public static class DismManager
     {
 
-        private static int RunDismProcess(string? args, Action<string?>? actionReporter = null)
+        public static int RunDismProcess(string? args, Action<string?>? actionReporter = null)
         {
             Process dismProc = new()
             {

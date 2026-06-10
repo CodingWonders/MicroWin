@@ -513,23 +513,26 @@ namespace MicroWin
                 WriteLogMessage("Creating unattended answer file...");
                 UnattendGenerator.CreateUnattend($"{Path.Combine(AppState.ScratchPath, "Windows", "Panther")}", installImageInfo?.ProductVersion);
 
+#pragma warning disable CS8604
                 if (AppState.DriverExportMode > DriverExportMode.NoExport)
                 {
+                    UpdateOverallProgressBar(5);
                     WriteLogMessage("Beginning driver export...");
-                    DriverExportHelper.ExportDrivers(bootDriverPath, "SCSIAdapter");
+                    DriverExportHelper.ExportDrivers(bootDriverPath, "SCSIAdapter", (message) => WriteLogMessage(message));
                     if (AppState.DriverExportMode == DriverExportMode.ExportAll)
-                        DriverExportHelper.ExportDrivers(allDriversPath);
+                        DriverExportHelper.ExportDrivers(allDriversPath, (message) => WriteLogMessage(message));
 
                     WriteLogMessage("Driver export complete. Beginning driver import...");
 
                     if (Directory.Exists(bootDriverPath))
-                        DriverInstallHelper.InstallDrivers(AppState.ScratchPath, bootDriverPath);
+                        DriverInstallHelper.InstallDrivers(AppState.ScratchPath, bootDriverPath, (message) => WriteLogMessage(message));
 
                     if (Directory.Exists(allDriversPath))
-                        DriverInstallHelper.InstallDrivers(AppState.ScratchPath, allDriversPath);
+                        DriverInstallHelper.InstallDrivers(AppState.ScratchPath, allDriversPath, (message) => WriteLogMessage(message));
 
                     WriteLogMessage("Driver import complete.");
                 }
+#pragma warning restore CS8604
 
                 UpdateOverallProgressBar(10);
                 new OsFeatureDisabler().RunTask((p) => UpdateCurrentProgressBar(p), (msg) => UpdateCurrentStatus(msg, false), (msg) => WriteLogMessage(msg));
@@ -719,8 +722,10 @@ namespace MicroWin
                 RegistryHelper.UnloadRegistryHive("zDEFAULT");
                 RegistryHelper.UnloadRegistryHive("zNTUSER");
 
+#pragma warning disable CS8604
                 if (Directory.Exists(bootDriverPath))
-                    DriverInstallHelper.InstallDrivers(AppState.ScratchPath, bootDriverPath);
+                    DriverInstallHelper.InstallDrivers(AppState.ScratchPath, bootDriverPath, (message) => WriteLogMessage(message));
+#pragma warning restore CS8604
 
                 UpdateCurrentStatus("Unmounting boot image...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
@@ -729,6 +734,27 @@ namespace MicroWin
                 UpdateOverallProgressBar(90);
                 UpdateCurrentStatus("Generating ISO file...");
 #pragma warning disable CS8604
+                // If the ISO file already exists then we keep trying to delete it until it succeeds.
+                if (File.Exists(AppState.SaveISO))
+                {
+                    bool success = false;
+                    int attempt = 1;
+                    do
+                    {
+                        try
+                        {
+                            WriteLogMessage($"Target ISO file exists. Attempting to delete it...{(attempt > 1 ? $" (attempt {attempt})" : "")}");
+                            File.Delete(AppState.SaveISO);
+                            success = true;
+                        }
+                        catch
+                        {
+                            WriteLogMessage("Could not delete existing ISO file. Trying again in 5 seconds...");
+                            await Task.Delay(5000);
+                            continue;
+                        }
+                    } while (!success);
+                }
                 OscdimgUtilities.CheckAndInvokeOscdimgBinaries((p) => WriteLogMessage(p));
 #pragma warning restore CS8604
 
