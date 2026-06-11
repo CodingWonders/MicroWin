@@ -283,9 +283,9 @@ namespace MicroWin
 
             if (File.Exists(wimPath))
             {
-#pragma warning disable CS8604
+#pragma warning disable CS8602
                 imageInfo = DismManager.GetImageInformation(wimPath, (ex) => MessageBox.Show($"Could not get Windows image information: {ex.Message}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error));
-#pragma warning restore CS8604
+#pragma warning restore CS8602
                 if (imageInfo is null)
                     return;
 
@@ -723,9 +723,9 @@ namespace MicroWin
                 // Old Setup should only be imposed on 24H2 and later (builds 26040 and later). Get this information
                 bool shouldUsePanther = false;
 
-#pragma warning disable CS8604
+#pragma warning disable CS8602
                 DismImageInfoCollection? bootImageInfo = DismManager.GetImageInformation(bootwimPath, (ex) => WriteLogMessage($"Could not get WinPE image info: {ex.Message}"));
-#pragma warning restore CS8604
+#pragma warning restore CS8602
                 if (bootImageInfo is not null)
                 {
                     // Get the second index then get version
