@@ -36,6 +36,15 @@
             Cancel_Button = new Button();
             About_Button = new Button();
             PageContainerPanel = new Panel();
+            IsoChooserPage = new Panel();
+            isoExtractionPB = new ProgressBar();
+            isoPickerBtn = new Button();
+            isoPathTB = new TextBox();
+            lblFileStatus = new Label();
+            lblExtractionStatus = new Label();
+            label1 = new Label();
+            SysCheckPage_Description = new Label();
+            SysCheckPage_Header = new Label();
             FinishPage = new Panel();
             lnkViewCreationLogs = new LinkLabel();
             lnkOpenIsoLoc = new LinkLabel();
@@ -92,14 +101,6 @@
             columnHeader4 = new ColumnHeader();
             columnHeader5 = new ColumnHeader();
             label3 = new Label();
-            IsoChooserPage = new Panel();
-            isoExtractionPB = new ProgressBar();
-            isoPickerBtn = new Button();
-            isoPathTB = new TextBox();
-            lblExtractionStatus = new Label();
-            label1 = new Label();
-            SysCheckPage_Description = new Label();
-            SysCheckPage_Header = new Label();
             WelcomePage = new Panel();
             lblDisclaimer = new Label();
             WelcomePage_Description = new Label();
@@ -109,6 +110,7 @@
             ButtonPanel.SuspendLayout();
             TableLayoutPanel1.SuspendLayout();
             PageContainerPanel.SuspendLayout();
+            IsoChooserPage.SuspendLayout();
             FinishPage.SuspendLayout();
             panel4.SuspendLayout();
             IsoCreationPage.SuspendLayout();
@@ -123,7 +125,6 @@
             panel2.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
             ImageChooserPage.SuspendLayout();
-            IsoChooserPage.SuspendLayout();
             WelcomePage.SuspendLayout();
             SuspendLayout();
             // 
@@ -189,6 +190,7 @@
             Cancel_Button.Size = new Size(64, 23);
             Cancel_Button.TabIndex = 1;
             Cancel_Button.Text = "Cancel";
+            Cancel_Button.Click += Cancel_Button_Click;
             // 
             // About_Button
             // 
@@ -204,12 +206,12 @@
             // 
             // PageContainerPanel
             // 
+            PageContainerPanel.Controls.Add(IsoChooserPage);
             PageContainerPanel.Controls.Add(FinishPage);
             PageContainerPanel.Controls.Add(IsoCreationPage);
             PageContainerPanel.Controls.Add(IsoSettingsPage);
             PageContainerPanel.Controls.Add(UserAccountsPage);
             PageContainerPanel.Controls.Add(ImageChooserPage);
-            PageContainerPanel.Controls.Add(IsoChooserPage);
             PageContainerPanel.Controls.Add(WelcomePage);
             PageContainerPanel.Dock = DockStyle.Fill;
             PageContainerPanel.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
@@ -217,6 +219,107 @@
             PageContainerPanel.Name = "PageContainerPanel";
             PageContainerPanel.Size = new Size(1008, 521);
             PageContainerPanel.TabIndex = 3;
+            // 
+            // IsoChooserPage
+            // 
+            IsoChooserPage.Controls.Add(isoExtractionPB);
+            IsoChooserPage.Controls.Add(isoPickerBtn);
+            IsoChooserPage.Controls.Add(isoPathTB);
+            IsoChooserPage.Controls.Add(lblFileStatus);
+            IsoChooserPage.Controls.Add(lblExtractionStatus);
+            IsoChooserPage.Controls.Add(label1);
+            IsoChooserPage.Controls.Add(SysCheckPage_Description);
+            IsoChooserPage.Controls.Add(SysCheckPage_Header);
+            IsoChooserPage.Dock = DockStyle.Fill;
+            IsoChooserPage.Location = new Point(0, 0);
+            IsoChooserPage.Name = "IsoChooserPage";
+            IsoChooserPage.Size = new Size(1008, 521);
+            IsoChooserPage.TabIndex = 1;
+            IsoChooserPage.Visible = false;
+            // 
+            // isoExtractionPB
+            // 
+            isoExtractionPB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            isoExtractionPB.Location = new Point(125, 219);
+            isoExtractionPB.Name = "isoExtractionPB";
+            isoExtractionPB.Size = new Size(719, 23);
+            isoExtractionPB.TabIndex = 4;
+            // 
+            // isoPickerBtn
+            // 
+            isoPickerBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            isoPickerBtn.FlatStyle = FlatStyle.System;
+            isoPickerBtn.Location = new Point(769, 146);
+            isoPickerBtn.Name = "isoPickerBtn";
+            isoPickerBtn.Size = new Size(75, 23);
+            isoPickerBtn.TabIndex = 3;
+            isoPickerBtn.Text = "Browse...";
+            isoPickerBtn.UseVisualStyleBackColor = true;
+            isoPickerBtn.Click += isoPickerBtn_Click;
+            // 
+            // isoPathTB
+            // 
+            isoPathTB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            isoPathTB.BorderStyle = BorderStyle.FixedSingle;
+            isoPathTB.Location = new Point(125, 147);
+            isoPathTB.Name = "isoPathTB";
+            isoPathTB.ReadOnly = true;
+            isoPathTB.Size = new Size(638, 23);
+            isoPathTB.TabIndex = 2;
+            isoPathTB.TextChanged += isoPathTB_TextChanged;
+            // 
+            // lblFileStatus
+            // 
+            lblFileStatus.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lblFileStatus.AutoEllipsis = true;
+            lblFileStatus.AutoSize = true;
+            lblFileStatus.Location = new Point(122, 248);
+            lblFileStatus.Name = "lblFileStatus";
+            lblFileStatus.Size = new Size(0, 15);
+            lblFileStatus.TabIndex = 1;
+            // 
+            // lblExtractionStatus
+            // 
+            lblExtractionStatus.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lblExtractionStatus.AutoEllipsis = true;
+            lblExtractionStatus.AutoSize = true;
+            lblExtractionStatus.Location = new Point(122, 200);
+            lblExtractionStatus.Name = "lblExtractionStatus";
+            lblExtractionStatus.Size = new Size(243, 15);
+            lblExtractionStatus.TabIndex = 1;
+            lblExtractionStatus.Text = "Disc image extraction status will appear here.";
+            // 
+            // label1
+            // 
+            label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label1.AutoEllipsis = true;
+            label1.AutoSize = true;
+            label1.Location = new Point(122, 128);
+            label1.Name = "label1";
+            label1.Size = new Size(68, 15);
+            label1.TabIndex = 1;
+            label1.Text = "Disc image:";
+            // 
+            // SysCheckPage_Description
+            // 
+            SysCheckPage_Description.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            SysCheckPage_Description.AutoEllipsis = true;
+            SysCheckPage_Description.Location = new Point(17, 64);
+            SysCheckPage_Description.Name = "SysCheckPage_Description";
+            SysCheckPage_Description.Size = new Size(977, 52);
+            SysCheckPage_Description.TabIndex = 1;
+            SysCheckPage_Description.Text = "Please specify the ISO that you want to use with this wizard. Supported operating systems are Windows 10 and Windows 11.";
+            // 
+            // SysCheckPage_Header
+            // 
+            SysCheckPage_Header.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            SysCheckPage_Header.AutoEllipsis = true;
+            SysCheckPage_Header.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            SysCheckPage_Header.Location = new Point(14, 12);
+            SysCheckPage_Header.Name = "SysCheckPage_Header";
+            SysCheckPage_Header.Size = new Size(980, 45);
+            SysCheckPage_Header.TabIndex = 0;
+            SysCheckPage_Header.Text = "Choose a disc image";
             // 
             // FinishPage
             // 
@@ -841,96 +944,6 @@
             label3.TabIndex = 2;
             label3.Text = "Choose the image to modify";
             // 
-            // IsoChooserPage
-            // 
-            IsoChooserPage.Controls.Add(isoExtractionPB);
-            IsoChooserPage.Controls.Add(isoPickerBtn);
-            IsoChooserPage.Controls.Add(isoPathTB);
-            IsoChooserPage.Controls.Add(lblExtractionStatus);
-            IsoChooserPage.Controls.Add(label1);
-            IsoChooserPage.Controls.Add(SysCheckPage_Description);
-            IsoChooserPage.Controls.Add(SysCheckPage_Header);
-            IsoChooserPage.Dock = DockStyle.Fill;
-            IsoChooserPage.Location = new Point(0, 0);
-            IsoChooserPage.Name = "IsoChooserPage";
-            IsoChooserPage.Size = new Size(1008, 521);
-            IsoChooserPage.TabIndex = 1;
-            IsoChooserPage.Visible = false;
-            // 
-            // isoExtractionPB
-            // 
-            isoExtractionPB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            isoExtractionPB.Location = new Point(125, 219);
-            isoExtractionPB.Name = "isoExtractionPB";
-            isoExtractionPB.Size = new Size(719, 23);
-            isoExtractionPB.TabIndex = 4;
-            // 
-            // isoPickerBtn
-            // 
-            isoPickerBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            isoPickerBtn.FlatStyle = FlatStyle.System;
-            isoPickerBtn.Location = new Point(769, 146);
-            isoPickerBtn.Name = "isoPickerBtn";
-            isoPickerBtn.Size = new Size(75, 23);
-            isoPickerBtn.TabIndex = 3;
-            isoPickerBtn.Text = "Browse...";
-            isoPickerBtn.UseVisualStyleBackColor = true;
-            isoPickerBtn.Click += isoPickerBtn_Click;
-            // 
-            // isoPathTB
-            // 
-            isoPathTB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            isoPathTB.BorderStyle = BorderStyle.FixedSingle;
-            isoPathTB.Location = new Point(125, 147);
-            isoPathTB.Name = "isoPathTB";
-            isoPathTB.ReadOnly = true;
-            isoPathTB.Size = new Size(638, 23);
-            isoPathTB.TabIndex = 2;
-            isoPathTB.TextChanged += isoPathTB_TextChanged;
-            // 
-            // lblExtractionStatus
-            // 
-            lblExtractionStatus.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lblExtractionStatus.AutoEllipsis = true;
-            lblExtractionStatus.AutoSize = true;
-            lblExtractionStatus.Location = new Point(122, 200);
-            lblExtractionStatus.Name = "lblExtractionStatus";
-            lblExtractionStatus.Size = new Size(243, 15);
-            lblExtractionStatus.TabIndex = 1;
-            lblExtractionStatus.Text = "Disc image extraction status will appear here.";
-            // 
-            // label1
-            // 
-            label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            label1.AutoEllipsis = true;
-            label1.AutoSize = true;
-            label1.Location = new Point(122, 128);
-            label1.Name = "label1";
-            label1.Size = new Size(68, 15);
-            label1.TabIndex = 1;
-            label1.Text = "Disc image:";
-            // 
-            // SysCheckPage_Description
-            // 
-            SysCheckPage_Description.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            SysCheckPage_Description.AutoEllipsis = true;
-            SysCheckPage_Description.Location = new Point(17, 64);
-            SysCheckPage_Description.Name = "SysCheckPage_Description";
-            SysCheckPage_Description.Size = new Size(977, 52);
-            SysCheckPage_Description.TabIndex = 1;
-            SysCheckPage_Description.Text = "Please specify the ISO that you want to use with this wizard. Supported operating systems are Windows 10 and Windows 11.";
-            // 
-            // SysCheckPage_Header
-            // 
-            SysCheckPage_Header.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            SysCheckPage_Header.AutoEllipsis = true;
-            SysCheckPage_Header.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SysCheckPage_Header.Location = new Point(14, 12);
-            SysCheckPage_Header.Name = "SysCheckPage_Header";
-            SysCheckPage_Header.Size = new Size(980, 45);
-            SysCheckPage_Header.TabIndex = 0;
-            SysCheckPage_Header.Text = "Choose a disc image";
-            // 
             // WelcomePage
             // 
             WelcomePage.Controls.Add(lblDisclaimer);
@@ -1001,6 +1014,8 @@
             ButtonPanel.ResumeLayout(false);
             TableLayoutPanel1.ResumeLayout(false);
             PageContainerPanel.ResumeLayout(false);
+            IsoChooserPage.ResumeLayout(false);
+            IsoChooserPage.PerformLayout();
             FinishPage.ResumeLayout(false);
             FinishPage.PerformLayout();
             panel4.ResumeLayout(false);
@@ -1025,8 +1040,6 @@
             tableLayoutPanel2.PerformLayout();
             ImageChooserPage.ResumeLayout(false);
             ImageChooserPage.PerformLayout();
-            IsoChooserPage.ResumeLayout(false);
-            IsoChooserPage.PerformLayout();
             WelcomePage.ResumeLayout(false);
             ResumeLayout(false);
 
@@ -1111,5 +1124,6 @@
         private System.Windows.Forms.LinkLabel lnkUseNtLite;
         private System.Windows.Forms.LinkLabel lnkUseDT;
         internal Button About_Button;
+        internal Label lblFileStatus;
     }
 }

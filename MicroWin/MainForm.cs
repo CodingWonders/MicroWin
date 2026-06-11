@@ -258,6 +258,23 @@ namespace MicroWin
             }
         }
 
+        private void InvokeFileProgressUIUpdate(string file)
+        {
+
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() =>
+                {
+                    lblFileStatus.Visible = file != "";
+                    lblFileStatus.Text = $"Extracting \"{Path.GetFileName(file)}\"...";
+                }));
+            }
+            else
+            {
+                lblFileStatus.Visible = file != "";
+                lblFileStatus.Text = $"Extracting \"{Path.GetFileName(file)}\"...";
+            }
+        }
 
         private void LoadWimData()
         {
@@ -266,7 +283,9 @@ namespace MicroWin
 
             if (File.Exists(wimPath))
             {
-                imageInfo = DismManager.GetImageInformation(wimPath);
+#pragma warning disable CS8604
+                imageInfo = DismManager.GetImageInformation(wimPath, (ex) => MessageBox.Show($"Could not get Windows image information: {ex.Message}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error));
+#pragma warning restore CS8604
                 if (imageInfo is null)
                     return;
 
@@ -328,9 +347,13 @@ namespace MicroWin
                         {
                             // Update the bar based on the 0-100 value from IsoManager
                             InvokeIsoExtractionUIUpdate($"Extracting: {p}%", p);
+                        }, (file) =>
+                        {
+                            InvokeFileProgressUIUpdate(file);
                         });
 
                         InvokeIsoExtractionUIUpdate("Dismounting...", 100);
+                        InvokeFileProgressUIUpdate("");
                         iso.Dismount(AppState.IsoPath);
                     }
 
@@ -700,7 +723,9 @@ namespace MicroWin
                 // Old Setup should only be imposed on 24H2 and later (builds 26040 and later). Get this information
                 bool shouldUsePanther = false;
 
-                DismImageInfoCollection? bootImageInfo = DismManager.GetImageInformation(bootwimPath);
+#pragma warning disable CS8604
+                DismImageInfoCollection? bootImageInfo = DismManager.GetImageInformation(bootwimPath, (ex) => WriteLogMessage($"Could not get WinPE image info: {ex.Message}"));
+#pragma warning restore CS8604
                 if (bootImageInfo is not null)
                 {
                     // Get the second index then get version
@@ -872,6 +897,11 @@ namespace MicroWin
                 """;
 
             MessageBox.Show(aboutMsg, "About", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void Cancel_Button_Click(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

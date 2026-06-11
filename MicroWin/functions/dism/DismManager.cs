@@ -138,7 +138,7 @@ namespace MicroWin.functions.dism
             return mountedImages;
         }
 
-        public static DismImageInfoCollection? GetImageInformation(string wimFile)
+        public static DismImageInfoCollection? GetImageInformation(string wimFile, Action<Exception?>? exceptionReporter = null)
         {
             DismImageInfoCollection? imageInfo = null;
 
@@ -150,6 +150,8 @@ namespace MicroWin.functions.dism
             catch (Exception ex)
             {
                 DynaLog.logMessage($"Could not get Windows image information: {ex.Message}");
+                if (exceptionReporter is not null)
+                    exceptionReporter.Invoke(ex);
             }
             finally
             {
