@@ -22,6 +22,6 @@ namespace MicroWin
         public static DriverExportMode DriverExportMode { get; set; } = DriverExportMode.NoExport;
         public static string? SaveISO { get; set; }
 
-        public static string Version => "v1.99.2";
+        public static string Version => "v1.99.2.1";
     }
 }

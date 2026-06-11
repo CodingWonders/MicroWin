@@ -13,7 +13,7 @@ namespace MicroWin.functions.dism
     public static class DismManager
     {
 
-        private static int RunDismProcess(string? args)
+        public static int RunDismProcess(string? args, Action<string?>? actionReporter = null)
         {
             Process dismProc = new()
             {
@@ -24,7 +24,30 @@ namespace MicroWin.functions.dism
                 }
             };
 
+            if (actionReporter is not null)
+            {
+                dismProc.StartInfo.CreateNoWindow = true;
+                dismProc.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+                dismProc.StartInfo.RedirectStandardOutput = true;
+                dismProc.StartInfo.RedirectStandardError = true;
+                dismProc.OutputDataReceived += (sender, e) =>
+                {
+                    if (!string.IsNullOrEmpty(e.Data))
+                        actionReporter.Invoke(e.Data);
+                };
+                dismProc.ErrorDataReceived += (sender, e) =>
+                {
+                    if (!string.IsNullOrEmpty(e.Data))
+                        actionReporter.Invoke(e.Data);
+                };
+            }
+
             dismProc.Start();
+            if (actionReporter is not null)
+            {
+                dismProc.BeginOutputReadLine();
+                dismProc.BeginErrorReadLine();
+            }
             dismProc.WaitForExit();
             return dismProc.ExitCode;
         }
@@ -115,7 +138,7 @@ namespace MicroWin.functions.dism
             return mountedImages;
         }
 
-        public static DismImageInfoCollection? GetImageInformation(string wimFile)
+        public static DismImageInfoCollection? GetImageInformation(string wimFile, Action<Exception?>? exceptionReporter = null)
         {
             DismImageInfoCollection? imageInfo = null;
 
@@ -124,9 +147,11 @@ namespace MicroWin.functions.dism
                 DismApi.Initialize(DismLogLevel.LogErrors);
                 imageInfo = DismApi.GetImageInfo(wimFile);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // log or do something
+                DynaLog.logMessage($"Could not get Windows image information: {ex.Message}");
+                if (exceptionReporter is not null)
+                    exceptionReporter.Invoke(ex);
             }
             finally
             {
@@ -220,7 +245,7 @@ namespace MicroWin.functions.dism
             }
         }
 
-        public static bool ExportImage(string? sourceImage, int? sourceIndex, string? destinationImage, string? compressionType)
+        public static bool ExportImage(string? sourceImage, int? sourceIndex, string? destinationImage, string? compressionType, Action<string?>? actionReporter = null)
         {
             if (!File.Exists(sourceImage))
                 return false;
@@ -229,7 +254,7 @@ namespace MicroWin.functions.dism
             if (imageInfo is null || (sourceIndex < 1 || sourceIndex > imageInfo.Count))
                 return false;
 
-            return RunDismProcess($"/english /export-image /sourceimagefile=\"{sourceImage}\" /sourceindex={sourceIndex} /destinationimagefile=\"{destinationImage}\" /compress={compressionType}") == 0;
+            return RunDismProcess($"/english /export-image /sourceimagefile=\"{sourceImage}\" /sourceindex={sourceIndex} /destinationimagefile=\"{destinationImage}\" /compress={compressionType}", actionReporter) == 0;
         }
     }
 }

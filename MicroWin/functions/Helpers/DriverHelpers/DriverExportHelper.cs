@@ -1,4 +1,6 @@
 ﻿using Microsoft.Dism;
+using MicroWin.functions.dism;
+using MicroWin.functions.Helpers.Loggers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,23 +13,6 @@ namespace MicroWin.functions.Helpers.DriverHelpers
 {
     public static class DriverExportHelper
     {
-        private static int RunDismProcess(string arguments)
-        {
-            Process dismProc = new()
-            {
-                StartInfo = new()
-                {
-                    FileName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "dism.exe"),
-                    Arguments = arguments,
-                    CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden
-                }
-            };
-
-            dismProc.Start();
-            dismProc.WaitForExit();
-            return dismProc.ExitCode;
-        }
 
         private static bool CopyRecursive(string? SourceDirectory, string DestinationDirectory)
         {
@@ -99,10 +84,12 @@ namespace MicroWin.functions.Helpers.DriverHelpers
             return drivers;
         }
 
-        public static bool ExportDrivers(string DestinationDir)
+        public static bool ExportDrivers(string DestinationDir, Action<string?>? progressReporter = null)
         {
+            DynaLog.logMessage("Preparing to export all drivers from system driver store...");
             if (!Directory.Exists(DestinationDir))
             {
+                DynaLog.logMessage("Destination directory does not exist. Attempting to create it...");
                 try
                 {
                     Directory.CreateDirectory(DestinationDir);
@@ -113,10 +100,10 @@ namespace MicroWin.functions.Helpers.DriverHelpers
                 }
             }
 
-            return RunDismProcess($"/online /export-driver /destination=\"{DestinationDir}\"") == 0;
+            return DismManager.RunDismProcess($"/online /English /export-driver /destination=\"{DestinationDir}\"", progressReporter) == 0;
         }
 
-        public static bool ExportDrivers(string DestinationDir, string ClassName)
+        public static bool ExportDrivers(string DestinationDir, string ClassName, Action<string?>? progressReporter = null)
         {
             DismDriverPackageCollection? onlineDrivers = GetOnlineDrivers();
             if (onlineDrivers is null)
@@ -126,12 +113,27 @@ namespace MicroWin.functions.Helpers.DriverHelpers
             if (filteredDrivers is null)
                 return false;
 
+            if (progressReporter is not null)
+                progressReporter.Invoke($"Exporting {filteredDrivers.Count()} drivers...");
+
             foreach (DismDriverPackage filteredDriver in filteredDrivers)
             {
                 string drvName = Path.GetFileName(filteredDriver.OriginalFileName);
                 string destinationDriverPath = Path.Combine(DestinationDir, drvName);
 
-                CopyRecursive(Path.GetDirectoryName(filteredDriver.OriginalFileName), destinationDriverPath);
+                if (progressReporter is not null)
+                    progressReporter.Invoke($"Exporting driver file \"{drvName}\"");
+
+                if (CopyRecursive(Path.GetDirectoryName(filteredDriver.OriginalFileName), destinationDriverPath))
+                {
+                    if (progressReporter is not null)
+                        progressReporter.Invoke($"Driver file \"{drvName}\" was successfully exported.");
+                }
+                else
+                {
+                    if (progressReporter is not null)
+                        progressReporter.Invoke($"Driver file \"{drvName}\" was not exported.");
+                }
             }
 
             return true;
