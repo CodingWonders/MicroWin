@@ -147,9 +147,9 @@ namespace MicroWin.functions.dism
                 DismApi.Initialize(DismLogLevel.LogErrors);
                 imageInfo = DismApi.GetImageInfo(wimFile);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // log or do something
+                DynaLog.logMessage($"Could not get Windows image information: {ex.Message}");
             }
             finally
             {
