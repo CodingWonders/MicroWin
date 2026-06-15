@@ -2,9 +2,11 @@ using MicroWin.functions.Helpers.Loggers;
 using MicroWin.functions.Helpers.RegistryHelpers;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Net.Http;
 using System.Runtime.Versioning;
+using System.Text;
 using System.Windows.Forms;
 
 namespace MicroWin.OSCDIMG
@@ -79,6 +81,18 @@ namespace MicroWin.OSCDIMG
                         actionReporter.Invoke(e.Data);
                     }
                 };
+
+                try
+                {
+                    oscdimgProc.StartInfo.StandardOutputEncoding = Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.OEMCodePage);
+                    oscdimgProc.StartInfo.StandardErrorEncoding = Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.OEMCodePage);
+                }
+                catch (Exception ex)
+                {
+                    DynaLog.logMessage($"Could not set STDOUT/STDERR encodings: {ex.Message}");
+                    oscdimgProc.StartInfo.StandardOutputEncoding = null;
+                    oscdimgProc.StartInfo.StandardErrorEncoding = null;
+                }
             }
             oscdimgProc.Start();
             if (actionReporter is not null)
