@@ -600,7 +600,8 @@ namespace MicroWin
 
                     using (var client = new HttpClient())
                     {
-                        var data = await client.GetByteArrayAsync("https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win-guest-tools.exe");
+                        // TODO: Keep this up to date or make it allow 301 redirects.
+                        var data = await client.GetByteArrayAsync("http://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.285-1/virtio-win-guest-tools.exe");
                         File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "virtio-win-guest-tools.exe"), data);
                     }
                 }
