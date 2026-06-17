@@ -438,6 +438,11 @@ namespace MicroWin
             AppState.AddReportingToolShortcut = ReportToolCB.Checked;
         }
 
+        private void CopyVirtIODrivers_CheckedChanged(Object sender, EventArgs e)
+        {
+            AppState.CopyVirtIODrivers = CopyVirtIODrivers.Checked;
+        }
+
 
         private void UnattendCopyCB_CheckedChanged(object sender, EventArgs e)
         {
@@ -580,11 +585,19 @@ namespace MicroWin
                         var data = await client.GetByteArrayAsync("https://raw.githubusercontent.com/CodingWonders/MyScripts/refs/heads/main/MicroWinHelperTools/ReportingTool/ReportingTool.ps1");
                         File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "ReportingTool.ps1"), data);
                     }
+                }
+                RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin");
+                RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinVersion", ValueKind.REG_SZ, $"{AppState.Version}"));
+                RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinBuildDate", ValueKind.REG_SZ, $"{DateTime.Now}"));
+                if (AppState.CopyVirtIODrivers)
+                {
+                    WriteLogMessage("Downloading VirtIO Drivers...");
 
-                    RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin");
-                    RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinVersion", ValueKind.REG_SZ, $"{AppState.Version}"));
-                    RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinBuildDate", ValueKind.REG_SZ, $"{DateTime.Now}"));
-
+                    using (var client = new HttpClient())
+                    {
+                        var data = await client.GetByteArrayAsync("https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win-guest-tools.exe");
+                        File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "virtio-win-guest-tools.exe"), data);
+                    }
                 }
                 UpdateCurrentProgressBar(10);
 

@@ -54,6 +54,7 @@
             label18 = new Label();
             label16 = new Label();
             label17 = new Label();
+            label19 = new Label();
             IsoCreationPage = new Panel();
             pnlProgress = new Panel();
             pbOverall = new ProgressBar();
@@ -68,6 +69,7 @@
             label13 = new Label();
             UnattendCopyCB = new CheckBox();
             ReportToolCB = new CheckBox();
+            CopyVirtIODrivers = new CheckBox();
             label11 = new Label();
             label12 = new Label();
             UserAccountsPage = new Panel();
@@ -328,6 +330,10 @@
             FinishPage.Controls.Add(panel4);
             FinishPage.Controls.Add(label16);
             FinishPage.Controls.Add(label17);
+            if (AppState.CopyVirtIODrivers)
+            {
+                FinishPage.Controls.Add(label19);
+            }
             FinishPage.Dock = DockStyle.Fill;
             FinishPage.Location = new Point(0, 0);
             FinishPage.Name = "FinishPage";
@@ -434,6 +440,21 @@
             label17.TabIndex = 9;
             label17.Text = "Customizations complete";
             // 
+            // label19
+            // 
+            label19.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            label19.AutoEllipsis = true;
+            label19.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label19.Location = new Point(14, 12);
+            label19.Name = "label19";
+            label19.Size = new Size(980, 45);
+            label19.TabIndex = 9;
+            label19.Text = """
+                
+                To install the VirtIO drivers locate the virtio-win-guest-tools file in the root of the C:\ and run it as Administrator.
+                
+                """;
+            // 
             // IsoCreationPage
             // 
             IsoCreationPage.Controls.Add(pnlProgress);
@@ -532,6 +553,7 @@
             IsoSettingsPage.Controls.Add(label13);
             IsoSettingsPage.Controls.Add(UnattendCopyCB);
             IsoSettingsPage.Controls.Add(ReportToolCB);
+            IsoSettingsPage.Controls.Add(CopyVirtIODrivers);
             IsoSettingsPage.Controls.Add(label11);
             IsoSettingsPage.Controls.Add(label12);
             IsoSettingsPage.Dock = DockStyle.Fill;
@@ -582,6 +604,19 @@
             ReportToolCB.Text = "Add a shortcut for the reporting tool";
             ReportToolCB.UseVisualStyleBackColor = true;
             ReportToolCB.CheckedChanged += ReportToolCB_CheckedChanged;
+            // 
+            // CopyVirtIODrivers
+            // 
+            CopyVirtIODrivers.AutoSize = true;
+            CopyVirtIODrivers.Checked = true;
+            CopyVirtIODrivers.CheckState = CheckState.Checked;
+            CopyVirtIODrivers.Location = new Point(83, 133);
+            CopyVirtIODrivers.Name = "CopyVirtIODrivers";
+            CopyVirtIODrivers.Size = new Size(218, 19);
+            CopyVirtIODrivers.TabIndex = 7;
+            CopyVirtIODrivers.Text = "Copy VirtIO drivers";
+            CopyVirtIODrivers.UseVisualStyleBackColor = true;
+            CopyVirtIODrivers.CheckedChanged += CopyVirtIODrivers_CheckedChanged;
             // 
             // label11
             // 
@@ -1101,6 +1136,7 @@
         internal System.Windows.Forms.Label label11;
         internal System.Windows.Forms.Label label12;
         private System.Windows.Forms.CheckBox ReportToolCB;
+        private System.Windows.Forms.CheckBox CopyVirtIODrivers;
         private System.Windows.Forms.ComboBox DriverExportCombo;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.CheckBox UnattendCopyCB;
@@ -1118,6 +1154,7 @@
         internal System.Windows.Forms.Label label16;
         internal System.Windows.Forms.Label label17;
         internal System.Windows.Forms.Label label18;
+        internal System.Windows.Forms.Label label19;
         private System.Windows.Forms.LinkLabel lnkViewCreationLogs;
         private System.Windows.Forms.LinkLabel lnkOpenIsoLoc;
         private System.Windows.Forms.Panel panel4;
