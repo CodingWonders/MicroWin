@@ -1,0 +1,46 @@
+name: Auto-Close PRs by Specific Authors
+
+on:
+  pull_request_target:
+    types: [opened]
+
+jobs:
+  check-author:
+    runs-on: ubuntu-latest
+    # Ensure the workflow has permissions to write comments and close PRs
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Check PR Author and Close if Matched
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Define the list of usernames you want to block
+            const blockedAuthors = ['GabiNun2'];
+            
+            // Get the author of the current pull request
+            const prAuthor = context.payload.pull_request.user.login;
+            const prNumber = context.payload.pull_request.number;
+            
+            if (blockedAuthors.includes(prAuthor)) {
+              console.log(`Matching author found: ${prAuthor}. Proceeding to close PR #${prNumber}.`);
+              
+              // 1. Post a comment explaining why the PR is being closed
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: `ERROR: You have been banned from contributing to this repo.`
+              });
+              
+              // 2. Close the pull request
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                state: 'closed'
+              });
+            } else {
+              console.log(`Author ${prAuthor} is allowed.`);
+            }
