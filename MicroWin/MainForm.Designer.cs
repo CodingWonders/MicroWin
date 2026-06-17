@@ -287,7 +287,7 @@
             lblExtractionStatus.AutoSize = true;
             lblExtractionStatus.Location = new Point(122, 200);
             lblExtractionStatus.Name = "lblExtractionStatus";
-            lblExtractionStatus.Size = new Size(243, 15);
+            lblExtractionStatus.Size = new Size(244, 15);
             lblExtractionStatus.TabIndex = 1;
             lblExtractionStatus.Text = "Disc image extraction status will appear here.";
             // 
@@ -330,10 +330,7 @@
             FinishPage.Controls.Add(panel4);
             FinishPage.Controls.Add(label16);
             FinishPage.Controls.Add(label17);
-            if (AppState.CopyVirtIODrivers)
-            {
-                FinishPage.Controls.Add(label19);
-            }
+            FinishPage.Controls.Add(label19);
             FinishPage.Dock = DockStyle.Fill;
             FinishPage.Location = new Point(0, 0);
             FinishPage.Name = "FinishPage";
@@ -449,11 +446,7 @@
             label19.Name = "label19";
             label19.Size = new Size(980, 45);
             label19.TabIndex = 9;
-            label19.Text = """
-                
-                To install the VirtIO drivers locate the virtio-win-guest-tools file in the root of the C:\ and run it as Administrator.
-                
-                """;
+            label19.Text = "\r\nTo install the VirtIO drivers locate the virtio-win-guest-tools file in the root of the C:\\ and run it as Administrator.\r\n";
             // 
             // IsoCreationPage
             // 
@@ -577,7 +570,7 @@
             label13.AutoSize = true;
             label13.Location = new Point(80, 185);
             label13.Name = "label13";
-            label13.Size = new Size(111, 15);
+            label13.Size = new Size(112, 15);
             label13.TabIndex = 8;
             label13.Text = "Driver export mode:";
             // 
@@ -612,7 +605,7 @@
             CopyVirtIODrivers.CheckState = CheckState.Checked;
             CopyVirtIODrivers.Location = new Point(83, 133);
             CopyVirtIODrivers.Name = "CopyVirtIODrivers";
-            CopyVirtIODrivers.Size = new Size(218, 19);
+            CopyVirtIODrivers.Size = new Size(125, 19);
             CopyVirtIODrivers.TabIndex = 7;
             CopyVirtIODrivers.Text = "Copy VirtIO drivers";
             CopyVirtIODrivers.UseVisualStyleBackColor = true;
@@ -708,7 +701,7 @@
             lnkLusrMgr.LinkColor = Color.DodgerBlue;
             lnkLusrMgr.Location = new Point(302, 91);
             lnkLusrMgr.Name = "lnkLusrMgr";
-            lnkLusrMgr.Size = new Size(81, 15);
+            lnkLusrMgr.Size = new Size(80, 15);
             lnkLusrMgr.TabIndex = 0;
             lnkLusrMgr.TabStop = true;
             lnkLusrMgr.Text = "Take me there";
@@ -764,7 +757,7 @@
             lnkImmersiveAccounts.LinkColor = Color.DodgerBlue;
             lnkImmersiveAccounts.Location = new Point(302, 54);
             lnkImmersiveAccounts.Name = "lnkImmersiveAccounts";
-            lnkImmersiveAccounts.Size = new Size(81, 15);
+            lnkImmersiveAccounts.Size = new Size(80, 15);
             lnkImmersiveAccounts.TabIndex = 0;
             lnkImmersiveAccounts.TabStop = true;
             lnkImmersiveAccounts.Text = "Take me there";

@@ -97,6 +97,11 @@ namespace MicroWin
                     return;
             }
 
+            if (AppState.CopyVirtIODrivers)
+            {
+                label19.Visible = false;
+            }
+
             WelcomePage.Visible = newPage == WizardPage.Page.WelcomePage;
             IsoChooserPage.Visible = newPage == WizardPage.Page.IsoChooserPage;
             ImageChooserPage.Visible = newPage == WizardPage.Page.ImageChooserPage;
