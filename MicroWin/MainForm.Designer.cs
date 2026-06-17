@@ -601,7 +601,6 @@
             // CopyVirtIODrivers
             //
             CopyVirtIODrivers.AutoSize = true;
-            CopyVirtIODrivers.CheckState = CheckState.Checked;
             CopyVirtIODrivers.Location = new Point(83, 236);
             CopyVirtIODrivers.Name = "CopyVirtIODrivers";
             CopyVirtIODrivers.Size = new Size(125, 19);
