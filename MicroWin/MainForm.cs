@@ -794,6 +794,7 @@ namespace MicroWin
                             File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adkwinpesetup.exe"));
                             File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adksetup.exe"));
                         }
+
                     }
                 }
                 UpdateOverallStatus("Generating ISO file...");
