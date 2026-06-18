@@ -778,7 +778,21 @@ namespace MicroWin
                         var result = MessageBox.Show("The Windows ADK was not found on your system. Do you want MicroWin to download and install the latest one for you? Note that you'll need around 4 GB on your system.", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                         if (result == DialogResult.Yes)
                         {
+                            using (var client = new HttpClient())
+                            {
+                                var adksetup = await client.GetByteArrayAsync("https://download.microsoft.com/download/615540bc-be0b-433a-b91b-1f2b0642bb24/adk/adksetup.exe");
+                                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adksetup.exe"), adksetup);
+                                var adkwinpesetup = await client.GetByteArrayAsync("https://download.microsoft.com/download/2472e9a0-7c74-4ffd-a3e4-27ed1fa30d30/adkwinpeaddons/adkwinpesetup.exe");
+                                File.WriteAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adkwinpesetup.exe"), adkwinpesetup);
+                            }
 
+                            var adkwinpesetupproc = Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adkwinpesetup.exe"), "/features OptionId.WindowsPreinstallationEnvironment /q /ceip off");
+                            adkwinpesetupproc.WaitForExit();
+                            var adksetupproc = Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adksetup.exe"), "/features OptionId.DeploymentTools /q /ceip off");
+                            adksetupproc.WaitForExit();
+
+                            File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adkwinpesetup.exe"));
+                            File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adksetup.exe"));
                         }
                     }
                 }
