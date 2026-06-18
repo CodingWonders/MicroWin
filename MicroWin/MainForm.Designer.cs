@@ -107,6 +107,7 @@
             WelcomePage_Header = new Label();
             isoPickerOFD = new OpenFileDialog();
             isoSaverSFD = new SaveFileDialog();
+            UseMicroWinISO = new CheckBox();
             ButtonPanel.SuspendLayout();
             TableLayoutPanel1.SuspendLayout();
             PageContainerPanel.SuspendLayout();
@@ -532,6 +533,7 @@
             IsoSettingsPage.Controls.Add(label13);
             IsoSettingsPage.Controls.Add(UnattendCopyCB);
             IsoSettingsPage.Controls.Add(ReportToolCB);
+            IsoSettingsPage.Controls.Add(UseMicroWinISO);
             IsoSettingsPage.Controls.Add(label11);
             IsoSettingsPage.Controls.Add(label12);
             IsoSettingsPage.Dock = DockStyle.Fill;
@@ -1062,6 +1064,7 @@
         internal System.Windows.Forms.Label lblDisclaimer;
         internal System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button isoPickerBtn;
+        private System.Windows.Forms.CheckBox UseMicroWinISO;
         private System.Windows.Forms.TextBox isoPathTB;
         private System.Windows.Forms.ProgressBar isoExtractionPB;
         internal System.Windows.Forms.Label lblExtractionStatus;
