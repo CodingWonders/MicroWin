@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Globalization;
 
 namespace MicroWin.functions.dism
 {
@@ -40,6 +42,18 @@ namespace MicroWin.functions.dism
                     if (!string.IsNullOrEmpty(e.Data))
                         actionReporter.Invoke(e.Data);
                 };
+
+                try
+                {
+                    dismProc.StartInfo.StandardOutputEncoding = Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.OEMCodePage);
+                    dismProc.StartInfo.StandardErrorEncoding = Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.OEMCodePage);
+                }
+                catch (Exception ex)
+                {
+                    DynaLog.logMessage($"Could not set STDOUT/STDERR encodings: {ex.Message}");
+                    dismProc.StartInfo.StandardOutputEncoding = null;
+                    dismProc.StartInfo.StandardErrorEncoding = null;
+                }
             }
 
             dismProc.Start();

@@ -2,9 +2,11 @@ using MicroWin.functions.Helpers.Loggers;
 using MicroWin.functions.Helpers.RegistryHelpers;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Net.Http;
 using System.Runtime.Versioning;
+using System.Text;
 using System.Windows.Forms;
 
 namespace MicroWin.OSCDIMG
@@ -22,7 +24,7 @@ namespace MicroWin.OSCDIMG
         public static string oscdimgPath { get; set; } = Path.Combine(AppState.TempRoot, "oscdimg.exe");
         public static bool oscdImgFound => File.Exists(oscdimgPath);
         
-        public static void CheckAndInvokeOscdimgBinaries(Action<string?>? outputReporter = null)
+        public static void CheckAndInvokeOscdimgBinaries(Action<string?>? outputReporter = null, bool UEFICA23Bins = true)
         {
             if (!oscdImgFound && TestKitRootPaths(expectedADKPath, expectedADKPath_WOW64Environ))
             {
@@ -43,18 +45,26 @@ namespace MicroWin.OSCDIMG
                     File.WriteAllBytes(oscdimgPath, data);
                 }
             }
-            InvokeOscdimg(outputReporter);
+            InvokeOscdimg(outputReporter, UEFICA23Bins);
         }
 
-        private static void InvokeOscdimg(Action<string?>? actionReporter = null)
+        private static void InvokeOscdimg(Action<string?>? actionReporter = null, bool UEFICA23Bins = true)
         {
+            string bootBinsPath = Path.Combine(AppState.MountPath, "boot"),
+                   efiBootBinsPath = Path.Combine(AppState.MountPath, "EFI", "Microsoft", "Boot"),
+                   etfsbootPath = Path.Combine(bootBinsPath, "etfsboot.com"),
+                   efisysPath = Path.Combine(efiBootBinsPath, "efisys.bin"),
+                   efisysExPath = Path.Combine(efiBootBinsPath, "efisys_EX.bin");
+
+            string bootDataString = $"2#p0,e,b{etfsbootPath}#pEF,e,b{(UEFICA23Bins && File.Exists(efisysExPath) ? efisysExPath : efisysPath)}";
+
             // Start the ISO building
             Process oscdimgProc = new Process()
             {
                 StartInfo = new ProcessStartInfo()
                 {
                     FileName = oscdimgPath,
-                    Arguments = $"-m -o -u2 -udfver102 -bootdata:2#p0,e,b{Path.Combine(AppState.MountPath, "boot", "etfsboot.com")}#pEF,e,b{Path.Combine(AppState.MountPath, "efi", "microsoft", "boot", "efisys.bin")} \"{AppState.MountPath}\" \"{AppState.SaveISO}\""
+                    Arguments = $"-m -o -u2 -udfver102 -bootdata:{bootDataString} \"{AppState.MountPath}\" \"{AppState.SaveISO}\""
                 }
             };
             if (actionReporter is not null)
@@ -79,6 +89,18 @@ namespace MicroWin.OSCDIMG
                         actionReporter.Invoke(e.Data);
                     }
                 };
+
+                try
+                {
+                    oscdimgProc.StartInfo.StandardOutputEncoding = Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.OEMCodePage);
+                    oscdimgProc.StartInfo.StandardErrorEncoding = Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.OEMCodePage);
+                }
+                catch (Exception ex)
+                {
+                    DynaLog.logMessage($"Could not set STDOUT/STDERR encodings: {ex.Message}");
+                    oscdimgProc.StartInfo.StandardOutputEncoding = null;
+                    oscdimgProc.StartInfo.StandardErrorEncoding = null;
+                }
             }
             oscdimgProc.Start();
             if (actionReporter is not null)
