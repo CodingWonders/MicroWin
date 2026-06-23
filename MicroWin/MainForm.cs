@@ -444,6 +444,11 @@ namespace MicroWin
             AppState.CopyUnattendToFileSystem = UnattendCopyCB.Checked;
         }
 
+        private void UEFICA23CB_CheckedChanged(object sender, EventArgs e)
+        {
+            AppState.UseUEFICA23Bins = UEFICA23CB.Checked;
+        }
+
 
         private void UpdateCurrentStatus(string text, bool resetBar = true)
         {
@@ -752,6 +757,34 @@ namespace MicroWin
                     DriverInstallHelper.InstallDrivers(AppState.ScratchPath, bootDriverPath, (message) => WriteLogMessage(message));
 #pragma warning restore CS8604
 
+                if (AppState.UseUEFICA23Bins)
+                {
+                    WriteLogMessage("Copying UEFI CA 2023 binaries to ISO root...");
+                    try
+                    {
+                        // The ISO may not have EFISYS_EX. In that case, it's most likely going to be in
+                        // winpe.
+                        DynaLog.logMessage("Preparing to copy EFISYS_EX binaries...");
+                        string wimEXPath = Path.Combine(AppState.ScratchPath, "Windows", "Boot", "DVD_EX", "EFI");
+                        if (Directory.Exists(wimEXPath))
+                        {
+                            DynaLog.logMessage("EFISYS_EX binary path exists. Enumerating EFI binaries...");
+                            IEnumerable<string> efiExFiles = Directory.EnumerateFiles(wimEXPath, "efisys_EX.bin", SearchOption.AllDirectories);
+                            if (efiExFiles.Any())
+                            {
+                                DynaLog.logMessage("Copying EFI binary to ISO root...");
+                                File.Copy(efiExFiles.ElementAt(0), Path.Combine(AppState.MountPath, "boot", "efisys_EX.bin"), true);
+                                DynaLog.logMessage("File copy complete.");
+                                WriteLogMessage("UEFI CA 2023 binaries were copied.");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DynaLog.logMessage($"Could not prepare EFISYS_EX binaries: {ex.Message}");
+                    }
+                }
+
                 UpdateCurrentStatus("Unmounting boot image...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
 
@@ -780,7 +813,7 @@ namespace MicroWin
                         }
                     } while (!success);
                 }
-                OscdimgUtilities.CheckAndInvokeOscdimgBinaries((p) => WriteLogMessage(p));
+                OscdimgUtilities.CheckAndInvokeOscdimgBinaries((p) => WriteLogMessage(p), AppState.UseUEFICA23Bins);
 #pragma warning restore CS8604
 
                 UpdateOverallStatus("Finishing up...");
