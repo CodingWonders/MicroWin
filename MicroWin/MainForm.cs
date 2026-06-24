@@ -598,11 +598,57 @@ namespace MicroWin
                 {
                     WriteLogMessage("Downloading VirtIO Drivers...");
 
-                    using (var client = new HttpClient())
+                    var handler = new HttpClientHandler { AllowAutoRedirect = false };
+
+                    using (var client = new HttpClient(handler))
                     {
-                        // TODO: Keep this up to date or make it allow 301 redirects.
-                        var data = await client.GetByteArrayAsync("http://fedorapeople.org/groups/virt/virtio-win/direct-downloads/archive-virtio/virtio-win-0.1.285-1/virtio-win-guest-tools.exe");
-                        File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "virtio-win-guest-tools.exe"), data);
+                        string targetUrl = "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win-guest-tools.exe";
+                        HttpResponseMessage downloadResponse = null;
+                        bool isRedirect = true;
+                        int maxRedirects = 5; // Prevent infinite loops just in case
+                        int redirectCount = 0;
+
+                        // Follow the redirect chain until we hit the actual file
+                        while (isRedirect && redirectCount < maxRedirects)
+                        {
+                            // Use HttpCompletionOption.ResponseHeadersRead so we don't download the file content yet
+                            downloadResponse = await client.GetAsync(targetUrl, HttpCompletionOption.ResponseHeadersRead);
+
+                            int statusCode = (int)downloadResponse.StatusCode;
+                            if (statusCode >= 300 && statusCode <= 399 && downloadResponse.Headers.Location != null)
+                            {
+                                // Update the target URL to the new redirect location
+                                targetUrl = downloadResponse.Headers.Location.ToString();
+
+                                // Make sure relative URLs are handled properly if the server returns one
+                                if (!targetUrl.StartsWith("http://") && !targetUrl.StartsWith("https://"))
+                                {
+                                    var baseUri = new Uri(targetUrl);
+                                    targetUrl = new Uri(baseUri, downloadResponse.Headers.Location).ToString();
+                                }
+
+                                downloadResponse.Dispose(); // Clean up the previous response
+                                redirectCount++;
+                            }
+                            else
+                            {
+                                isRedirect = false; // We found the final destination!
+                            }
+                        }
+
+                        // Now we are safe to ensure success and stream the file
+                        using (downloadResponse)
+                        {
+                            downloadResponse.EnsureSuccessStatusCode();
+
+                            string outputPath = Path.Combine(AppState.ScratchPath, "virtio-win-guest-tools.exe");
+
+                            using (var downloadStream = await downloadResponse.Content.ReadAsStreamAsync())
+                            using (var fileStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                            {
+                                await downloadStream.CopyToAsync(fileStream);
+                            }
+                        }
                     }
                 }
                 UpdateCurrentProgressBar(10);
