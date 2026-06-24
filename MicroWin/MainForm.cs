@@ -605,38 +605,33 @@ namespace MicroWin
                         string targetUrl = "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win-guest-tools.exe";
                         HttpResponseMessage downloadResponse = null;
                         bool isRedirect = true;
-                        int maxRedirects = 5; // Prevent infinite loops just in case
+                        int maxRedirects = 5;
                         int redirectCount = 0;
 
-                        // Follow the redirect chain until we hit the actual file
                         while (isRedirect && redirectCount < maxRedirects)
                         {
-                            // Use HttpCompletionOption.ResponseHeadersRead so we don't download the file content yet
                             downloadResponse = await client.GetAsync(targetUrl, HttpCompletionOption.ResponseHeadersRead);
 
                             int statusCode = (int)downloadResponse.StatusCode;
                             if (statusCode >= 300 && statusCode <= 399 && downloadResponse.Headers.Location != null)
                             {
-                                // Update the target URL to the new redirect location
                                 targetUrl = downloadResponse.Headers.Location.ToString();
 
-                                // Make sure relative URLs are handled properly if the server returns one
                                 if (!targetUrl.StartsWith("http://") && !targetUrl.StartsWith("https://"))
                                 {
                                     var baseUri = new Uri(targetUrl);
                                     targetUrl = new Uri(baseUri, downloadResponse.Headers.Location).ToString();
                                 }
 
-                                downloadResponse.Dispose(); // Clean up the previous response
+                                downloadResponse.Dispose();
                                 redirectCount++;
                             }
                             else
                             {
-                                isRedirect = false; // We found the final destination!
+                                isRedirect = false;
                             }
                         }
 
-                        // Now we are safe to ensure success and stream the file
                         using (downloadResponse)
                         {
                             downloadResponse.EnsureSuccessStatusCode();
