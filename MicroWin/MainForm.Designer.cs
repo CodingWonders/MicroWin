@@ -36,6 +36,14 @@
             Cancel_Button = new Button();
             About_Button = new Button();
             PageContainerPanel = new Panel();
+            IsoSettingsPage = new Panel();
+            UEFICA23CB = new CheckBox();
+            DriverExportCombo = new ComboBox();
+            label13 = new Label();
+            UnattendCopyCB = new CheckBox();
+            ReportToolCB = new CheckBox();
+            label11 = new Label();
+            label12 = new Label();
             IsoChooserPage = new Panel();
             isoExtractionPB = new ProgressBar();
             isoPickerBtn = new Button();
@@ -112,12 +120,12 @@
             ButtonPanel.SuspendLayout();
             TableLayoutPanel1.SuspendLayout();
             PageContainerPanel.SuspendLayout();
+            IsoSettingsPage.SuspendLayout();
             IsoChooserPage.SuspendLayout();
             FinishPage.SuspendLayout();
             panel4.SuspendLayout();
             IsoCreationPage.SuspendLayout();
             pnlProgress.SuspendLayout();
-            IsoSettingsPage.SuspendLayout();
             UserAccountsPage.SuspendLayout();
             panel1.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
@@ -208,10 +216,11 @@
             //
             // PageContainerPanel
             //
+            // 
+            PageContainerPanel.Controls.Add(IsoSettingsPage);
             PageContainerPanel.Controls.Add(IsoChooserPage);
             PageContainerPanel.Controls.Add(FinishPage);
             PageContainerPanel.Controls.Add(IsoCreationPage);
-            PageContainerPanel.Controls.Add(IsoSettingsPage);
             PageContainerPanel.Controls.Add(UserAccountsPage);
             PageContainerPanel.Controls.Add(ImageChooserPage);
             PageContainerPanel.Controls.Add(WelcomePage);
@@ -630,6 +639,7 @@
             label12.TabIndex = 5;
             label12.Text = "Specify additional settings for the image";
             //
+            // 
             // UserAccountsPage
             //
             UserAccountsPage.Controls.Add(panel1);
@@ -1040,6 +1050,8 @@
             ButtonPanel.ResumeLayout(false);
             TableLayoutPanel1.ResumeLayout(false);
             PageContainerPanel.ResumeLayout(false);
+            IsoSettingsPage.ResumeLayout(false);
+            IsoSettingsPage.PerformLayout();
             IsoChooserPage.ResumeLayout(false);
             IsoChooserPage.PerformLayout();
             FinishPage.ResumeLayout(false);
@@ -1050,8 +1062,6 @@
             IsoCreationPage.PerformLayout();
             pnlProgress.ResumeLayout(false);
             pnlProgress.PerformLayout();
-            IsoSettingsPage.ResumeLayout(false);
-            IsoSettingsPage.PerformLayout();
             UserAccountsPage.ResumeLayout(false);
             UserAccountsPage.PerformLayout();
             panel1.ResumeLayout(false);
@@ -1153,5 +1163,6 @@
         private System.Windows.Forms.LinkLabel lnkUseDT;
         internal Button About_Button;
         internal Label lblFileStatus;
+        private CheckBox UEFICA23CB;
     }
 }
