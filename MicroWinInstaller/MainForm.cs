@@ -1,3 +1,5 @@
+using Microsoft.Dism;
+
 namespace MicroWinInstaller
 {
     public partial class MainForm : Form
