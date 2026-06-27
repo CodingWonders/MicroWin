@@ -456,7 +456,11 @@
             label19.Size = new Size(980, 45);
             label19.TabIndex = 9;
             label19.Visible = false;
-            label19.Text = "\r\nTo install the VirtIO drivers locate the virtio-win-guest-tools file in the root of the C:\\ and run it as Administrator.\r\n";
+            label19.Text = """To proceed with installation of the MicroWin image in QEMU/Proxmox VE:
+            1. Proceed with Setup until you reach the disk selection screen, in which you won't see any drives
+            2. Click `"Load Driver`" and click Browse
+            3. In the folder selection dialog, point to this path: `"D:\\VirtIO\\vioscsi\\w11\\amd64`" (replace amd64 with ARM64 if you are using Windows on ARM, and `"D:`" with the drive letter of the ISO)
+            4. Select all drivers that will appear in the list box and click OK""";
             //
             // IsoCreationPage
             //
