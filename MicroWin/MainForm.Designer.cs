@@ -216,7 +216,7 @@
             //
             // PageContainerPanel
             //
-            // 
+            //
             PageContainerPanel.Controls.Add(IsoSettingsPage);
             PageContainerPanel.Controls.Add(IsoChooserPage);
             PageContainerPanel.Controls.Add(FinishPage);
@@ -455,6 +455,7 @@
             label19.Name = "label19";
             label19.Size = new Size(980, 45);
             label19.TabIndex = 9;
+            label19.Visible = false;
             label19.Text = "\r\nTo install the VirtIO drivers locate the virtio-win-guest-tools file in the root of the C:\\ and run it as Administrator.\r\n";
             //
             // IsoCreationPage
@@ -639,7 +640,7 @@
             label12.TabIndex = 5;
             label12.Text = "Specify additional settings for the image";
             //
-            // 
+            //
             // UserAccountsPage
             //
             UserAccountsPage.Controls.Add(panel1);

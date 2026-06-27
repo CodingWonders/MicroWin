@@ -446,6 +446,15 @@ namespace MicroWin
         private void CopyVirtIODrivers_CheckedChanged(Object sender, EventArgs e)
         {
             AppState.CopyVirtIODrivers = CopyVirtIODrivers.Checked;
+            if (CopyVirtIODrivers.Checked)
+            {
+                label19.Visible = true;
+            }
+            else
+            {
+                label19.Visible = false;
+            }
+
         }
 
 
@@ -607,7 +616,7 @@ namespace MicroWin
 
                     using (var client = new HttpClient(handler))
                     {
-                        string targetUrl = "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win-guest-tools.exe";
+                        string targetUrl = "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso";
                         HttpResponseMessage downloadResponse = null;
                         bool isRedirect = true;
                         int maxRedirects = 5;
@@ -641,7 +650,7 @@ namespace MicroWin
                         {
                             downloadResponse.EnsureSuccessStatusCode();
 
-                            string outputPath = Path.Combine(AppState.ScratchPath, "virtio-win-guest-tools.exe");
+                            string outputPath = Path.Combine(AppState.ScratchPath, "virtio-win.iso");
 
                             using (var downloadStream = await downloadResponse.Content.ReadAsStreamAsync())
                             using (var fileStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
