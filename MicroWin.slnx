@@ -3,4 +3,5 @@
     <Project Path="TestProjects/UnattendedWriter/UnattendedWriter.csproj" Id="8acd4575-9d60-4412-abf2-b5422e33c74d" />
   </Folder>
   <Project Path="MicroWin/MicroWin.csproj" Id="6d6b29a3-5603-487c-837f-ac4fdaa97a73" />
+  <Project Path="MicroWinInstaller/MicroWinInstaller.csproj" Id="bb04de9a-4fe1-488b-bf5d-961f573b6239" />
 </Solution>
