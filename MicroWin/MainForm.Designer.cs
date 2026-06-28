@@ -36,6 +36,14 @@
             Cancel_Button = new Button();
             About_Button = new Button();
             PageContainerPanel = new Panel();
+            IsoSettingsPage = new Panel();
+            UEFICA23CB = new CheckBox();
+            DriverExportCombo = new ComboBox();
+            label13 = new Label();
+            UnattendCopyCB = new CheckBox();
+            ReportToolCB = new CheckBox();
+            label11 = new Label();
+            label12 = new Label();
             IsoChooserPage = new Panel();
             isoExtractionPB = new ProgressBar();
             isoPickerBtn = new Button();
@@ -63,13 +71,6 @@
             logTB = new TextBox();
             label14 = new Label();
             label15 = new Label();
-            IsoSettingsPage = new Panel();
-            DriverExportCombo = new ComboBox();
-            label13 = new Label();
-            UnattendCopyCB = new CheckBox();
-            ReportToolCB = new CheckBox();
-            label11 = new Label();
-            label12 = new Label();
             UserAccountsPage = new Panel();
             panel1 = new Panel();
             tableLayoutPanel3 = new TableLayoutPanel();
@@ -111,12 +112,12 @@
             ButtonPanel.SuspendLayout();
             TableLayoutPanel1.SuspendLayout();
             PageContainerPanel.SuspendLayout();
+            IsoSettingsPage.SuspendLayout();
             IsoChooserPage.SuspendLayout();
             FinishPage.SuspendLayout();
             panel4.SuspendLayout();
             IsoCreationPage.SuspendLayout();
             pnlProgress.SuspendLayout();
-            IsoSettingsPage.SuspendLayout();
             UserAccountsPage.SuspendLayout();
             panel1.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
@@ -207,10 +208,10 @@
             // 
             // PageContainerPanel
             // 
+            PageContainerPanel.Controls.Add(IsoSettingsPage);
             PageContainerPanel.Controls.Add(IsoChooserPage);
             PageContainerPanel.Controls.Add(FinishPage);
             PageContainerPanel.Controls.Add(IsoCreationPage);
-            PageContainerPanel.Controls.Add(IsoSettingsPage);
             PageContainerPanel.Controls.Add(UserAccountsPage);
             PageContainerPanel.Controls.Add(ImageChooserPage);
             PageContainerPanel.Controls.Add(WelcomePage);
@@ -220,6 +221,98 @@
             PageContainerPanel.Name = "PageContainerPanel";
             PageContainerPanel.Size = new Size(1008, 521);
             PageContainerPanel.TabIndex = 3;
+            // 
+            // IsoSettingsPage
+            // 
+            IsoSettingsPage.Controls.Add(UEFICA23CB);
+            IsoSettingsPage.Controls.Add(DriverExportCombo);
+            IsoSettingsPage.Controls.Add(label13);
+            IsoSettingsPage.Controls.Add(UnattendCopyCB);
+            IsoSettingsPage.Controls.Add(ReportToolCB);
+            IsoSettingsPage.Controls.Add(label11);
+            IsoSettingsPage.Controls.Add(label12);
+            IsoSettingsPage.Dock = DockStyle.Fill;
+            IsoSettingsPage.Location = new Point(0, 0);
+            IsoSettingsPage.Name = "IsoSettingsPage";
+            IsoSettingsPage.Size = new Size(1008, 521);
+            IsoSettingsPage.TabIndex = 6;
+            // 
+            // UEFICA23CB
+            // 
+            UEFICA23CB.AutoSize = true;
+            UEFICA23CB.Checked = true;
+            UEFICA23CB.CheckState = CheckState.Checked;
+            UEFICA23CB.Location = new Point(83, 235);
+            UEFICA23CB.Name = "UEFICA23CB";
+            UEFICA23CB.Size = new Size(380, 19);
+            UEFICA23CB.TabIndex = 10;
+            UEFICA23CB.Text = "Use Windows UEFI CA 2023 boot binaries, if available on the ISO file";
+            UEFICA23CB.UseVisualStyleBackColor = true;
+            UEFICA23CB.CheckedChanged += UEFICA23CB_CheckedChanged;
+            // 
+            // DriverExportCombo
+            // 
+            DriverExportCombo.FormattingEnabled = true;
+            DriverExportCombo.Items.AddRange(new object[] { "Don't export drivers", "Export essential drivers (SCSI Adapters/Storage Controllers)", "Export all drivers" });
+            DriverExportCombo.Location = new Point(83, 206);
+            DriverExportCombo.Name = "DriverExportCombo";
+            DriverExportCombo.Size = new Size(374, 23);
+            DriverExportCombo.TabIndex = 9;
+            DriverExportCombo.SelectedIndexChanged += DriverExportCombo_SelectedIndexChanged;
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Location = new Point(80, 185);
+            label13.Name = "label13";
+            label13.Size = new Size(111, 15);
+            label13.TabIndex = 8;
+            label13.Text = "Driver export mode:";
+            // 
+            // UnattendCopyCB
+            // 
+            UnattendCopyCB.AutoSize = true;
+            UnattendCopyCB.Location = new Point(83, 158);
+            UnattendCopyCB.Name = "UnattendCopyCB";
+            UnattendCopyCB.Size = new Size(412, 19);
+            UnattendCopyCB.TabIndex = 7;
+            UnattendCopyCB.Text = "Make a copy of the unattended answer file that I can use on other images";
+            UnattendCopyCB.UseVisualStyleBackColor = true;
+            UnattendCopyCB.CheckedChanged += UnattendCopyCB_CheckedChanged;
+            // 
+            // ReportToolCB
+            // 
+            ReportToolCB.AutoSize = true;
+            ReportToolCB.Checked = true;
+            ReportToolCB.CheckState = CheckState.Checked;
+            ReportToolCB.Location = new Point(83, 133);
+            ReportToolCB.Name = "ReportToolCB";
+            ReportToolCB.Size = new Size(218, 19);
+            ReportToolCB.TabIndex = 7;
+            ReportToolCB.Text = "Add a shortcut for the reporting tool";
+            ReportToolCB.UseVisualStyleBackColor = true;
+            ReportToolCB.CheckedChanged += ReportToolCB_CheckedChanged;
+            // 
+            // label11
+            // 
+            label11.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label11.AutoEllipsis = true;
+            label11.Location = new Point(17, 64);
+            label11.Name = "label11";
+            label11.Size = new Size(977, 52);
+            label11.TabIndex = 6;
+            label11.Text = "Configure additional settings for your customized image.";
+            // 
+            // label12
+            // 
+            label12.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            label12.AutoEllipsis = true;
+            label12.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label12.Location = new Point(14, 12);
+            label12.Name = "label12";
+            label12.Size = new Size(980, 45);
+            label12.TabIndex = 5;
+            label12.Text = "Specify additional settings for the image";
             // 
             // IsoChooserPage
             // 
@@ -529,6 +622,7 @@
             // 
             // IsoSettingsPage
             // 
+            IsoSettingsPage.Controls.Add(UEFICA23CB);
             IsoSettingsPage.Controls.Add(DriverExportCombo);
             IsoSettingsPage.Controls.Add(label13);
             IsoSettingsPage.Controls.Add(UnattendCopyCB);
@@ -541,6 +635,19 @@
             IsoSettingsPage.Name = "IsoSettingsPage";
             IsoSettingsPage.Size = new Size(1008, 521);
             IsoSettingsPage.TabIndex = 6;
+            // 
+            // UEFICA23CB
+            // 
+            UEFICA23CB.AutoSize = true;
+            UEFICA23CB.Checked = true;
+            UEFICA23CB.CheckState = CheckState.Checked;
+            UEFICA23CB.Location = new Point(83, 235);
+            UEFICA23CB.Name = "UEFICA23CB";
+            UEFICA23CB.Size = new Size(380, 19);
+            UEFICA23CB.TabIndex = 10;
+            UEFICA23CB.Text = "Use Windows UEFI CA 2023 boot binaries, if available on the ISO file";
+            UEFICA23CB.UseVisualStyleBackColor = true;
+            UEFICA23CB.CheckedChanged += UEFICA23CB_CheckedChanged;
             // 
             // DriverExportCombo
             // 
@@ -1016,6 +1123,8 @@
             ButtonPanel.ResumeLayout(false);
             TableLayoutPanel1.ResumeLayout(false);
             PageContainerPanel.ResumeLayout(false);
+            IsoSettingsPage.ResumeLayout(false);
+            IsoSettingsPage.PerformLayout();
             IsoChooserPage.ResumeLayout(false);
             IsoChooserPage.PerformLayout();
             FinishPage.ResumeLayout(false);
@@ -1026,8 +1135,6 @@
             IsoCreationPage.PerformLayout();
             pnlProgress.ResumeLayout(false);
             pnlProgress.PerformLayout();
-            IsoSettingsPage.ResumeLayout(false);
-            IsoSettingsPage.PerformLayout();
             UserAccountsPage.ResumeLayout(false);
             UserAccountsPage.PerformLayout();
             panel1.ResumeLayout(false);
@@ -1128,5 +1235,6 @@
         private System.Windows.Forms.LinkLabel lnkUseDT;
         internal Button About_Button;
         internal Label lblFileStatus;
+        private CheckBox UEFICA23CB;
     }
 }
