@@ -1,4 +1,5 @@
 ﻿using Microsoft.Dism;
+using Microsoft.VisualBasic;
 using Microsoft.Win32;
 using MicroWin.Classes;
 using MicroWin.functions.dism;
@@ -17,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Text;
 using System.IO;
 using System.Linq;
 using System.Management;
@@ -407,6 +409,10 @@ namespace MicroWin
             usrNameTB.Text = Environment.UserName;
         }
 
+        private void UseMicroWinISO_CheckedChanged(object sender, EventArgs e)
+        {
+            AppState.UseMicroWinISO = UseMicroWinISO.Checked;
+        }
 
         private void usrPasswordRevealCB_CheckedChanged(object sender, EventArgs e)
         {
@@ -697,64 +703,66 @@ namespace MicroWin
                 }
 #pragma warning restore CS8604
 
-                string bootwimPath = Path.Combine(AppState.MountPath, "sources", "boot.wim");
-                if (!File.Exists(bootwimPath)) bootwimPath = Path.Combine(AppState.MountPath, "sources", "boot.esd");
+                if (!AppState.UseMicroWinISO)
+                {
+                    string bootwimPath = Path.Combine(AppState.MountPath, "sources", "boot.wim");
+                    if (!File.Exists(bootwimPath)) bootwimPath = Path.Combine(AppState.MountPath, "sources", "boot.esd");
 
-                UpdateOverallStatus("Customizing boot image...");
-                UpdateCurrentStatus("Mounting boot image...");
-                DismManager.MountImage(bootwimPath, 2, AppState.ScratchPath, (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
+                    UpdateOverallStatus("Customizing boot image...");
+                    UpdateCurrentStatus("Mounting boot image...");
+                    DismManager.MountImage(bootwimPath, 2, AppState.ScratchPath, (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
 
-                UpdateCurrentStatus("Modifying WinPE registry...");
-                WriteLogMessage("Loading image registry hives...");
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "zSOFTWARE");
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "zSYSTEM");
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "zDEFAULT");
-                RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Users", "Default", "ntuser.dat"), "zNTUSER");
+                    UpdateCurrentStatus("Modifying WinPE registry...");
+                    WriteLogMessage("Loading image registry hives...");
+                    RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "zSOFTWARE");
+                    RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "zSYSTEM");
+                    RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "default"), "zDEFAULT");
+                    RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Users", "Default", "ntuser.dat"), "zNTUSER");
 
-                UpdateCurrentProgressBar(50);
-                WriteLogMessage("Bypassing requirements...");
-                RegistryHelper.AddRegistryItem("HKLM\\zDEFAULT\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV1", ValueKind.REG_DWORD, 0));
-                RegistryHelper.AddRegistryItem("HKLM\\zDEFAULT\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV2", ValueKind.REG_DWORD, 0));
-                RegistryHelper.AddRegistryItem("HKLM\\zNTUSER\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV1", ValueKind.REG_DWORD, 0));
-                RegistryHelper.AddRegistryItem("HKLM\\zNTUSER\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV2", ValueKind.REG_DWORD, 0));
-                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\LabConfig", new RegistryItem("BypassCPUCheck", ValueKind.REG_DWORD, 1));
-                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\LabConfig", new RegistryItem("BypassRAMCheck", ValueKind.REG_DWORD, 1));
-                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\LabConfig", new RegistryItem("BypassSecureBootCheck", ValueKind.REG_DWORD, 1));
-                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\LabConfig", new RegistryItem("BypassStorageCheck", ValueKind.REG_DWORD, 1));
-                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\LabConfig", new RegistryItem("BypassTPMCheck", ValueKind.REG_DWORD, 1));
-                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\MoSetup", new RegistryItem("AllowUpgradesWithUnsupportedTPMOrCPU", ValueKind.REG_DWORD, 1));
-                RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\Status\\ChildCompletion", new RegistryItem("setup.exe", ValueKind.REG_DWORD, 3));
+                    UpdateCurrentProgressBar(50);
+                    WriteLogMessage("Bypassing requirements...");
+                    RegistryHelper.AddRegistryItem("HKLM\\zDEFAULT\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV1", ValueKind.REG_DWORD, 0));
+                    RegistryHelper.AddRegistryItem("HKLM\\zDEFAULT\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV2", ValueKind.REG_DWORD, 0));
+                    RegistryHelper.AddRegistryItem("HKLM\\zNTUSER\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV1", ValueKind.REG_DWORD, 0));
+                    RegistryHelper.AddRegistryItem("HKLM\\zNTUSER\\Control Panel\\UnsupportedHardwareNotificationCache", new RegistryItem("SV2", ValueKind.REG_DWORD, 0));
+                    RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\LabConfig", new RegistryItem("BypassCPUCheck", ValueKind.REG_DWORD, 1));
+                    RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\LabConfig", new RegistryItem("BypassRAMCheck", ValueKind.REG_DWORD, 1));
+                    RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\LabConfig", new RegistryItem("BypassSecureBootCheck", ValueKind.REG_DWORD, 1));
+                    RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\LabConfig", new RegistryItem("BypassStorageCheck", ValueKind.REG_DWORD, 1));
+                    RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\LabConfig", new RegistryItem("BypassTPMCheck", ValueKind.REG_DWORD, 1));
+                    RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\MoSetup", new RegistryItem("AllowUpgradesWithUnsupportedTPMOrCPU", ValueKind.REG_DWORD, 1));
+                    RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup\\Status\\ChildCompletion", new RegistryItem("setup.exe", ValueKind.REG_DWORD, 3));
 
-                // Old Setup should only be imposed on 24H2 and later (builds 26040 and later). Get this information
-                bool shouldUsePanther = false;
+                    // Old Setup should only be imposed on 24H2 and later (builds 26040 and later). Get this information
+                    bool shouldUsePanther = false;
 
 #pragma warning disable CS8602
-                DismImageInfoCollection? bootImageInfo = DismManager.GetImageInformation(bootwimPath, (ex) => WriteLogMessage($"Could not get WinPE image info: {ex.Message}"));
+                    DismImageInfoCollection? bootImageInfo = DismManager.GetImageInformation(bootwimPath, (ex) => WriteLogMessage($"Could not get WinPE image info: {ex.Message}"));
 #pragma warning restore CS8602
-                if (bootImageInfo is not null)
-                {
-                    // Get the second index then get version
-                    DismImageInfo? setupImage = bootImageInfo.ElementAtOrDefault(1);
-                    shouldUsePanther = VersionComparer.IsNewerThanVersion(setupImage?.ProductVersion, new(10, 0, 26040, 0));
-                }
+                    if (bootImageInfo is not null)
+                    {
+                        // Get the second index then get version
+                        DismImageInfo? setupImage = bootImageInfo.ElementAtOrDefault(1);
+                        shouldUsePanther = VersionComparer.IsNewerThanVersion(setupImage?.ProductVersion, new(10, 0, 26040, 0));
+                    }
 
-                if (shouldUsePanther)
-                {
-                    UpdateCurrentProgressBar(75);
-                    WriteLogMessage("Imposing old Setup...");
-                    RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup", new RegistryItem("CmdLine", ValueKind.REG_SZ, "\\sources\\setup.exe"));
-                }
+                    if (shouldUsePanther)
+                    {
+                        UpdateCurrentProgressBar(75);
+                        WriteLogMessage("Imposing old Setup...");
+                        RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup", new RegistryItem("CmdLine", ValueKind.REG_SZ, "\\sources\\setup.exe"));
+                    }
 
-                UpdateCurrentProgressBar(95);
-                WriteLogMessage("Unloading image registry hives...");
-                RegistryHelper.UnloadRegistryHive("zSYSTEM");
-                RegistryHelper.UnloadRegistryHive("zSOFTWARE");
-                RegistryHelper.UnloadRegistryHive("zDEFAULT");
-                RegistryHelper.UnloadRegistryHive("zNTUSER");
+                    UpdateCurrentProgressBar(95);
+                    WriteLogMessage("Unloading image registry hives...");
+                    RegistryHelper.UnloadRegistryHive("zSYSTEM");
+                    RegistryHelper.UnloadRegistryHive("zSOFTWARE");
+                    RegistryHelper.UnloadRegistryHive("zDEFAULT");
+                    RegistryHelper.UnloadRegistryHive("zNTUSER");
 
 #pragma warning disable CS8604
-                if (Directory.Exists(bootDriverPath))
-                    DriverInstallHelper.InstallDrivers(AppState.ScratchPath, bootDriverPath, (message) => WriteLogMessage(message));
+                    if (Directory.Exists(bootDriverPath))
+                        DriverInstallHelper.InstallDrivers(AppState.ScratchPath, bootDriverPath, (message) => WriteLogMessage(message));
 #pragma warning restore CS8604
 
                 if (AppState.UseUEFICA23Bins)
@@ -788,6 +796,17 @@ namespace MicroWin
                 UpdateCurrentStatus("Unmounting boot image...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
 
+                            var adkwinpesetupproc = Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adkwinpesetup.exe"), "/features OptionId.WindowsPreinstallationEnvironment /q /ceip off");
+                            adkwinpesetupproc.WaitForExit();
+                            var adksetupproc = Process.Start(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adksetup.exe"), "/features OptionId.DeploymentTools /q /ceip off");
+                            adksetupproc.WaitForExit();
+
+                            File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adkwinpesetup.exe"));
+                            File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "adksetup.exe"));
+                        }
+
+                    }
+                }
                 UpdateOverallStatus("Generating ISO file...");
                 UpdateOverallProgressBar(90);
                 UpdateCurrentStatus("Generating ISO file...");
@@ -857,6 +876,7 @@ namespace MicroWin
                 {
                     // don't save operation logs then
                 }
+                
             });
 
             PowerManagementHelper.EnableSystemSleepMode();
