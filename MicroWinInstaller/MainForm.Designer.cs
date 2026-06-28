@@ -36,6 +36,7 @@
             Next_Button = new Button();
             Cancel_Button = new Button();
             PageContainerPanel = new Panel();
+            DriveSelectionPage = new Panel();
             TableLayoutPanel1.SuspendLayout();
             PageContainerPanel.SuspendLayout();
             WelcomePage.SuspendLayout();
