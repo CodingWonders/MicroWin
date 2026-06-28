@@ -37,6 +37,8 @@
             Cancel_Button = new Button();
             PageContainerPanel = new Panel();
             DriveSelectionPage = new Panel();
+            lvDrives = new ListView();
+            lvDrives.SuspendLayout();
             TableLayoutPanel1.SuspendLayout();
             PageContainerPanel.SuspendLayout();
             WelcomePage.SuspendLayout();
@@ -47,6 +49,31 @@
             WelcomePage.Dock = DockStyle.Fill;
             WelcomePage.Location = new Point(0, 0);
             WelcomePage.Size = new Size(1008, 521)
+            //
+            // DriveSelectionPage
+            //
+            DriveSelectionPage.Dock = DockStyle.Fill;
+            DriveSelectionPage.Location = new Point(0, 0);
+            DriveSelectionPage.Name = "DriveSelectionPage";
+            DriveSelectionPage.Size = new Size(1008, 521);
+            DriveSelectionPage.TabIndex = 1;
+            DriveSelectionPage.Visible = false;
+            DriveSelectionPage.Controls.Add(lvDrives);
+            //
+            // lvDrives
+            //
+            lvDrives.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lvDrives.BorderStyle = BorderStyle.FixedSingle;
+            lvDrives.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2});
+            lvDrives.FullRowSelect = true;
+            lvDrives.Location = new Point(80, 89);
+            lvDrives.MultiSelect = false;
+            lvDrives.Name = "lvDrives";
+            lvDrives.Size = new Size(849, 352);
+            lvDrives.TabIndex = 3;
+            lvDrives.UseCompatibleStateImageBehavior = false;
+            lvDrives.View = View.Details;
+            lvDrives.SelectedIndexChanged += lvDrives_SelectedIndexChanged;
             //
             // ButtonPanel
             //

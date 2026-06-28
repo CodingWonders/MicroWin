@@ -1,5 +1,7 @@
-using Microsoft.Dism;
-using MicroWin.functions.UI;
+using MicroWinInstaller.functions.UI;
+using MicroWinInstaller.functions.Dism;
+using System.Managment;
+using MicroWinInstaller.AppState;
 
 namespace MicroWinInstaller
 {
@@ -51,7 +53,6 @@ namespace MicroWinInstaller
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-
             ChangePage(WizardPage.Page.WelcomePage);
         }
 
@@ -67,6 +68,19 @@ namespace MicroWinInstaller
             }
         }
 
+        private void Get_Drives(object sender, EventArgs e)
+        {
+            Process diskpart = new Process();
+            diskpart.StartInfo.UseShellExecute = false;
 
+        }
+
+        private void lvDrives_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (lvDrives.SelectedItems.Count == 1)
+            {
+                AppState.diskNumber = lvDrives.FocusedItem?.Text;
+            }
+        }
     }
 }
