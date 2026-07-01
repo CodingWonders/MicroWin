@@ -97,11 +97,6 @@ namespace MicroWin
                     return;
             }
 
-            if (AppState.CopyVirtIODrivers)
-            {
-                label19.Visible = false;
-            }
-
             WelcomePage.Visible = newPage == WizardPage.Page.WelcomePage;
             IsoChooserPage.Visible = newPage == WizardPage.Page.IsoChooserPage;
             ImageChooserPage.Visible = newPage == WizardPage.Page.ImageChooserPage;
@@ -446,15 +441,7 @@ namespace MicroWin
         private void CopyVirtIODrivers_CheckedChanged(Object sender, EventArgs e)
         {
             AppState.CopyVirtIODrivers = CopyVirtIODrivers.Checked;
-            if (CopyVirtIODrivers.Checked)
-            {
-                label19.Visible = true;
-            }
-            else
-            {
-                label19.Visible = false;
-            }
-
+            label19.Visible = CopyVirtIODrivers.Checked;
         }
 
 
