@@ -18,6 +18,8 @@ namespace MicroWin
         /// </summary>
         public static bool EncodeWithB64 { get; set; } = true;
         public static bool AddReportingToolShortcut { get; set; } = true;
+        public static bool UseMSAccount { get; set; } = false;
+        public static bool UseSetup { get; set; } = false;
         public static bool CopyUnattendToFileSystem { get; set; }
         public static DriverExportMode DriverExportMode { get; set; } = DriverExportMode.NoExport;
         public static bool UseUEFICA23Bins { get; set; } = true;

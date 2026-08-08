@@ -30,12 +30,36 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             ButtonPanel = new Panel();
+            Setup_Button = new Button();
+            MSAcc_Button = new Button();
+            About_Button = new Button();
             TableLayoutPanel1 = new TableLayoutPanel();
             Back_Button = new Button();
             Next_Button = new Button();
             Cancel_Button = new Button();
-            About_Button = new Button();
             PageContainerPanel = new Panel();
+            UserAccountsPage = new Panel();
+            tableLayoutPanel2 = new TableLayoutPanel();
+            label6 = new Label();
+            label7 = new Label();
+            usrNameTB = new TextBox();
+            usrPasswordTB = new TextBox();
+            usrNameCurrentSysNameBtn = new Button();
+            usrPasswordRevealCB = new CheckBox();
+            panel1 = new Panel();
+            tableLayoutPanel3 = new TableLayoutPanel();
+            panel3 = new Panel();
+            label10 = new Label();
+            lnkLusrMgr = new LinkLabel();
+            pictureBox1 = new PictureBox();
+            pictureBox2 = new PictureBox();
+            panel2 = new Panel();
+            label9 = new Label();
+            lnkImmersiveAccounts = new LinkLabel();
+            label8 = new Label();
+            b64CB = new CheckBox();
+            label5 = new Label();
+            label4 = new Label();
             IsoSettingsPage = new Panel();
             UEFICA23CB = new CheckBox();
             DriverExportCombo = new ComboBox();
@@ -71,28 +95,6 @@
             logTB = new TextBox();
             label14 = new Label();
             label15 = new Label();
-            UserAccountsPage = new Panel();
-            panel1 = new Panel();
-            tableLayoutPanel3 = new TableLayoutPanel();
-            panel3 = new Panel();
-            label10 = new Label();
-            lnkLusrMgr = new LinkLabel();
-            pictureBox1 = new PictureBox();
-            pictureBox2 = new PictureBox();
-            panel2 = new Panel();
-            label9 = new Label();
-            lnkImmersiveAccounts = new LinkLabel();
-            label8 = new Label();
-            b64CB = new CheckBox();
-            tableLayoutPanel2 = new TableLayoutPanel();
-            label6 = new Label();
-            label7 = new Label();
-            usrNameTB = new TextBox();
-            usrPasswordTB = new TextBox();
-            usrNameCurrentSysNameBtn = new Button();
-            usrPasswordRevealCB = new CheckBox();
-            label5 = new Label();
-            label4 = new Label();
             ImageChooserPage = new Panel();
             label2 = new Label();
             lvVersions = new ListView();
@@ -106,38 +108,84 @@
             lblDisclaimer = new Label();
             WelcomePage_Description = new Label();
             WelcomePage_Header = new Label();
+            label19 = new Label();
+            label20 = new Label();
+            textBox1 = new TextBox();
+            textBox2 = new TextBox();
+            button1 = new Button();
+            checkBox1 = new CheckBox();
             isoPickerOFD = new OpenFileDialog();
             isoSaverSFD = new SaveFileDialog();
             ButtonPanel.SuspendLayout();
             TableLayoutPanel1.SuspendLayout();
             PageContainerPanel.SuspendLayout();
-            IsoSettingsPage.SuspendLayout();
-            IsoChooserPage.SuspendLayout();
-            FinishPage.SuspendLayout();
-            panel4.SuspendLayout();
-            IsoCreationPage.SuspendLayout();
-            pnlProgress.SuspendLayout();
             UserAccountsPage.SuspendLayout();
+            tableLayoutPanel2.SuspendLayout();
             panel1.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
             panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             panel2.SuspendLayout();
-            tableLayoutPanel2.SuspendLayout();
+            IsoSettingsPage.SuspendLayout();
+            IsoChooserPage.SuspendLayout();
+            FinishPage.SuspendLayout();
+            panel4.SuspendLayout();
+            IsoCreationPage.SuspendLayout();
+            pnlProgress.SuspendLayout();
             ImageChooserPage.SuspendLayout();
             WelcomePage.SuspendLayout();
             SuspendLayout();
             // 
             // ButtonPanel
             // 
-            ButtonPanel.Controls.Add(TableLayoutPanel1);
+            ButtonPanel.Controls.Add(Setup_Button);
+            ButtonPanel.Controls.Add(MSAcc_Button);
             ButtonPanel.Controls.Add(About_Button);
+            ButtonPanel.Controls.Add(TableLayoutPanel1);
             ButtonPanel.Dock = DockStyle.Bottom;
             ButtonPanel.Location = new Point(0, 521);
             ButtonPanel.Name = "ButtonPanel";
             ButtonPanel.Size = new Size(1008, 40);
             ButtonPanel.TabIndex = 1;
+            // 
+            // Setup_Button
+            // 
+            Setup_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            Setup_Button.DialogResult = DialogResult.Cancel;
+            Setup_Button.FlatStyle = FlatStyle.System;
+            Setup_Button.Location = new Point(218, 9);
+            Setup_Button.Name = "Setup_Button";
+            Setup_Button.Size = new Size(140, 23);
+            Setup_Button.TabIndex = 1;
+            Setup_Button.Text = "Add Users During Setup";
+            Setup_Button.Visible = false;
+            Setup_Button.Click += Setup_Button_Click;
+            // 
+            // MSAcc_Button
+            // 
+            MSAcc_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            MSAcc_Button.DialogResult = DialogResult.Cancel;
+            MSAcc_Button.FlatStyle = FlatStyle.System;
+            MSAcc_Button.Location = new Point(82, 9);
+            MSAcc_Button.Name = "MSAcc_Button";
+            MSAcc_Button.Size = new Size(130, 23);
+            MSAcc_Button.TabIndex = 1;
+            MSAcc_Button.Text = "Use Microsoft Account";
+            MSAcc_Button.Visible = false;
+            MSAcc_Button.Click += MSAcc_Button_Click;
+            // 
+            // About_Button
+            // 
+            About_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            About_Button.DialogResult = DialogResult.Cancel;
+            About_Button.FlatStyle = FlatStyle.System;
+            About_Button.Location = new Point(12, 9);
+            About_Button.Name = "About_Button";
+            About_Button.Size = new Size(64, 23);
+            About_Button.TabIndex = 1;
+            About_Button.Text = "About";
+            About_Button.Click += About_Button_Click;
             // 
             // TableLayoutPanel1
             // 
@@ -193,25 +241,13 @@
             Cancel_Button.Text = "Cancel";
             Cancel_Button.Click += Cancel_Button_Click;
             // 
-            // About_Button
-            // 
-            About_Button.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            About_Button.DialogResult = DialogResult.Cancel;
-            About_Button.FlatStyle = FlatStyle.System;
-            About_Button.Location = new Point(12, 9);
-            About_Button.Name = "About_Button";
-            About_Button.Size = new Size(64, 23);
-            About_Button.TabIndex = 1;
-            About_Button.Text = "About";
-            About_Button.Click += About_Button_Click;
-            // 
             // PageContainerPanel
             // 
+            PageContainerPanel.Controls.Add(UserAccountsPage);
             PageContainerPanel.Controls.Add(IsoSettingsPage);
             PageContainerPanel.Controls.Add(IsoChooserPage);
             PageContainerPanel.Controls.Add(FinishPage);
             PageContainerPanel.Controls.Add(IsoCreationPage);
-            PageContainerPanel.Controls.Add(UserAccountsPage);
             PageContainerPanel.Controls.Add(ImageChooserPage);
             PageContainerPanel.Controls.Add(WelcomePage);
             PageContainerPanel.Dock = DockStyle.Fill;
@@ -220,6 +256,273 @@
             PageContainerPanel.Name = "PageContainerPanel";
             PageContainerPanel.Size = new Size(1008, 521);
             PageContainerPanel.TabIndex = 3;
+            // 
+            // UserAccountsPage
+            // 
+            UserAccountsPage.Controls.Add(tableLayoutPanel2);
+            UserAccountsPage.Controls.Add(panel1);
+            UserAccountsPage.Controls.Add(b64CB);
+            UserAccountsPage.Controls.Add(label5);
+            UserAccountsPage.Controls.Add(label4);
+            UserAccountsPage.Dock = DockStyle.Fill;
+            UserAccountsPage.Location = new Point(0, 0);
+            UserAccountsPage.Name = "UserAccountsPage";
+            UserAccountsPage.Size = new Size(1008, 521);
+            UserAccountsPage.TabIndex = 5;
+            // 
+            // tableLayoutPanel2
+            // 
+            tableLayoutPanel2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            tableLayoutPanel2.ColumnCount = 3;
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 19.12799F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60.85919F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20.04773F));
+            tableLayoutPanel2.Controls.Add(label6, 0, 0);
+            tableLayoutPanel2.Controls.Add(label7, 0, 1);
+            tableLayoutPanel2.Controls.Add(usrNameTB, 1, 0);
+            tableLayoutPanel2.Controls.Add(usrPasswordTB, 1, 1);
+            tableLayoutPanel2.Controls.Add(usrNameCurrentSysNameBtn, 2, 0);
+            tableLayoutPanel2.Controls.Add(usrPasswordRevealCB, 2, 1);
+            tableLayoutPanel2.Location = new Point(85, 133);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.RowCount = 2;
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tableLayoutPanel2.Size = new Size(838, 59);
+            tableLayoutPanel2.TabIndex = 5;
+            // 
+            // label6
+            // 
+            label6.AutoEllipsis = true;
+            label6.Dock = DockStyle.Fill;
+            label6.Location = new Point(3, 0);
+            label6.Name = "label6";
+            label6.Size = new Size(154, 29);
+            label6.TabIndex = 4;
+            label6.Text = "User Name:";
+            label6.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label7
+            // 
+            label7.AutoEllipsis = true;
+            label7.Dock = DockStyle.Fill;
+            label7.Location = new Point(3, 29);
+            label7.Name = "label7";
+            label7.Size = new Size(154, 30);
+            label7.TabIndex = 4;
+            label7.Text = "Password:";
+            label7.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // usrNameTB
+            // 
+            usrNameTB.BorderStyle = BorderStyle.FixedSingle;
+            usrNameTB.Dock = DockStyle.Fill;
+            usrNameTB.Location = new Point(163, 3);
+            usrNameTB.MaxLength = 20;
+            usrNameTB.Name = "usrNameTB";
+            usrNameTB.Size = new Size(503, 23);
+            usrNameTB.TabIndex = 5;
+            usrNameTB.TextChanged += usrNameTB_TextChanged;
+            // 
+            // usrPasswordTB
+            // 
+            usrPasswordTB.BorderStyle = BorderStyle.FixedSingle;
+            usrPasswordTB.Dock = DockStyle.Fill;
+            usrPasswordTB.Location = new Point(163, 32);
+            usrPasswordTB.Name = "usrPasswordTB";
+            usrPasswordTB.PasswordChar = '*';
+            usrPasswordTB.Size = new Size(503, 23);
+            usrPasswordTB.TabIndex = 5;
+            usrPasswordTB.TextChanged += usrPasswordTB_TextChanged;
+            // 
+            // usrNameCurrentSysNameBtn
+            // 
+            usrNameCurrentSysNameBtn.Dock = DockStyle.Fill;
+            usrNameCurrentSysNameBtn.FlatStyle = FlatStyle.System;
+            usrNameCurrentSysNameBtn.Location = new Point(672, 3);
+            usrNameCurrentSysNameBtn.Name = "usrNameCurrentSysNameBtn";
+            usrNameCurrentSysNameBtn.Size = new Size(163, 23);
+            usrNameCurrentSysNameBtn.TabIndex = 6;
+            usrNameCurrentSysNameBtn.Text = "Use current user name";
+            usrNameCurrentSysNameBtn.UseVisualStyleBackColor = true;
+            usrNameCurrentSysNameBtn.Click += usrNameCurrentSysNameBtn_Click;
+            // 
+            // usrPasswordRevealCB
+            // 
+            usrPasswordRevealCB.Appearance = Appearance.Button;
+            usrPasswordRevealCB.AutoSize = true;
+            usrPasswordRevealCB.Dock = DockStyle.Fill;
+            usrPasswordRevealCB.FlatStyle = FlatStyle.System;
+            usrPasswordRevealCB.Location = new Point(672, 32);
+            usrPasswordRevealCB.Name = "usrPasswordRevealCB";
+            usrPasswordRevealCB.Size = new Size(163, 24);
+            usrPasswordRevealCB.TabIndex = 7;
+            usrPasswordRevealCB.Text = "Reveal password";
+            usrPasswordRevealCB.TextAlign = ContentAlignment.MiddleCenter;
+            usrPasswordRevealCB.UseVisualStyleBackColor = true;
+            usrPasswordRevealCB.CheckedChanged += usrPasswordRevealCB_CheckedChanged;
+            // 
+            // panel1
+            // 
+            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            panel1.Controls.Add(tableLayoutPanel3);
+            panel1.Controls.Add(label8);
+            panel1.Location = new Point(85, 254);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(838, 236);
+            panel1.TabIndex = 7;
+            // 
+            // tableLayoutPanel3
+            // 
+            tableLayoutPanel3.ColumnCount = 2;
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 47.61337F));
+            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 52.38663F));
+            tableLayoutPanel3.Controls.Add(panel3, 0, 1);
+            tableLayoutPanel3.Controls.Add(pictureBox1, 1, 0);
+            tableLayoutPanel3.Controls.Add(pictureBox2, 1, 1);
+            tableLayoutPanel3.Controls.Add(panel2, 0, 0);
+            tableLayoutPanel3.Dock = DockStyle.Fill;
+            tableLayoutPanel3.Location = new Point(0, 29);
+            tableLayoutPanel3.Name = "tableLayoutPanel3";
+            tableLayoutPanel3.RowCount = 2;
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 41.54589F));
+            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 58.45411F));
+            tableLayoutPanel3.Size = new Size(838, 207);
+            tableLayoutPanel3.TabIndex = 2;
+            // 
+            // panel3
+            // 
+            panel3.Controls.Add(label10);
+            panel3.Controls.Add(lnkLusrMgr);
+            panel3.Dock = DockStyle.Fill;
+            panel3.Location = new Point(3, 88);
+            panel3.Name = "panel3";
+            panel3.Size = new Size(393, 116);
+            panel3.TabIndex = 3;
+            // 
+            // label10
+            // 
+            label10.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label10.AutoEllipsis = true;
+            label10.Location = new Point(8, 8);
+            label10.Name = "label10";
+            label10.Size = new Size(375, 62);
+            label10.TabIndex = 4;
+            label10.Text = "- Open Local Users and Groups, then go to Users";
+            // 
+            // lnkLusrMgr
+            // 
+            lnkLusrMgr.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            lnkLusrMgr.AutoSize = true;
+            lnkLusrMgr.LinkBehavior = LinkBehavior.NeverUnderline;
+            lnkLusrMgr.LinkColor = Color.DodgerBlue;
+            lnkLusrMgr.Location = new Point(302, 91);
+            lnkLusrMgr.Name = "lnkLusrMgr";
+            lnkLusrMgr.Size = new Size(81, 15);
+            lnkLusrMgr.TabIndex = 0;
+            lnkLusrMgr.TabStop = true;
+            lnkLusrMgr.Text = "Take me there";
+            lnkLusrMgr.LinkClicked += lnkLusrMgr_LinkClicked;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Dock = DockStyle.Fill;
+            pictureBox1.Image = Properties.Resources.user_creation_settings;
+            pictureBox1.Location = new Point(402, 3);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(433, 79);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 1;
+            pictureBox1.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            pictureBox2.Dock = DockStyle.Fill;
+            pictureBox2.Image = Properties.Resources.user_creation_lusrmgr;
+            pictureBox2.Location = new Point(402, 88);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(433, 116);
+            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox2.TabIndex = 1;
+            pictureBox2.TabStop = false;
+            // 
+            // panel2
+            // 
+            panel2.Controls.Add(label9);
+            panel2.Controls.Add(lnkImmersiveAccounts);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(3, 3);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(393, 79);
+            panel2.TabIndex = 2;
+            // 
+            // label9
+            // 
+            label9.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label9.AutoEllipsis = true;
+            label9.Location = new Point(8, 8);
+            label9.Name = "label9";
+            label9.Size = new Size(293, 43);
+            label9.TabIndex = 4;
+            label9.Text = "- Head over to Settings > Accounts > Other Users";
+            // 
+            // lnkImmersiveAccounts
+            // 
+            lnkImmersiveAccounts.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            lnkImmersiveAccounts.AutoSize = true;
+            lnkImmersiveAccounts.LinkBehavior = LinkBehavior.NeverUnderline;
+            lnkImmersiveAccounts.LinkColor = Color.DodgerBlue;
+            lnkImmersiveAccounts.Location = new Point(302, 54);
+            lnkImmersiveAccounts.Name = "lnkImmersiveAccounts";
+            lnkImmersiveAccounts.Size = new Size(81, 15);
+            lnkImmersiveAccounts.TabIndex = 0;
+            lnkImmersiveAccounts.TabStop = true;
+            lnkImmersiveAccounts.Text = "Take me there";
+            lnkImmersiveAccounts.LinkClicked += lnkImmersiveAccounts_LinkClicked;
+            // 
+            // label8
+            // 
+            label8.Dock = DockStyle.Top;
+            label8.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label8.Location = new Point(0, 0);
+            label8.Name = "label8";
+            label8.Size = new Size(838, 29);
+            label8.TabIndex = 0;
+            label8.Text = "To set up new accounts:";
+            // 
+            // b64CB
+            // 
+            b64CB.AutoSize = true;
+            b64CB.Checked = true;
+            b64CB.CheckState = CheckState.Checked;
+            b64CB.Location = new Point(85, 200);
+            b64CB.Name = "b64CB";
+            b64CB.Size = new Size(259, 19);
+            b64CB.TabIndex = 6;
+            b64CB.Text = "Encode password in Base64 (recommended)";
+            b64CB.UseVisualStyleBackColor = true;
+            b64CB.CheckedChanged += b64CB_CheckedChanged;
+            // 
+            // label5
+            // 
+            label5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label5.AutoEllipsis = true;
+            label5.Location = new Point(17, 64);
+            label5.Name = "label5";
+            label5.Size = new Size(977, 52);
+            label5.TabIndex = 4;
+            label5.Text = resources.GetString("label5.Text");
+            // 
+            // label4
+            // 
+            label4.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            label4.AutoEllipsis = true;
+            label4.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label4.Location = new Point(14, 12);
+            label4.Name = "label4";
+            label4.Size = new Size(980, 45);
+            label4.TabIndex = 3;
+            label4.Text = "Who will use the computer?";
             // 
             // IsoSettingsPage
             // 
@@ -619,273 +922,6 @@
             label15.TabIndex = 7;
             label15.Text = "Customizations in progress";
             // 
-            // UserAccountsPage
-            // 
-            UserAccountsPage.Controls.Add(panel1);
-            UserAccountsPage.Controls.Add(b64CB);
-            UserAccountsPage.Controls.Add(tableLayoutPanel2);
-            UserAccountsPage.Controls.Add(label5);
-            UserAccountsPage.Controls.Add(label4);
-            UserAccountsPage.Dock = DockStyle.Fill;
-            UserAccountsPage.Location = new Point(0, 0);
-            UserAccountsPage.Name = "UserAccountsPage";
-            UserAccountsPage.Size = new Size(1008, 521);
-            UserAccountsPage.TabIndex = 5;
-            // 
-            // panel1
-            // 
-            panel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            panel1.Controls.Add(tableLayoutPanel3);
-            panel1.Controls.Add(label8);
-            panel1.Location = new Point(85, 254);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(838, 236);
-            panel1.TabIndex = 7;
-            // 
-            // tableLayoutPanel3
-            // 
-            tableLayoutPanel3.ColumnCount = 2;
-            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 47.61337F));
-            tableLayoutPanel3.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 52.38663F));
-            tableLayoutPanel3.Controls.Add(panel3, 0, 1);
-            tableLayoutPanel3.Controls.Add(pictureBox1, 1, 0);
-            tableLayoutPanel3.Controls.Add(pictureBox2, 1, 1);
-            tableLayoutPanel3.Controls.Add(panel2, 0, 0);
-            tableLayoutPanel3.Dock = DockStyle.Fill;
-            tableLayoutPanel3.Location = new Point(0, 29);
-            tableLayoutPanel3.Name = "tableLayoutPanel3";
-            tableLayoutPanel3.RowCount = 2;
-            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 41.54589F));
-            tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 58.45411F));
-            tableLayoutPanel3.Size = new Size(838, 207);
-            tableLayoutPanel3.TabIndex = 2;
-            // 
-            // panel3
-            // 
-            panel3.Controls.Add(label10);
-            panel3.Controls.Add(lnkLusrMgr);
-            panel3.Dock = DockStyle.Fill;
-            panel3.Location = new Point(3, 88);
-            panel3.Name = "panel3";
-            panel3.Size = new Size(393, 116);
-            panel3.TabIndex = 3;
-            // 
-            // label10
-            // 
-            label10.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            label10.AutoEllipsis = true;
-            label10.Location = new Point(8, 8);
-            label10.Name = "label10";
-            label10.Size = new Size(375, 62);
-            label10.TabIndex = 4;
-            label10.Text = "- Open Local Users and Groups, then go to Users";
-            // 
-            // lnkLusrMgr
-            // 
-            lnkLusrMgr.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            lnkLusrMgr.AutoSize = true;
-            lnkLusrMgr.LinkBehavior = LinkBehavior.NeverUnderline;
-            lnkLusrMgr.LinkColor = Color.DodgerBlue;
-            lnkLusrMgr.Location = new Point(302, 91);
-            lnkLusrMgr.Name = "lnkLusrMgr";
-            lnkLusrMgr.Size = new Size(81, 15);
-            lnkLusrMgr.TabIndex = 0;
-            lnkLusrMgr.TabStop = true;
-            lnkLusrMgr.Text = "Take me there";
-            lnkLusrMgr.LinkClicked += lnkLusrMgr_LinkClicked;
-            // 
-            // pictureBox1
-            // 
-            pictureBox1.Dock = DockStyle.Fill;
-            pictureBox1.Image = Properties.Resources.user_creation_settings;
-            pictureBox1.Location = new Point(402, 3);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(433, 79);
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox1.TabIndex = 1;
-            pictureBox1.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            pictureBox2.Dock = DockStyle.Fill;
-            pictureBox2.Image = Properties.Resources.user_creation_lusrmgr;
-            pictureBox2.Location = new Point(402, 88);
-            pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(433, 116);
-            pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
-            pictureBox2.TabIndex = 1;
-            pictureBox2.TabStop = false;
-            // 
-            // panel2
-            // 
-            panel2.Controls.Add(label9);
-            panel2.Controls.Add(lnkImmersiveAccounts);
-            panel2.Dock = DockStyle.Fill;
-            panel2.Location = new Point(3, 3);
-            panel2.Name = "panel2";
-            panel2.Size = new Size(393, 79);
-            panel2.TabIndex = 2;
-            // 
-            // label9
-            // 
-            label9.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            label9.AutoEllipsis = true;
-            label9.Location = new Point(8, 8);
-            label9.Name = "label9";
-            label9.Size = new Size(293, 43);
-            label9.TabIndex = 4;
-            label9.Text = "- Head over to Settings > Accounts > Other Users";
-            // 
-            // lnkImmersiveAccounts
-            // 
-            lnkImmersiveAccounts.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            lnkImmersiveAccounts.AutoSize = true;
-            lnkImmersiveAccounts.LinkBehavior = LinkBehavior.NeverUnderline;
-            lnkImmersiveAccounts.LinkColor = Color.DodgerBlue;
-            lnkImmersiveAccounts.Location = new Point(302, 54);
-            lnkImmersiveAccounts.Name = "lnkImmersiveAccounts";
-            lnkImmersiveAccounts.Size = new Size(81, 15);
-            lnkImmersiveAccounts.TabIndex = 0;
-            lnkImmersiveAccounts.TabStop = true;
-            lnkImmersiveAccounts.Text = "Take me there";
-            lnkImmersiveAccounts.LinkClicked += lnkImmersiveAccounts_LinkClicked;
-            // 
-            // label8
-            // 
-            label8.Dock = DockStyle.Top;
-            label8.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label8.Location = new Point(0, 0);
-            label8.Name = "label8";
-            label8.Size = new Size(838, 29);
-            label8.TabIndex = 0;
-            label8.Text = "To set up new accounts:";
-            // 
-            // b64CB
-            // 
-            b64CB.AutoSize = true;
-            b64CB.Checked = true;
-            b64CB.CheckState = CheckState.Checked;
-            b64CB.Location = new Point(85, 200);
-            b64CB.Name = "b64CB";
-            b64CB.Size = new Size(259, 19);
-            b64CB.TabIndex = 6;
-            b64CB.Text = "Encode password in Base64 (recommended)";
-            b64CB.UseVisualStyleBackColor = true;
-            b64CB.CheckedChanged += b64CB_CheckedChanged;
-            // 
-            // tableLayoutPanel2
-            // 
-            tableLayoutPanel2.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            tableLayoutPanel2.ColumnCount = 3;
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 19.12799F));
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60.85919F));
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20.04773F));
-            tableLayoutPanel2.Controls.Add(label6, 0, 0);
-            tableLayoutPanel2.Controls.Add(label7, 0, 1);
-            tableLayoutPanel2.Controls.Add(usrNameTB, 1, 0);
-            tableLayoutPanel2.Controls.Add(usrPasswordTB, 1, 1);
-            tableLayoutPanel2.Controls.Add(usrNameCurrentSysNameBtn, 2, 0);
-            tableLayoutPanel2.Controls.Add(usrPasswordRevealCB, 2, 1);
-            tableLayoutPanel2.Location = new Point(85, 133);
-            tableLayoutPanel2.Name = "tableLayoutPanel2";
-            tableLayoutPanel2.RowCount = 2;
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel2.Size = new Size(838, 59);
-            tableLayoutPanel2.TabIndex = 5;
-            // 
-            // label6
-            // 
-            label6.AutoEllipsis = true;
-            label6.Dock = DockStyle.Fill;
-            label6.Location = new Point(3, 0);
-            label6.Name = "label6";
-            label6.Size = new Size(154, 29);
-            label6.TabIndex = 4;
-            label6.Text = "User Name:";
-            label6.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // label7
-            // 
-            label7.AutoEllipsis = true;
-            label7.Dock = DockStyle.Fill;
-            label7.Location = new Point(3, 29);
-            label7.Name = "label7";
-            label7.Size = new Size(154, 30);
-            label7.TabIndex = 4;
-            label7.Text = "Password:";
-            label7.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // usrNameTB
-            // 
-            usrNameTB.BorderStyle = BorderStyle.FixedSingle;
-            usrNameTB.Dock = DockStyle.Fill;
-            usrNameTB.Location = new Point(163, 3);
-            usrNameTB.MaxLength = 20;
-            usrNameTB.Name = "usrNameTB";
-            usrNameTB.Size = new Size(503, 23);
-            usrNameTB.TabIndex = 5;
-            usrNameTB.TextChanged += usrNameTB_TextChanged;
-            // 
-            // usrPasswordTB
-            // 
-            usrPasswordTB.BorderStyle = BorderStyle.FixedSingle;
-            usrPasswordTB.Dock = DockStyle.Fill;
-            usrPasswordTB.Location = new Point(163, 32);
-            usrPasswordTB.Name = "usrPasswordTB";
-            usrPasswordTB.PasswordChar = '*';
-            usrPasswordTB.Size = new Size(503, 23);
-            usrPasswordTB.TabIndex = 5;
-            usrPasswordTB.TextChanged += usrPasswordTB_TextChanged;
-            // 
-            // usrNameCurrentSysNameBtn
-            // 
-            usrNameCurrentSysNameBtn.Dock = DockStyle.Fill;
-            usrNameCurrentSysNameBtn.FlatStyle = FlatStyle.System;
-            usrNameCurrentSysNameBtn.Location = new Point(672, 3);
-            usrNameCurrentSysNameBtn.Name = "usrNameCurrentSysNameBtn";
-            usrNameCurrentSysNameBtn.Size = new Size(163, 23);
-            usrNameCurrentSysNameBtn.TabIndex = 6;
-            usrNameCurrentSysNameBtn.Text = "Use current user name";
-            usrNameCurrentSysNameBtn.UseVisualStyleBackColor = true;
-            usrNameCurrentSysNameBtn.Click += usrNameCurrentSysNameBtn_Click;
-            // 
-            // usrPasswordRevealCB
-            // 
-            usrPasswordRevealCB.Appearance = Appearance.Button;
-            usrPasswordRevealCB.AutoSize = true;
-            usrPasswordRevealCB.Dock = DockStyle.Fill;
-            usrPasswordRevealCB.FlatStyle = FlatStyle.System;
-            usrPasswordRevealCB.Location = new Point(672, 32);
-            usrPasswordRevealCB.Name = "usrPasswordRevealCB";
-            usrPasswordRevealCB.Size = new Size(163, 24);
-            usrPasswordRevealCB.TabIndex = 7;
-            usrPasswordRevealCB.Text = "Reveal password";
-            usrPasswordRevealCB.TextAlign = ContentAlignment.MiddleCenter;
-            usrPasswordRevealCB.UseVisualStyleBackColor = true;
-            usrPasswordRevealCB.CheckedChanged += usrPasswordRevealCB_CheckedChanged;
-            // 
-            // label5
-            // 
-            label5.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            label5.AutoEllipsis = true;
-            label5.Location = new Point(17, 64);
-            label5.Name = "label5";
-            label5.Size = new Size(977, 52);
-            label5.TabIndex = 4;
-            label5.Text = resources.GetString("label5.Text");
-            // 
-            // label4
-            // 
-            label4.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            label4.AutoEllipsis = true;
-            label4.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label4.Location = new Point(14, 12);
-            label4.Name = "label4";
-            label4.Size = new Size(980, 45);
-            label4.TabIndex = 3;
-            label4.Text = "Who will use the computer?";
-            // 
             // ImageChooserPage
             // 
             ImageChooserPage.Controls.Add(label2);
@@ -1000,6 +1036,48 @@
             WelcomePage_Header.TabIndex = 0;
             WelcomePage_Header.Text = "Welcome";
             // 
+            // label19
+            // 
+            label19.Location = new Point(0, 0);
+            label19.Name = "label19";
+            label19.Size = new Size(100, 23);
+            label19.TabIndex = 0;
+            // 
+            // label20
+            // 
+            label20.Location = new Point(0, 0);
+            label20.Name = "label20";
+            label20.Size = new Size(100, 23);
+            label20.TabIndex = 0;
+            // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(0, 0);
+            textBox1.Name = "textBox1";
+            textBox1.Size = new Size(100, 23);
+            textBox1.TabIndex = 0;
+            // 
+            // textBox2
+            // 
+            textBox2.Location = new Point(0, 0);
+            textBox2.Name = "textBox2";
+            textBox2.Size = new Size(100, 23);
+            textBox2.TabIndex = 0;
+            // 
+            // button1
+            // 
+            button1.Location = new Point(0, 0);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 0;
+            // 
+            // checkBox1
+            // 
+            checkBox1.Location = new Point(0, 0);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(104, 24);
+            checkBox1.TabIndex = 0;
+            // 
             // isoPickerOFD
             // 
             isoPickerOFD.Filter = "ISO Files|*.iso";
@@ -1029,6 +1107,18 @@
             ButtonPanel.ResumeLayout(false);
             TableLayoutPanel1.ResumeLayout(false);
             PageContainerPanel.ResumeLayout(false);
+            UserAccountsPage.ResumeLayout(false);
+            UserAccountsPage.PerformLayout();
+            tableLayoutPanel2.ResumeLayout(false);
+            tableLayoutPanel2.PerformLayout();
+            panel1.ResumeLayout(false);
+            tableLayoutPanel3.ResumeLayout(false);
+            panel3.ResumeLayout(false);
+            panel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            panel2.ResumeLayout(false);
+            panel2.PerformLayout();
             IsoSettingsPage.ResumeLayout(false);
             IsoSettingsPage.PerformLayout();
             IsoChooserPage.ResumeLayout(false);
@@ -1041,18 +1131,6 @@
             IsoCreationPage.PerformLayout();
             pnlProgress.ResumeLayout(false);
             pnlProgress.PerformLayout();
-            UserAccountsPage.ResumeLayout(false);
-            UserAccountsPage.PerformLayout();
-            panel1.ResumeLayout(false);
-            tableLayoutPanel3.ResumeLayout(false);
-            panel3.ResumeLayout(false);
-            panel3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
-            panel2.ResumeLayout(false);
-            panel2.PerformLayout();
-            tableLayoutPanel2.ResumeLayout(false);
-            tableLayoutPanel2.PerformLayout();
             ImageChooserPage.ResumeLayout(false);
             ImageChooserPage.PerformLayout();
             WelcomePage.ResumeLayout(false);
@@ -1092,7 +1170,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel UserAccountsPage;
         internal System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         internal System.Windows.Forms.Label label6;
         internal System.Windows.Forms.Label label7;
         private System.Windows.Forms.TextBox usrNameTB;
@@ -1139,7 +1216,16 @@
         private System.Windows.Forms.LinkLabel lnkUseNtLite;
         private System.Windows.Forms.LinkLabel lnkUseDT;
         internal Button About_Button;
+        internal Button MSAcc_Button;
+        internal Button Setup_Button;
         internal Label lblFileStatus;
         private CheckBox UEFICA23CB;
+        private TableLayoutPanel tableLayoutPanel2;
+        internal Label label19;
+        internal Label label20;
+        private TextBox textBox1;
+        private TextBox textBox2;
+        private Button button1;
+        private CheckBox checkBox1;
     }
 }

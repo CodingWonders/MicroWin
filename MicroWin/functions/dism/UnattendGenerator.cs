@@ -90,45 +90,59 @@ namespace MicroWin.functions.dism
             xml.AppendLine("  </settings>");
             xml.AppendLine("  <settings pass=\"oobeSystem\">");
             xml.AppendLine("    <component name=\"Microsoft-Windows-Shell-Setup\" processorArchitecture=\"amd64\" publicKeyToken=\"31bf3856ad364e35\" language=\"neutral\" versionScope=\"nonSxS\">");
-            xml.AppendLine("      <UserAccounts>");
-            xml.AppendLine("        <LocalAccounts>");
-            foreach (var user in AppState.UserAccounts)
+            if (!AppState.UseMSAccount && !AppState.UseSetup)
             {
-                xml.AppendLine("          <LocalAccount wcm:action=\"add\">");
-                xml.AppendLine($"            <Password>");
-                // Determine if we need to encode the password with base64. If we need to, we must append
-                // "Password" to the actual password; otherwise Setup/oobeSystem will fail. Base64 encoding is the only
-                // way Microsoft provides in order to hide sensitive info.
-                // https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/wsim/hide-sensitive-data-in-an-answer-file
-                if (AppState.EncodeWithB64)
+                xml.AppendLine("      <UserAccounts>");
+                xml.AppendLine("        <LocalAccounts>");
+                foreach (var user in AppState.UserAccounts)
                 {
-                    string b64pass = Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes($"{user.Password}Password"));
-                    xml.AppendLine($"                <Value>{b64pass}</Value>");
-                    xml.AppendLine($"                <PlainText>false</PlainText>");
+                    xml.AppendLine("          <LocalAccount wcm:action=\"add\">");
+                    xml.AppendLine($"            <Password>");
+                    // Determine if we need to encode the password with base64. If we need to, we must append
+                    // "Password" to the actual password; otherwise Setup/oobeSystem will fail. Base64 encoding is the only
+                    // way Microsoft provides in order to hide sensitive info.
+                    // https://learn.microsoft.com/en-us/windows-hardware/customize/desktop/wsim/hide-sensitive-data-in-an-answer-file
+                    if (AppState.EncodeWithB64)
+                    {
+                        string b64pass = Convert.ToBase64String(System.Text.Encoding.Unicode.GetBytes($"{user.Password}Password"));
+                        xml.AppendLine($"                <Value>{b64pass}</Value>");
+                        xml.AppendLine($"                <PlainText>false</PlainText>");
 #pragma warning disable IDE0059
-                    b64pass = "";
+                        b64pass = "";
 #pragma warning restore IDE0059
+                    }
+                    else
+                    {
+                        xml.AppendLine($"                <Value>{user.Password}</Value>");
+                        xml.AppendLine($"                <PlainText>true</PlainText>");
+                    }
+                    xml.AppendLine($"            </Password>");
+                    xml.AppendLine($"            <Name>{user.Name}</Name>");
+                    xml.AppendLine($"            <Group>{(user.Role == "Administrator" ? "Administrators" : "Users")}</Group>");
+                    xml.AppendLine("          </LocalAccount>");
                 }
-                else
-                {
-                    xml.AppendLine($"                <Value>{user.Password}</Value>");
-                    xml.AppendLine($"                <PlainText>true</PlainText>");
-                }
-                xml.AppendLine($"            </Password>");
-                xml.AppendLine($"            <Name>{user.Name}</Name>");
-                xml.AppendLine($"            <Group>{(user.Role == "Administrator" ? "Administrators" : "Users")}</Group>");
-                xml.AppendLine("          </LocalAccount>");
+                xml.AppendLine("        </LocalAccounts>");
+                xml.AppendLine("      </UserAccounts>");
             }
-            xml.AppendLine("        </LocalAccounts>");
-            xml.AppendLine("      </UserAccounts>");
             xml.AppendLine("      <OOBE>");
             xml.AppendLine("        <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>");
-            xml.AppendLine("        <SkipUserOOBE>true</SkipUserOOBE>");
-            xml.AppendLine("        <SkipMachineOOBE>true</SkipMachineOOBE>");
-            xml.AppendLine("        <HideOnlineAccountScreens>true</HideOnlineAccountScreens>");
+            if (!AppState.UseSetup)
+            {
+                // We don't need this if we are using Local Accounts made via setup.
+                xml.AppendLine("        <SkipUserOOBE>true</SkipUserOOBE>");
+            }
+            if (!AppState.UseMSAccount && !AppState.UseSetup)
+            {
+                // So we can make the accounts
+                xml.AppendLine("        <SkipMachineOOBE>true</SkipMachineOOBE>");
+            }
+            xml.AppendLine($"        <HideOnlineAccountScreens>{(AppState.UseMSAccount ? "false" : "true")}</HideOnlineAccountScreens>");
+            if (AppState.UseSetup)
+            {
+                xml.AppendLine("        <HideLocalAccountScreen>false</HideLocalAccountScreen>");
+            }
             xml.AppendLine("        <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>");
             xml.AppendLine("        <HideEULAPage>true</HideEULAPage>");
-            xml.AppendLine("        <NetworkLocation>Work</NetworkLocation>");
             xml.AppendLine("        <ProtectYourPC>3</ProtectYourPC>");
             xml.AppendLine("      </OOBE>");
             xml.AppendLine("      <FirstLogonCommands>");
