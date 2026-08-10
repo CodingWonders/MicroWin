@@ -449,6 +449,18 @@ namespace MicroWin
             AppState.UseUEFICA23Bins = UEFICA23CB.Checked;
         }
 
+        private void winutilConfigTextBox_TextChanged(object sender, EventArgs e)
+        {
+            AppState.WinUtilConfigPath = winutilConfigTextBox.Text;
+        }
+
+        private void winutilConfigBrowseBtn_Click(object sender, EventArgs e)
+        {
+            if (winutilConfigDialog.ShowDialog() == DialogResult.OK)
+            {
+                winutilConfigTextBox.Text = winutilConfigDialog.FileName;
+            }
+        }
 
         private void UpdateCurrentStatus(string text, bool resetBar = true)
         {
@@ -662,7 +674,21 @@ namespace MicroWin
                     try
                     {
                         var data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/FirstStartup.ps1").GetAwaiter().GetResult();
-                        File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "Windows", "FirstStartup.ps1"), data);
+                        string firstStartupPath = Path.Combine(AppState.ScratchPath, "Windows", "FirstStartup.ps1");
+                        File.WriteAllBytes(firstStartupPath, data);
+
+                        if (!string.IsNullOrWhiteSpace(AppState.WinUtilConfigPath) && File.Exists(AppState.WinUtilConfigPath))
+                        {
+                            File.Copy(AppState.WinUtilConfigPath, Path.Combine(AppState.ScratchPath, "winutil-config.json"), true);
+                            WriteLogMessage("WinUtil configuration file copied to image.");
+
+                            string scriptToAppend = "\n\nif (Test-Path -Path \"$env:HOMEDRIVE\\winutil-config.json\")\n" +
+                                                    "{\n" +
+                                                    "    Write-Host \"Configuration file detected. Applying...\"\n" +
+                                                    "    iex \"& { $(irm christitus.com/win) } -Config `\"$env:HOMEDRIVE\\winutil-config.json`\"\"\n" +
+                                                    "}\n";
+                            File.AppendAllText(firstStartupPath, scriptToAppend);
+                        }
                     }
                     catch { }
                 }

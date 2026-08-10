@@ -22,6 +22,7 @@ namespace MicroWin
         public static DriverExportMode DriverExportMode { get; set; } = DriverExportMode.NoExport;
         public static bool UseUEFICA23Bins { get; set; } = true;
         public static string? SaveISO { get; set; }
+        public static string? WinUtilConfigPath { get; set; }
 
         public static string Version => "v2.0";
     }

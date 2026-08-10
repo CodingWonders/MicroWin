@@ -71,6 +71,10 @@
             logTB = new TextBox();
             label14 = new Label();
             label15 = new Label();
+            winutilConfigLabel = new Label();
+            winutilConfigTextBox = new TextBox();
+            winutilConfigBrowseBtn = new Button();
+            winutilConfigDialog = new OpenFileDialog();
             UserAccountsPage = new Panel();
             panel1 = new Panel();
             tableLayoutPanel3 = new TableLayoutPanel();
@@ -230,6 +234,9 @@
             IsoSettingsPage.Controls.Add(ReportToolCB);
             IsoSettingsPage.Controls.Add(label11);
             IsoSettingsPage.Controls.Add(label12);
+            IsoSettingsPage.Controls.Add(winutilConfigLabel);
+            IsoSettingsPage.Controls.Add(winutilConfigTextBox);
+            IsoSettingsPage.Controls.Add(winutilConfigBrowseBtn);
             IsoSettingsPage.Dock = DockStyle.Fill;
             IsoSettingsPage.Location = new Point(0, 0);
             IsoSettingsPage.Name = "IsoSettingsPage";
@@ -258,6 +265,38 @@
             DriverExportCombo.Size = new Size(374, 23);
             DriverExportCombo.TabIndex = 9;
             DriverExportCombo.SelectedIndexChanged += DriverExportCombo_SelectedIndexChanged;
+            // 
+            // winutilConfigLabel
+            // 
+            winutilConfigLabel.AutoSize = true;
+            winutilConfigLabel.Location = new Point(80, 265);
+            winutilConfigLabel.Name = "winutilConfigLabel";
+            winutilConfigLabel.Size = new Size(130, 15);
+            winutilConfigLabel.TabIndex = 11;
+            winutilConfigLabel.Text = "WinUtil Config (JSON):";
+            // 
+            // winutilConfigTextBox
+            // 
+            winutilConfigTextBox.Location = new Point(83, 286);
+            winutilConfigTextBox.Name = "winutilConfigTextBox";
+            winutilConfigTextBox.Size = new Size(293, 23);
+            winutilConfigTextBox.TabIndex = 12;
+            winutilConfigTextBox.TextChanged += winutilConfigTextBox_TextChanged;
+            // 
+            // winutilConfigBrowseBtn
+            // 
+            winutilConfigBrowseBtn.FlatStyle = FlatStyle.System;
+            winutilConfigBrowseBtn.Location = new Point(382, 285);
+            winutilConfigBrowseBtn.Name = "winutilConfigBrowseBtn";
+            winutilConfigBrowseBtn.Size = new Size(80, 23);
+            winutilConfigBrowseBtn.TabIndex = 13;
+            winutilConfigBrowseBtn.Text = "Browse...";
+            winutilConfigBrowseBtn.UseVisualStyleBackColor = true;
+            winutilConfigBrowseBtn.Click += winutilConfigBrowseBtn_Click;
+            // 
+            // winutilConfigDialog
+            // 
+            winutilConfigDialog.Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
             // 
             // label13
             // 
@@ -1117,6 +1156,10 @@
         internal System.Windows.Forms.Label label12;
         private System.Windows.Forms.CheckBox ReportToolCB;
         private System.Windows.Forms.ComboBox DriverExportCombo;
+        private System.Windows.Forms.Label winutilConfigLabel;
+        private System.Windows.Forms.TextBox winutilConfigTextBox;
+        private System.Windows.Forms.Button winutilConfigBrowseBtn;
+        private System.Windows.Forms.OpenFileDialog winutilConfigDialog;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.CheckBox UnattendCopyCB;
         private System.Windows.Forms.Panel IsoCreationPage;
