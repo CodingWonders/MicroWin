@@ -19,6 +19,7 @@ namespace MicroWin
         public static bool EncodeWithB64 { get; set; } = true;
         public static bool AddReportingToolShortcut { get; set; } = true;
         public static bool CopyUnattendToFileSystem { get; set; }
+        public static bool UseMicroWinISO { get; set; }
         public static DriverExportMode DriverExportMode { get; set; } = DriverExportMode.NoExport;
         public static bool UseUEFICA23Bins { get; set; } = true;
         public static string? SaveISO { get; set; }
