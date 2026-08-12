@@ -112,7 +112,7 @@ namespace MicroWin.functions.iso
 
             if (!Directory.Exists(destination)) Directory.CreateDirectory(destination);
 
-            var files = Directory.GetFiles(source, "*.*", SearchOption.AllDirectories);
+            string[] files = Directory.GetFiles(source, "*.*", SearchOption.AllDirectories);
             DynaLog.logMessage($"Found {files.Length} files to copy.");
 
             int copiedFiles = 0;

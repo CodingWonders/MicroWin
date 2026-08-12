@@ -16,19 +16,19 @@ namespace MicroWin.functions.Helpers.DeleteFile
         {
             if (!Directory.Exists(path)) return;
 
-            var directory = new DirectoryInfo(path);
+            DirectoryInfo directory = new(path);
 
             if (Directory.Exists(AppState.ScratchPath))
             {
                 DismManager.UnmountAndDiscard(AppState.ScratchPath);
             }
 
-            foreach (var file in directory.GetFiles("*", SearchOption.AllDirectories))
+            foreach (FileInfo file in directory.GetFiles("*", SearchOption.AllDirectories))
             {
                 file.Attributes = FileAttributes.Normal;
             }
 
-            foreach (var dir in directory.GetDirectories("*", SearchOption.AllDirectories))
+            foreach (DirectoryInfo dir in directory.GetDirectories("*", SearchOption.AllDirectories))
             {
                 dir.Attributes = FileAttributes.Normal;
             }

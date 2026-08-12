@@ -41,9 +41,9 @@ namespace MicroWin.OSCDIMG
             {
                 if (outputReporter is not null)
                     outputReporter.Invoke("Attempting to download OSCDIMG from GitHub...");
-                using (var client = new HttpClient())
+                using (HttpClient client = new())
                 {
-                    var data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/oscdimg.exe").GetAwaiter().GetResult();
+                    byte[] data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/oscdimg.exe").GetAwaiter().GetResult();
                     File.WriteAllBytes(oscdimgPath, data);
                 }
             }

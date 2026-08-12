@@ -289,7 +289,7 @@ namespace MicroWin
 
                 lvVersions.Items.Clear();
 
-                var items = imageInfo.Select(image =>
+                ListViewItem[] items = imageInfo.Select(image =>
                 {
                     string modified = image.CustomizedInfo?.ModifiedTime.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
                     return new ListViewItem(new[]
@@ -335,7 +335,7 @@ namespace MicroWin
 
                 await Task.Run(() =>
                 {
-                    var iso = new IsoManager();
+                    IsoManager iso = new();
                     InvokeIsoExtractionUIUpdate("Mounting ISO...", 5);
 
                     char? drive = iso.MountAndGetDrive(AppState.IsoPath);
@@ -598,9 +598,9 @@ namespace MicroWin
                 if (AppState.AddReportingToolShortcut)
                 {
                     WriteLogMessage("Downloading and integrating reporting tool...");
-                    using (var client = new HttpClient())
+                    using (HttpClient client = new())
                     {
-                        var data = await client.GetByteArrayAsync("https://raw.githubusercontent.com/CodingWonders/MyScripts/refs/heads/main/MicroWinHelperTools/ReportingTool/ReportingTool.ps1");
+                        byte[] data = await client.GetByteArrayAsync("https://raw.githubusercontent.com/CodingWonders/MyScripts/refs/heads/main/MicroWinHelperTools/ReportingTool/ReportingTool.ps1");
                         File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "ReportingTool.ps1"), data);
                     }
                 }
@@ -611,9 +611,9 @@ namespace MicroWin
                 {
                     WriteLogMessage("Downloading VirtIO Drivers. This will take several minutes, depending on the speed of your network connection...");
 
-                    var handler = new HttpClientHandler { AllowAutoRedirect = false };
+                    HttpClientHandler handler = new() { AllowAutoRedirect = false };
 
-                    using (var client = new HttpClient(handler))
+                    using (HttpClient client = new(handler))
                     {
                         string targetUrl = "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso";
                         HttpResponseMessage downloadResponse = null;
@@ -632,7 +632,7 @@ namespace MicroWin
 
                                 if (!targetUrl.StartsWith("http://") && !targetUrl.StartsWith("https://"))
                                 {
-                                    var baseUri = new Uri(targetUrl);
+                                    Uri baseUri = new(targetUrl);
                                     targetUrl = new Uri(baseUri, downloadResponse.Headers.Location).ToString();
                                 }
 
@@ -649,8 +649,8 @@ namespace MicroWin
                         {
                             downloadResponse.EnsureSuccessStatusCode();
 
-                            using (var downloadStream = await downloadResponse.Content.ReadAsStreamAsync())
-                            using (var fileStream = new FileStream(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                            using (Stream downloadStream = await downloadResponse.Content.ReadAsStreamAsync())
+                            using (FileStream fileStream = new(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
                             {
                                 await downloadStream.CopyToAsync(fileStream);
                             }
@@ -658,7 +658,7 @@ namespace MicroWin
 
                         await Task.Run(() =>
                         {
-                            var iso = new IsoManager();
+                            IsoManager iso = new();
 
                             char? drive = iso.MountAndGetDrive(outputPath);
                             if (drive != '\0')
@@ -739,11 +739,11 @@ namespace MicroWin
                 RegistryHelper.AddRegistryItem("HKLM\\zNTUSER\\Software\\Microsoft\\Terminal Server Client", new RegistryItem("RdpLaunchConsentAccepted", ValueKind.REG_DWORD, 1));
 
                 UpdateCurrentProgressBar(50);
-                using (var client = new HttpClient())
+                using (HttpClient client = new())
                 {
                     try
                     {
-                        var data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/FirstStartup.ps1").GetAwaiter().GetResult();
+                        byte[] data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/FirstStartup.ps1").GetAwaiter().GetResult();
                         string firstStartupPath = Path.Combine(AppState.ScratchPath, "Windows", "FirstStartup.ps1");
                         File.WriteAllBytes(firstStartupPath, data);
 
