@@ -39,6 +39,8 @@ namespace MicroWin.OSCDIMG
 
             if (!File.Exists(oscdimgPath))
             {
+                if (outputReporter is not null)
+                    outputReporter.Invoke("Attempting to download OSCDIMG from GitHub...");
                 using (var client = new HttpClient())
                 {
                     var data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/oscdimg.exe").GetAwaiter().GetResult();
@@ -125,10 +127,10 @@ namespace MicroWin.OSCDIMG
 
             if (wow64environment) 
             {
-                regPath = "SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots";
+                regPath = "HKLM\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots";
             }
             else {
-                regPath = "SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots";
+                regPath = "HKLM\\SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots";
             };
 
             if (RegistryHelper.RegistryKeyExists(regPath) == false) 
@@ -147,6 +149,9 @@ namespace MicroWin.OSCDIMG
 
         public static bool TestKitRootPaths(string adkKitsRootPath, string adkKitsRootPath_WOW64Environ)
         {
+            adkKitsRootPath = Path.Combine(adkKitsRootPath, "Deployment Tools", "amd64", "Oscdimg", "oscdimg.exe");
+            adkKitsRootPath_WOW64Environ = Path.Combine(adkKitsRootPath_WOW64Environ, "Deployment Tools", "amd64", "Oscdimg", "oscdimg.exe");
+
             if (File.Exists(adkKitsRootPath) | File.Exists(adkKitsRootPath_WOW64Environ))
             {
                 return true;

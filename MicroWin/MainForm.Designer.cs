@@ -140,9 +140,9 @@
             ButtonPanel.Controls.Add(TableLayoutPanel1);
             ButtonPanel.Controls.Add(About_Button);
             ButtonPanel.Dock = DockStyle.Bottom;
-            ButtonPanel.Location = new Point(0, 521);
+            ButtonPanel.Location = new Point(0, 641);
             ButtonPanel.Name = "ButtonPanel";
-            ButtonPanel.Size = new Size(1008, 40);
+            ButtonPanel.Size = new Size(1264, 40);
             ButtonPanel.TabIndex = 1;
             // 
             // TableLayoutPanel1
@@ -155,7 +155,7 @@
             TableLayoutPanel1.Controls.Add(Back_Button, 0, 0);
             TableLayoutPanel1.Controls.Add(Next_Button, 1, 0);
             TableLayoutPanel1.Controls.Add(Cancel_Button, 2, 0);
-            TableLayoutPanel1.Location = new Point(777, 6);
+            TableLayoutPanel1.Location = new Point(1033, 6);
             TableLayoutPanel1.Name = "TableLayoutPanel1";
             TableLayoutPanel1.RowCount = 1;
             TableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
@@ -213,18 +213,18 @@
             // 
             // PageContainerPanel
             // 
-            PageContainerPanel.Controls.Add(IsoSettingsPage);
-            PageContainerPanel.Controls.Add(IsoChooserPage);
             PageContainerPanel.Controls.Add(FinishPage);
             PageContainerPanel.Controls.Add(IsoCreationPage);
+            PageContainerPanel.Controls.Add(IsoSettingsPage);
             PageContainerPanel.Controls.Add(UserAccountsPage);
             PageContainerPanel.Controls.Add(ImageChooserPage);
+            PageContainerPanel.Controls.Add(IsoChooserPage);
             PageContainerPanel.Controls.Add(WelcomePage);
             PageContainerPanel.Dock = DockStyle.Fill;
             PageContainerPanel.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             PageContainerPanel.Location = new Point(0, 0);
             PageContainerPanel.Name = "PageContainerPanel";
-            PageContainerPanel.Size = new Size(1008, 521);
+            PageContainerPanel.Size = new Size(1264, 641);
             PageContainerPanel.TabIndex = 3;
             // 
             // IsoSettingsPage
@@ -244,7 +244,7 @@
             IsoSettingsPage.Dock = DockStyle.Fill;
             IsoSettingsPage.Location = new Point(0, 0);
             IsoSettingsPage.Name = "IsoSettingsPage";
-            IsoSettingsPage.Size = new Size(1008, 521);
+            IsoSettingsPage.Size = new Size(1264, 641);
             IsoSettingsPage.TabIndex = 6;
             // 
             // label19
@@ -253,7 +253,7 @@
             label19.AutoEllipsis = true;
             label19.Location = new Point(101, 340);
             label19.Name = "label19";
-            label19.Size = new Size(806, 123);
+            label19.Size = new Size(1062, 243);
             label19.TabIndex = 14;
             label19.Text = resources.GetString("label19.Text");
             label19.Visible = false;
@@ -320,7 +320,7 @@
             label11.AutoEllipsis = true;
             label11.Location = new Point(17, 64);
             label11.Name = "label11";
-            label11.Size = new Size(977, 52);
+            label11.Size = new Size(1233, 52);
             label11.TabIndex = 6;
             label11.Text = "Configure additional settings for your customized image.";
             // 
@@ -331,7 +331,7 @@
             label12.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label12.Location = new Point(14, 12);
             label12.Name = "label12";
-            label12.Size = new Size(980, 45);
+            label12.Size = new Size(1236, 45);
             label12.TabIndex = 5;
             label12.Text = "Specify additional settings for the image";
             // 
@@ -387,7 +387,7 @@
             IsoChooserPage.Dock = DockStyle.Fill;
             IsoChooserPage.Location = new Point(0, 0);
             IsoChooserPage.Name = "IsoChooserPage";
-            IsoChooserPage.Size = new Size(1008, 521);
+            IsoChooserPage.Size = new Size(1264, 641);
             IsoChooserPage.TabIndex = 1;
             IsoChooserPage.Visible = false;
             // 
@@ -396,14 +396,14 @@
             isoExtractionPB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             isoExtractionPB.Location = new Point(125, 219);
             isoExtractionPB.Name = "isoExtractionPB";
-            isoExtractionPB.Size = new Size(719, 23);
+            isoExtractionPB.Size = new Size(975, 23);
             isoExtractionPB.TabIndex = 4;
             // 
             // isoPickerBtn
             // 
             isoPickerBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             isoPickerBtn.FlatStyle = FlatStyle.System;
-            isoPickerBtn.Location = new Point(769, 146);
+            isoPickerBtn.Location = new Point(1025, 146);
             isoPickerBtn.Name = "isoPickerBtn";
             isoPickerBtn.Size = new Size(75, 23);
             isoPickerBtn.TabIndex = 3;
@@ -418,7 +418,7 @@
             isoPathTB.Location = new Point(125, 147);
             isoPathTB.Name = "isoPathTB";
             isoPathTB.ReadOnly = true;
-            isoPathTB.Size = new Size(638, 23);
+            isoPathTB.Size = new Size(894, 23);
             isoPathTB.TabIndex = 2;
             isoPathTB.TextChanged += isoPathTB_TextChanged;
             // 
@@ -460,7 +460,7 @@
             SysCheckPage_Description.AutoEllipsis = true;
             SysCheckPage_Description.Location = new Point(17, 64);
             SysCheckPage_Description.Name = "SysCheckPage_Description";
-            SysCheckPage_Description.Size = new Size(977, 52);
+            SysCheckPage_Description.Size = new Size(1233, 172);
             SysCheckPage_Description.TabIndex = 1;
             SysCheckPage_Description.Text = "Please specify the ISO that you want to use with this wizard. Supported operating systems are Windows 10 and Windows 11.";
             // 
@@ -471,7 +471,7 @@
             SysCheckPage_Header.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             SysCheckPage_Header.Location = new Point(14, 12);
             SysCheckPage_Header.Name = "SysCheckPage_Header";
-            SysCheckPage_Header.Size = new Size(980, 45);
+            SysCheckPage_Header.Size = new Size(1236, 45);
             SysCheckPage_Header.TabIndex = 0;
             SysCheckPage_Header.Text = "Choose a disc image";
             // 
@@ -485,7 +485,7 @@
             FinishPage.Dock = DockStyle.Fill;
             FinishPage.Location = new Point(0, 0);
             FinishPage.Name = "FinishPage";
-            FinishPage.Size = new Size(1008, 521);
+            FinishPage.Size = new Size(1264, 641);
             FinishPage.TabIndex = 8;
             // 
             // lnkViewCreationLogs
@@ -494,7 +494,7 @@
             lnkViewCreationLogs.AutoSize = true;
             lnkViewCreationLogs.LinkBehavior = LinkBehavior.NeverUnderline;
             lnkViewCreationLogs.LinkColor = Color.DodgerBlue;
-            lnkViewCreationLogs.Location = new Point(99, 441);
+            lnkViewCreationLogs.Location = new Point(99, 561);
             lnkViewCreationLogs.Name = "lnkViewCreationLogs";
             lnkViewCreationLogs.Size = new Size(124, 15);
             lnkViewCreationLogs.TabIndex = 12;
@@ -508,7 +508,7 @@
             lnkOpenIsoLoc.AutoSize = true;
             lnkOpenIsoLoc.LinkBehavior = LinkBehavior.NeverUnderline;
             lnkOpenIsoLoc.LinkColor = Color.DodgerBlue;
-            lnkOpenIsoLoc.Location = new Point(99, 416);
+            lnkOpenIsoLoc.Location = new Point(99, 536);
             lnkOpenIsoLoc.Name = "lnkOpenIsoLoc";
             lnkOpenIsoLoc.Size = new Size(103, 15);
             lnkOpenIsoLoc.TabIndex = 12;
@@ -522,7 +522,7 @@
             panel4.Controls.Add(lnkUseNtLite);
             panel4.Controls.Add(lnkUseDT);
             panel4.Controls.Add(label18);
-            panel4.Location = new Point(101, 123);
+            panel4.Location = new Point(229, 183);
             panel4.Name = "panel4";
             panel4.Size = new Size(806, 276);
             panel4.TabIndex = 11;
@@ -573,7 +573,7 @@
             label16.AutoEllipsis = true;
             label16.Location = new Point(17, 64);
             label16.Name = "label16";
-            label16.Size = new Size(977, 52);
+            label16.Size = new Size(1233, 172);
             label16.TabIndex = 10;
             label16.Text = "Your ISO file is now ready for operating system installation.";
             // 
@@ -584,7 +584,7 @@
             label17.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label17.Location = new Point(14, 12);
             label17.Name = "label17";
-            label17.Size = new Size(980, 45);
+            label17.Size = new Size(1236, 45);
             label17.TabIndex = 9;
             label17.Text = "Customizations complete";
             // 
@@ -597,7 +597,7 @@
             IsoCreationPage.Dock = DockStyle.Fill;
             IsoCreationPage.Location = new Point(0, 0);
             IsoCreationPage.Name = "IsoCreationPage";
-            IsoCreationPage.Size = new Size(1008, 521);
+            IsoCreationPage.Size = new Size(1264, 641);
             IsoCreationPage.TabIndex = 7;
             // 
             // pnlProgress
@@ -607,9 +607,9 @@
             pnlProgress.Controls.Add(pbCurrent);
             pnlProgress.Controls.Add(lblOverallStatus);
             pnlProgress.Controls.Add(lblCurrentStatus);
-            pnlProgress.Location = new Point(19, 405);
+            pnlProgress.Location = new Point(19, 525);
             pnlProgress.Name = "pnlProgress";
-            pnlProgress.Size = new Size(971, 110);
+            pnlProgress.Size = new Size(1227, 110);
             pnlProgress.TabIndex = 10;
             // 
             // pbOverall
@@ -617,7 +617,7 @@
             pbOverall.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             pbOverall.Location = new Point(14, 77);
             pbOverall.Name = "pbOverall";
-            pbOverall.Size = new Size(941, 23);
+            pbOverall.Size = new Size(1197, 23);
             pbOverall.TabIndex = 1;
             // 
             // pbCurrent
@@ -625,7 +625,7 @@
             pbCurrent.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             pbCurrent.Location = new Point(14, 30);
             pbCurrent.Name = "pbCurrent";
-            pbCurrent.Size = new Size(941, 23);
+            pbCurrent.Size = new Size(1197, 23);
             pbCurrent.TabIndex = 1;
             // 
             // lblOverallStatus
@@ -657,7 +657,7 @@
             logTB.Name = "logTB";
             logTB.ReadOnly = true;
             logTB.ScrollBars = ScrollBars.Vertical;
-            logTB.Size = new Size(790, 248);
+            logTB.Size = new Size(1046, 368);
             logTB.TabIndex = 9;
             // 
             // label14
@@ -666,7 +666,7 @@
             label14.AutoEllipsis = true;
             label14.Location = new Point(17, 64);
             label14.Name = "label14";
-            label14.Size = new Size(977, 52);
+            label14.Size = new Size(1233, 172);
             label14.TabIndex = 8;
             label14.Text = "This process will take several minutes; please be patient.";
             // 
@@ -677,7 +677,7 @@
             label15.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label15.Location = new Point(14, 12);
             label15.Name = "label15";
-            label15.Size = new Size(980, 45);
+            label15.Size = new Size(1236, 45);
             label15.TabIndex = 7;
             label15.Text = "Customizations in progress";
             // 
@@ -691,7 +691,7 @@
             UserAccountsPage.Dock = DockStyle.Fill;
             UserAccountsPage.Location = new Point(0, 0);
             UserAccountsPage.Name = "UserAccountsPage";
-            UserAccountsPage.Size = new Size(1008, 521);
+            UserAccountsPage.Size = new Size(1264, 641);
             UserAccountsPage.TabIndex = 5;
             // 
             // panel1
@@ -701,7 +701,7 @@
             panel1.Controls.Add(label8);
             panel1.Location = new Point(85, 254);
             panel1.Name = "panel1";
-            panel1.Size = new Size(838, 236);
+            panel1.Size = new Size(1094, 356);
             panel1.TabIndex = 7;
             // 
             // tableLayoutPanel3
@@ -719,7 +719,7 @@
             tableLayoutPanel3.RowCount = 2;
             tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 41.54589F));
             tableLayoutPanel3.RowStyles.Add(new RowStyle(SizeType.Percent, 58.45411F));
-            tableLayoutPanel3.Size = new Size(838, 207);
+            tableLayoutPanel3.Size = new Size(1094, 327);
             tableLayoutPanel3.TabIndex = 2;
             // 
             // panel3
@@ -727,9 +727,9 @@
             panel3.Controls.Add(label10);
             panel3.Controls.Add(lnkLusrMgr);
             panel3.Dock = DockStyle.Fill;
-            panel3.Location = new Point(3, 88);
+            panel3.Location = new Point(3, 138);
             panel3.Name = "panel3";
-            panel3.Size = new Size(393, 116);
+            panel3.Size = new Size(514, 186);
             panel3.TabIndex = 3;
             // 
             // label10
@@ -738,7 +738,7 @@
             label10.AutoEllipsis = true;
             label10.Location = new Point(8, 8);
             label10.Name = "label10";
-            label10.Size = new Size(375, 62);
+            label10.Size = new Size(496, 132);
             label10.TabIndex = 4;
             label10.Text = "- Open Local Users and Groups, then go to Users";
             // 
@@ -748,7 +748,7 @@
             lnkLusrMgr.AutoSize = true;
             lnkLusrMgr.LinkBehavior = LinkBehavior.NeverUnderline;
             lnkLusrMgr.LinkColor = Color.DodgerBlue;
-            lnkLusrMgr.Location = new Point(302, 91);
+            lnkLusrMgr.Location = new Point(423, 161);
             lnkLusrMgr.Name = "lnkLusrMgr";
             lnkLusrMgr.Size = new Size(81, 15);
             lnkLusrMgr.TabIndex = 0;
@@ -760,9 +760,9 @@
             // 
             pictureBox1.Dock = DockStyle.Fill;
             pictureBox1.Image = Properties.Resources.user_creation_settings;
-            pictureBox1.Location = new Point(402, 3);
+            pictureBox1.Location = new Point(523, 3);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(433, 79);
+            pictureBox1.Size = new Size(568, 129);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox1.TabIndex = 1;
             pictureBox1.TabStop = false;
@@ -771,9 +771,9 @@
             // 
             pictureBox2.Dock = DockStyle.Fill;
             pictureBox2.Image = Properties.Resources.user_creation_lusrmgr;
-            pictureBox2.Location = new Point(402, 88);
+            pictureBox2.Location = new Point(523, 138);
             pictureBox2.Name = "pictureBox2";
-            pictureBox2.Size = new Size(433, 116);
+            pictureBox2.Size = new Size(568, 186);
             pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
             pictureBox2.TabIndex = 1;
             pictureBox2.TabStop = false;
@@ -785,7 +785,7 @@
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(3, 3);
             panel2.Name = "panel2";
-            panel2.Size = new Size(393, 79);
+            panel2.Size = new Size(514, 129);
             panel2.TabIndex = 2;
             // 
             // label9
@@ -794,7 +794,7 @@
             label9.AutoEllipsis = true;
             label9.Location = new Point(8, 8);
             label9.Name = "label9";
-            label9.Size = new Size(293, 43);
+            label9.Size = new Size(414, 93);
             label9.TabIndex = 4;
             label9.Text = "- Head over to Settings > Accounts > Other Users";
             // 
@@ -804,7 +804,7 @@
             lnkImmersiveAccounts.AutoSize = true;
             lnkImmersiveAccounts.LinkBehavior = LinkBehavior.NeverUnderline;
             lnkImmersiveAccounts.LinkColor = Color.DodgerBlue;
-            lnkImmersiveAccounts.Location = new Point(302, 54);
+            lnkImmersiveAccounts.Location = new Point(423, 104);
             lnkImmersiveAccounts.Name = "lnkImmersiveAccounts";
             lnkImmersiveAccounts.Size = new Size(81, 15);
             lnkImmersiveAccounts.TabIndex = 0;
@@ -818,7 +818,7 @@
             label8.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label8.Location = new Point(0, 0);
             label8.Name = "label8";
-            label8.Size = new Size(838, 29);
+            label8.Size = new Size(1094, 29);
             label8.TabIndex = 0;
             label8.Text = "To set up new accounts:";
             // 
@@ -853,7 +853,7 @@
             tableLayoutPanel2.RowCount = 2;
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            tableLayoutPanel2.Size = new Size(838, 59);
+            tableLayoutPanel2.Size = new Size(1094, 59);
             tableLayoutPanel2.TabIndex = 5;
             // 
             // label6
@@ -862,7 +862,7 @@
             label6.Dock = DockStyle.Fill;
             label6.Location = new Point(3, 0);
             label6.Name = "label6";
-            label6.Size = new Size(154, 29);
+            label6.Size = new Size(203, 29);
             label6.TabIndex = 4;
             label6.Text = "User Name:";
             label6.TextAlign = ContentAlignment.MiddleLeft;
@@ -873,7 +873,7 @@
             label7.Dock = DockStyle.Fill;
             label7.Location = new Point(3, 29);
             label7.Name = "label7";
-            label7.Size = new Size(154, 30);
+            label7.Size = new Size(203, 30);
             label7.TabIndex = 4;
             label7.Text = "Password:";
             label7.TextAlign = ContentAlignment.MiddleLeft;
@@ -882,10 +882,10 @@
             // 
             usrNameTB.BorderStyle = BorderStyle.FixedSingle;
             usrNameTB.Dock = DockStyle.Fill;
-            usrNameTB.Location = new Point(163, 3);
+            usrNameTB.Location = new Point(212, 3);
             usrNameTB.MaxLength = 20;
             usrNameTB.Name = "usrNameTB";
-            usrNameTB.Size = new Size(503, 23);
+            usrNameTB.Size = new Size(659, 23);
             usrNameTB.TabIndex = 5;
             usrNameTB.TextChanged += usrNameTB_TextChanged;
             // 
@@ -893,10 +893,10 @@
             // 
             usrPasswordTB.BorderStyle = BorderStyle.FixedSingle;
             usrPasswordTB.Dock = DockStyle.Fill;
-            usrPasswordTB.Location = new Point(163, 32);
+            usrPasswordTB.Location = new Point(212, 32);
             usrPasswordTB.Name = "usrPasswordTB";
             usrPasswordTB.PasswordChar = '*';
-            usrPasswordTB.Size = new Size(503, 23);
+            usrPasswordTB.Size = new Size(659, 23);
             usrPasswordTB.TabIndex = 5;
             usrPasswordTB.TextChanged += usrPasswordTB_TextChanged;
             // 
@@ -904,9 +904,9 @@
             // 
             usrNameCurrentSysNameBtn.Dock = DockStyle.Fill;
             usrNameCurrentSysNameBtn.FlatStyle = FlatStyle.System;
-            usrNameCurrentSysNameBtn.Location = new Point(672, 3);
+            usrNameCurrentSysNameBtn.Location = new Point(877, 3);
             usrNameCurrentSysNameBtn.Name = "usrNameCurrentSysNameBtn";
-            usrNameCurrentSysNameBtn.Size = new Size(163, 23);
+            usrNameCurrentSysNameBtn.Size = new Size(214, 23);
             usrNameCurrentSysNameBtn.TabIndex = 6;
             usrNameCurrentSysNameBtn.Text = "Use current user name";
             usrNameCurrentSysNameBtn.UseVisualStyleBackColor = true;
@@ -918,9 +918,9 @@
             usrPasswordRevealCB.AutoSize = true;
             usrPasswordRevealCB.Dock = DockStyle.Fill;
             usrPasswordRevealCB.FlatStyle = FlatStyle.System;
-            usrPasswordRevealCB.Location = new Point(672, 32);
+            usrPasswordRevealCB.Location = new Point(877, 32);
             usrPasswordRevealCB.Name = "usrPasswordRevealCB";
-            usrPasswordRevealCB.Size = new Size(163, 24);
+            usrPasswordRevealCB.Size = new Size(214, 24);
             usrPasswordRevealCB.TabIndex = 7;
             usrPasswordRevealCB.Text = "Reveal password";
             usrPasswordRevealCB.TextAlign = ContentAlignment.MiddleCenter;
@@ -933,7 +933,7 @@
             label5.AutoEllipsis = true;
             label5.Location = new Point(17, 64);
             label5.Name = "label5";
-            label5.Size = new Size(977, 52);
+            label5.Size = new Size(1233, 172);
             label5.TabIndex = 4;
             label5.Text = resources.GetString("label5.Text");
             // 
@@ -944,7 +944,7 @@
             label4.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label4.Location = new Point(14, 12);
             label4.Name = "label4";
-            label4.Size = new Size(980, 45);
+            label4.Size = new Size(1236, 45);
             label4.TabIndex = 3;
             label4.Text = "Who will use the computer?";
             // 
@@ -956,14 +956,14 @@
             ImageChooserPage.Dock = DockStyle.Fill;
             ImageChooserPage.Location = new Point(0, 0);
             ImageChooserPage.Name = "ImageChooserPage";
-            ImageChooserPage.Size = new Size(1008, 521);
+            ImageChooserPage.Size = new Size(1264, 641);
             ImageChooserPage.TabIndex = 4;
             // 
             // label2
             // 
             label2.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
             label2.AutoSize = true;
-            label2.Location = new Point(80, 448);
+            label2.Location = new Point(80, 568);
             label2.Name = "label2";
             label2.Size = new Size(529, 15);
             label2.TabIndex = 4;
@@ -978,7 +978,7 @@
             lvVersions.Location = new Point(80, 89);
             lvVersions.MultiSelect = false;
             lvVersions.Name = "lvVersions";
-            lvVersions.Size = new Size(849, 352);
+            lvVersions.Size = new Size(1105, 472);
             lvVersions.TabIndex = 3;
             lvVersions.UseCompatibleStateImageBehavior = false;
             lvVersions.View = View.Details;
@@ -1017,7 +1017,7 @@
             label3.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label3.Location = new Point(14, 12);
             label3.Name = "label3";
-            label3.Size = new Size(980, 45);
+            label3.Size = new Size(1236, 45);
             label3.TabIndex = 2;
             label3.Text = "Choose the image to modify";
             // 
@@ -1029,7 +1029,7 @@
             WelcomePage.Dock = DockStyle.Fill;
             WelcomePage.Location = new Point(0, 0);
             WelcomePage.Name = "WelcomePage";
-            WelcomePage.Size = new Size(1008, 521);
+            WelcomePage.Size = new Size(1264, 641);
             WelcomePage.TabIndex = 0;
             // 
             // lblDisclaimer
@@ -1038,7 +1038,7 @@
             lblDisclaimer.AutoEllipsis = true;
             lblDisclaimer.Location = new Point(119, 128);
             lblDisclaimer.Name = "lblDisclaimer";
-            lblDisclaimer.Size = new Size(770, 313);
+            lblDisclaimer.Size = new Size(1026, 433);
             lblDisclaimer.TabIndex = 1;
             // 
             // WelcomePage_Description
@@ -1047,7 +1047,7 @@
             WelcomePage_Description.AutoEllipsis = true;
             WelcomePage_Description.Location = new Point(17, 64);
             WelcomePage_Description.Name = "WelcomePage_Description";
-            WelcomePage_Description.Size = new Size(977, 52);
+            WelcomePage_Description.Size = new Size(1233, 172);
             WelcomePage_Description.TabIndex = 1;
             WelcomePage_Description.Text = "This wizard will help you configure your Windows image. To begin, click Next.";
             // 
@@ -1058,7 +1058,7 @@
             WelcomePage_Header.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             WelcomePage_Header.Location = new Point(14, 12);
             WelcomePage_Header.Name = "WelcomePage_Header";
-            WelcomePage_Header.Size = new Size(980, 45);
+            WelcomePage_Header.Size = new Size(1236, 45);
             WelcomePage_Header.TabIndex = 0;
             WelcomePage_Header.Text = "Welcome";
             // 
@@ -1079,7 +1079,7 @@
             // 
             AutoScaleDimensions = new SizeF(96F, 96F);
             AutoScaleMode = AutoScaleMode.Dpi;
-            ClientSize = new Size(1008, 561);
+            ClientSize = new Size(1264, 681);
             Controls.Add(PageContainerPanel);
             Controls.Add(ButtonPanel);
             Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);

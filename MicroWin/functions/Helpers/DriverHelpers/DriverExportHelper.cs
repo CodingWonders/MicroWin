@@ -68,9 +68,9 @@ namespace MicroWin.functions.Helpers.DriverHelpers
                 using DismSession session = DismApi.OpenOnlineSession();
                 drivers = DismApi.GetDrivers(session, false);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO log
+                DynaLog.logMessage($"Could not get drivers: {ex.Message}");
             }
             finally
             {

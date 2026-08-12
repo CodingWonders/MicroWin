@@ -163,14 +163,14 @@ namespace MicroWin.functions.Helpers.RegistryHelpers
             // This is an exemption from the rule of no .NET API. We can safely query stuff with it
             try
             {
-                registryKey = Registry.LocalMachine.OpenSubKey(keyPath, false);
+                registryKey = Registry.LocalMachine.OpenSubKey(keyPath.Replace("HKLM\\", ""), false);
                 object? regValueData = registryKey?.GetValue(valueName != "" ? valueName : null);
                 RegistryValueKind? regValueKind = registryKey?.GetValueKind(valueName != "" ? valueName : null);
                 item = new RegistryItem(valueName, GetValueKindEnumValue(regValueKind), regValueData);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO log
+                DynaLog.logMessage($"Could not perform query: {ex.Message}");
             }
             finally
             {

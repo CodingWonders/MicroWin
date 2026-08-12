@@ -187,7 +187,7 @@ namespace MicroWin.functions.dism
             logMessage.Invoke($"Preparing to unmount image...");
             if (!Directory.Exists(mountPath))
             {
-                // TODO log this; we immediately return if it doesn't exist.
+                DynaLog.logMessage("Mount path does not exist.");
                 return;
             }
 
@@ -211,9 +211,9 @@ namespace MicroWin.functions.dism
 
                 DismApi.UnmountImage(mountPath, true, progressCallback);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO implement logging
+                DynaLog.logMessage($"The image could not be unmounted: {ex.Message}");
             }
             finally
             {
@@ -228,7 +228,7 @@ namespace MicroWin.functions.dism
         {
             if (!Directory.Exists(mountPath))
             {
-                // TODO log this; we immediately return if it doesn't exist.
+                DynaLog.logMessage("Mount path does not exist.");
                 return;
             }
 
@@ -245,9 +245,9 @@ namespace MicroWin.functions.dism
 
                 DismApi.UnmountImage(mountPath, false);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO implement logging
+                DynaLog.logMessage($"The image could not be unmounted: {ex.Message}");
             }
             finally
             {

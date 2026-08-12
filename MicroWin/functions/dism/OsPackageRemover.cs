@@ -79,9 +79,10 @@ namespace MicroWin.functions.dism
                     idx++;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO implement logging here
+                DynaLog.logMessage($"Could not perform task: {ex.Message}");
+                logWriter.Invoke($"This image modification task could not be performed because of the following error: {ex.Message}");
             }
             finally
             {
@@ -91,6 +92,9 @@ namespace MicroWin.functions.dism
                     DismApi.Shutdown();
                 }
                 catch { }
+
+                logWriter.Invoke("For packages that couldn't be removed with either \"Permanent package cannot be uninstalled\" or \"The specified package is not a valid Windows package\", " +
+                                 "do not worry. These point to packages that can't be removed, or that were already removed. THIS IS NOT AN ERROR CONDITION.");
             }
         }
 
@@ -104,9 +108,9 @@ namespace MicroWin.functions.dism
                 using DismSession session = DismApi.OpenOfflineSession(AppState.ScratchPath);
                 packages = DismApi.GetPackages(session);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO implement the logging
+                DynaLog.logMessage($"Could not get package list: {ex.Message}");
             }
             finally
             {
