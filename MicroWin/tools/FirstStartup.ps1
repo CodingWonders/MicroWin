@@ -114,14 +114,10 @@ using System;
 using System.Runtime.InteropServices;
 public class Win32 {
     [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
-    public static extern IntPtr SendMessageTimeout(
-        IntPtr hWnd,
-        uint Msg,
-        IntPtr wParam,
-        string lParam,
-        uint fuFlags,
-        uint uTimeout,
-        out IntPtr lpdwResult);
+    public static extern IntPtr SendMessageTimeout(IntPtr hWnd, uint Msg, IntPtr wParam, string lParam, uint fuFlags, uint uTimeout, out IntPtr lpdwResult);
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    public static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
 }
 "@
 
@@ -132,6 +128,30 @@ $timeout = 100
 
 # Send the broadcast message to all windows
 [Win32]::SendMessageTimeout($HWND_BROADCAST, $WM_SETTINGCHANGE, [IntPtr]::Zero, "ImmersiveColorSet", $SMTO_ABORTIFHUNG, $timeout, [ref]([IntPtr]::Zero))
+
+# Hate Spotlight wallpapers; default to IMG19
+$wallpaperPath = "$env:SYSTEMDRIVE\Windows\Web\Wallpaper\Windows\img19.jpg"
+reg add "HKCU\SOFTWARE\Policies\Microsoft\Windows\CloudContent" /F /V DisableWindowsSpotlightFeatures /T REG_DWORD /D 1
+
+$SPI_SETDESKWALLPAPER = 0x0014
+$SPIF_UPDATEINIFILE = 0x01
+$SPIF_SENDCHANGE = 0x02
+
+[Win32]::SystemParametersInfo($SPI_SETDESKWALLPAPER, 0, "$wallpaperPath", $SPIF_UPDATEINIFILE -bor $SPIF_SENDCHANGE)
+
+# Drop Tray
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\CDP" /f /v DragTrayEnabled /t REG_DWORD /d 0
+
+# Show File Extensions
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v HideFileExt /t REG_DWORD /d 0 /f
+
+# Other Windows crap
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\UserProfileEngagement" /f
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\UserProfileEngagement" /v ScoobeSystemSettingEnabled /t REG_DWORD /d 0 /f
+# Force This PC
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v LaunchTo /t REG_DWORD /d 1
+
+
 
 Clear-Host
 Write-Host "The taskbar will take around a minute to show up, but you can start using your computer now. Try pressing the Windows key to open the Start menu, or Windows + E to launch File Explorer."
