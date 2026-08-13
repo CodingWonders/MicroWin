@@ -31,7 +31,7 @@
   <ItemGroup>
     <!-- Keep native/tools files as content so they remain in the output and/or source tree -->
     <None Include="tools\oscdimg.exe" />
-    <None Include="tools\FirstStartup.ps1" />
+    <EmbeddedResource Include="tools\FirstStartup.ps1" />
     <None Include="tools\RemoveTempDir.bat" />
     <None Include="app.manifest" />
   </ItemGroup>

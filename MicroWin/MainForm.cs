@@ -22,7 +22,9 @@ using System.Linq;
 using System.Management;
 using System.Media;
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.Versioning;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -739,29 +741,40 @@ namespace MicroWin
                 RegistryHelper.AddRegistryItem("HKLM\\zNTUSER\\Software\\Microsoft\\Terminal Server Client", new RegistryItem("RdpLaunchConsentAccepted", ValueKind.REG_DWORD, 1));
 
                 UpdateCurrentProgressBar(50);
-                using (HttpClient client = new())
+                try
                 {
-                    try
-                    {
+                    // Check if we can do it using the embedded resource; otherwise grab it from the internet.
+                    string firstStartupPath = Path.Combine(AppState.ScratchPath, "Windows", "FirstStartup.ps1");
+                    try {
+                        Assembly currentAssembly = Assembly.GetExecutingAssembly();
+                        using Stream resourceStream = currentAssembly.GetManifestResourceStream("MicroWin.tools.FirstStartup.ps1");
+                        if (resourceStream is null)
+                            throw new Exception();
+
+                        using StreamReader sr = new(resourceStream);
+                        string firstRunScriptContents = sr.ReadToEnd();
+                        File.WriteAllText(firstStartupPath, firstRunScriptContents, new UTF8Encoding(false));
+                    } catch {
+                        DynaLog.logMessage("Could not get embedded res. Downloading from internet.");
+                        using HttpClient client = new();
                         byte[] data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/FirstStartup.ps1").GetAwaiter().GetResult();
-                        string firstStartupPath = Path.Combine(AppState.ScratchPath, "Windows", "FirstStartup.ps1");
                         File.WriteAllBytes(firstStartupPath, data);
-
-                        if (!string.IsNullOrWhiteSpace(AppState.WinUtilConfigPath) && File.Exists(AppState.WinUtilConfigPath))
-                        {
-                            File.Copy(AppState.WinUtilConfigPath, Path.Combine(AppState.ScratchPath, "winutil-config.json"), true);
-                            WriteLogMessage("WinUtil configuration file copied to image.");
-
-                            string scriptToAppend = "\n\nif (Test-Path -Path \"$env:HOMEDRIVE\\winutil-config.json\")\n" +
-                                                    "{\n" +
-                                                    "    Write-Host \"Configuration file detected. Applying...\"\n" +
-                                                    "    iex \"& { $(irm christitus.com/win) } -Config `\"$env:HOMEDRIVE\\winutil-config.json`\"\"\n" +
-                                                    "}\n";
-                            File.AppendAllText(firstStartupPath, scriptToAppend);
-                        }
                     }
-                    catch { }
+
+                    if (!string.IsNullOrWhiteSpace(AppState.WinUtilConfigPath) && File.Exists(AppState.WinUtilConfigPath))
+                    {
+                        File.Copy(AppState.WinUtilConfigPath, Path.Combine(AppState.ScratchPath, "winutil-config.json"), true);
+                        WriteLogMessage("WinUtil configuration file copied to image.");
+
+                        string scriptToAppend = "\n\nif (Test-Path -Path \"$env:HOMEDRIVE\\winutil-config.json\")\n" +
+                                                "{\n" +
+                                                "    Write-Host \"Configuration file detected. Applying...\"\n" +
+                                                "    iex \"& { $(irm christitus.com/win) } -Config `\"$env:HOMEDRIVE\\winutil-config.json`\"\"\n" +
+                                                "}\n";
+                        File.AppendAllText(firstStartupPath, scriptToAppend);
+                    }
                 }
+                catch { }
 
                 UpdateCurrentProgressBar(90);
                 WriteLogMessage("Unloading image registry hives...");

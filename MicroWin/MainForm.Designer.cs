@@ -36,28 +36,6 @@
             Cancel_Button = new Button();
             About_Button = new Button();
             PageContainerPanel = new Panel();
-            IsoSettingsPage = new Panel();
-            label19 = new Label();
-            UEFICA23CB = new CheckBox();
-            DriverExportCombo = new ComboBox();
-            label13 = new Label();
-            UnattendCopyCB = new CheckBox();
-            ReportToolCB = new CheckBox();
-            label11 = new Label();
-            label12 = new Label();
-            winutilConfigLabel = new Label();
-            winutilConfigTextBox = new TextBox();
-            winutilConfigBrowseBtn = new Button();
-            CopyVirtIODrivers = new CheckBox();
-            IsoChooserPage = new Panel();
-            isoExtractionPB = new ProgressBar();
-            isoPickerBtn = new Button();
-            isoPathTB = new TextBox();
-            lblFileStatus = new Label();
-            lblExtractionStatus = new Label();
-            label1 = new Label();
-            SysCheckPage_Description = new Label();
-            SysCheckPage_Header = new Label();
             FinishPage = new Panel();
             lnkViewCreationLogs = new LinkLabel();
             lnkOpenIsoLoc = new LinkLabel();
@@ -76,6 +54,19 @@
             logTB = new TextBox();
             label14 = new Label();
             label15 = new Label();
+            IsoSettingsPage = new Panel();
+            label19 = new Label();
+            UEFICA23CB = new CheckBox();
+            DriverExportCombo = new ComboBox();
+            label13 = new Label();
+            UnattendCopyCB = new CheckBox();
+            ReportToolCB = new CheckBox();
+            label11 = new Label();
+            label12 = new Label();
+            winutilConfigLabel = new Label();
+            winutilConfigTextBox = new TextBox();
+            winutilConfigBrowseBtn = new Button();
+            CopyVirtIODrivers = new CheckBox();
             UserAccountsPage = new Panel();
             panel1 = new Panel();
             tableLayoutPanel3 = new TableLayoutPanel();
@@ -107,6 +98,15 @@
             columnHeader4 = new ColumnHeader();
             columnHeader5 = new ColumnHeader();
             label3 = new Label();
+            IsoChooserPage = new Panel();
+            isoExtractionPB = new ProgressBar();
+            isoPickerBtn = new Button();
+            isoPathTB = new TextBox();
+            lblFileStatus = new Label();
+            lblExtractionStatus = new Label();
+            label1 = new Label();
+            SysCheckPage_Description = new Label();
+            SysCheckPage_Header = new Label();
             WelcomePage = new Panel();
             lblDisclaimer = new Label();
             WelcomePage_Description = new Label();
@@ -117,12 +117,11 @@
             ButtonPanel.SuspendLayout();
             TableLayoutPanel1.SuspendLayout();
             PageContainerPanel.SuspendLayout();
-            IsoSettingsPage.SuspendLayout();
-            IsoChooserPage.SuspendLayout();
             FinishPage.SuspendLayout();
             panel4.SuspendLayout();
             IsoCreationPage.SuspendLayout();
             pnlProgress.SuspendLayout();
+            IsoSettingsPage.SuspendLayout();
             UserAccountsPage.SuspendLayout();
             panel1.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
@@ -132,6 +131,7 @@
             panel2.SuspendLayout();
             tableLayoutPanel2.SuspendLayout();
             ImageChooserPage.SuspendLayout();
+            IsoChooserPage.SuspendLayout();
             WelcomePage.SuspendLayout();
             SuspendLayout();
             // 
@@ -226,254 +226,6 @@
             PageContainerPanel.Name = "PageContainerPanel";
             PageContainerPanel.Size = new Size(1264, 641);
             PageContainerPanel.TabIndex = 3;
-            // 
-            // IsoSettingsPage
-            // 
-            IsoSettingsPage.Controls.Add(label19);
-            IsoSettingsPage.Controls.Add(UEFICA23CB);
-            IsoSettingsPage.Controls.Add(DriverExportCombo);
-            IsoSettingsPage.Controls.Add(label13);
-            IsoSettingsPage.Controls.Add(UnattendCopyCB);
-            IsoSettingsPage.Controls.Add(ReportToolCB);
-            IsoSettingsPage.Controls.Add(label11);
-            IsoSettingsPage.Controls.Add(label12);
-            IsoSettingsPage.Controls.Add(winutilConfigLabel);
-            IsoSettingsPage.Controls.Add(winutilConfigTextBox);
-            IsoSettingsPage.Controls.Add(winutilConfigBrowseBtn);
-            IsoSettingsPage.Controls.Add(CopyVirtIODrivers);
-            IsoSettingsPage.Dock = DockStyle.Fill;
-            IsoSettingsPage.Location = new Point(0, 0);
-            IsoSettingsPage.Name = "IsoSettingsPage";
-            IsoSettingsPage.Size = new Size(1264, 641);
-            IsoSettingsPage.TabIndex = 6;
-            // 
-            // label19
-            // 
-            label19.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            label19.AutoEllipsis = true;
-            label19.Location = new Point(101, 340);
-            label19.Name = "label19";
-            label19.Size = new Size(1062, 243);
-            label19.TabIndex = 14;
-            label19.Text = resources.GetString("label19.Text");
-            label19.Visible = false;
-            // 
-            // UEFICA23CB
-            // 
-            UEFICA23CB.AutoSize = true;
-            UEFICA23CB.Checked = true;
-            UEFICA23CB.CheckState = CheckState.Checked;
-            UEFICA23CB.Location = new Point(83, 235);
-            UEFICA23CB.Name = "UEFICA23CB";
-            UEFICA23CB.Size = new Size(380, 19);
-            UEFICA23CB.TabIndex = 10;
-            UEFICA23CB.Text = "Use Windows UEFI CA 2023 boot binaries, if available on the ISO file";
-            UEFICA23CB.UseVisualStyleBackColor = true;
-            UEFICA23CB.CheckedChanged += UEFICA23CB_CheckedChanged;
-            // 
-            // DriverExportCombo
-            // 
-            DriverExportCombo.FormattingEnabled = true;
-            DriverExportCombo.Items.AddRange(new object[] { "Don't export drivers", "Export essential drivers (Storage Controllers and Network Adapters)", "Export all drivers" });
-            DriverExportCombo.Location = new Point(83, 206);
-            DriverExportCombo.Name = "DriverExportCombo";
-            DriverExportCombo.Size = new Size(412, 23);
-            DriverExportCombo.TabIndex = 9;
-            DriverExportCombo.SelectedIndexChanged += DriverExportCombo_SelectedIndexChanged;
-            // 
-            // label13
-            // 
-            label13.AutoSize = true;
-            label13.Location = new Point(80, 185);
-            label13.Name = "label13";
-            label13.Size = new Size(111, 15);
-            label13.TabIndex = 8;
-            label13.Text = "Driver export mode:";
-            // 
-            // UnattendCopyCB
-            // 
-            UnattendCopyCB.AutoSize = true;
-            UnattendCopyCB.Location = new Point(83, 158);
-            UnattendCopyCB.Name = "UnattendCopyCB";
-            UnattendCopyCB.Size = new Size(412, 19);
-            UnattendCopyCB.TabIndex = 7;
-            UnattendCopyCB.Text = "Make a copy of the unattended answer file that I can use on other images";
-            UnattendCopyCB.UseVisualStyleBackColor = true;
-            UnattendCopyCB.CheckedChanged += UnattendCopyCB_CheckedChanged;
-            // 
-            // ReportToolCB
-            // 
-            ReportToolCB.AutoSize = true;
-            ReportToolCB.Checked = true;
-            ReportToolCB.CheckState = CheckState.Checked;
-            ReportToolCB.Location = new Point(83, 133);
-            ReportToolCB.Name = "ReportToolCB";
-            ReportToolCB.Size = new Size(218, 19);
-            ReportToolCB.TabIndex = 7;
-            ReportToolCB.Text = "Add a shortcut for the reporting tool";
-            ReportToolCB.UseVisualStyleBackColor = true;
-            ReportToolCB.CheckedChanged += ReportToolCB_CheckedChanged;
-            // 
-            // label11
-            // 
-            label11.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            label11.AutoEllipsis = true;
-            label11.Location = new Point(17, 64);
-            label11.Name = "label11";
-            label11.Size = new Size(1233, 52);
-            label11.TabIndex = 6;
-            label11.Text = "Configure additional settings for your customized image.";
-            // 
-            // label12
-            // 
-            label12.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            label12.AutoEllipsis = true;
-            label12.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label12.Location = new Point(14, 12);
-            label12.Name = "label12";
-            label12.Size = new Size(1236, 45);
-            label12.TabIndex = 5;
-            label12.Text = "Specify additional settings for the image";
-            // 
-            // winutilConfigLabel
-            // 
-            winutilConfigLabel.AutoSize = true;
-            winutilConfigLabel.Location = new Point(80, 265);
-            winutilConfigLabel.Name = "winutilConfigLabel";
-            winutilConfigLabel.Size = new Size(127, 15);
-            winutilConfigLabel.TabIndex = 11;
-            winutilConfigLabel.Text = "WinUtil Config (JSON):";
-            // 
-            // winutilConfigTextBox
-            // 
-            winutilConfigTextBox.Location = new Point(83, 286);
-            winutilConfigTextBox.Name = "winutilConfigTextBox";
-            winutilConfigTextBox.Size = new Size(293, 23);
-            winutilConfigTextBox.TabIndex = 12;
-            winutilConfigTextBox.TextChanged += winutilConfigTextBox_TextChanged;
-            // 
-            // winutilConfigBrowseBtn
-            // 
-            winutilConfigBrowseBtn.FlatStyle = FlatStyle.System;
-            winutilConfigBrowseBtn.Location = new Point(382, 285);
-            winutilConfigBrowseBtn.Name = "winutilConfigBrowseBtn";
-            winutilConfigBrowseBtn.Size = new Size(80, 23);
-            winutilConfigBrowseBtn.TabIndex = 13;
-            winutilConfigBrowseBtn.Text = "Browse...";
-            winutilConfigBrowseBtn.UseVisualStyleBackColor = true;
-            winutilConfigBrowseBtn.Click += winutilConfigBrowseBtn_Click;
-            // 
-            // CopyVirtIODrivers
-            // 
-            CopyVirtIODrivers.AutoSize = true;
-            CopyVirtIODrivers.Location = new Point(83, 318);
-            CopyVirtIODrivers.Name = "CopyVirtIODrivers";
-            CopyVirtIODrivers.Size = new Size(125, 19);
-            CopyVirtIODrivers.TabIndex = 7;
-            CopyVirtIODrivers.Text = "Copy VirtIO drivers";
-            CopyVirtIODrivers.UseVisualStyleBackColor = true;
-            CopyVirtIODrivers.CheckedChanged += CopyVirtIODrivers_CheckedChanged;
-            // 
-            // IsoChooserPage
-            // 
-            IsoChooserPage.Controls.Add(isoExtractionPB);
-            IsoChooserPage.Controls.Add(isoPickerBtn);
-            IsoChooserPage.Controls.Add(isoPathTB);
-            IsoChooserPage.Controls.Add(lblFileStatus);
-            IsoChooserPage.Controls.Add(lblExtractionStatus);
-            IsoChooserPage.Controls.Add(label1);
-            IsoChooserPage.Controls.Add(SysCheckPage_Description);
-            IsoChooserPage.Controls.Add(SysCheckPage_Header);
-            IsoChooserPage.Dock = DockStyle.Fill;
-            IsoChooserPage.Location = new Point(0, 0);
-            IsoChooserPage.Name = "IsoChooserPage";
-            IsoChooserPage.Size = new Size(1264, 641);
-            IsoChooserPage.TabIndex = 1;
-            IsoChooserPage.Visible = false;
-            // 
-            // isoExtractionPB
-            // 
-            isoExtractionPB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            isoExtractionPB.Location = new Point(125, 219);
-            isoExtractionPB.Name = "isoExtractionPB";
-            isoExtractionPB.Size = new Size(975, 23);
-            isoExtractionPB.TabIndex = 4;
-            // 
-            // isoPickerBtn
-            // 
-            isoPickerBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            isoPickerBtn.FlatStyle = FlatStyle.System;
-            isoPickerBtn.Location = new Point(1025, 146);
-            isoPickerBtn.Name = "isoPickerBtn";
-            isoPickerBtn.Size = new Size(75, 23);
-            isoPickerBtn.TabIndex = 3;
-            isoPickerBtn.Text = "Browse...";
-            isoPickerBtn.UseVisualStyleBackColor = true;
-            isoPickerBtn.Click += isoPickerBtn_Click;
-            // 
-            // isoPathTB
-            // 
-            isoPathTB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            isoPathTB.BorderStyle = BorderStyle.FixedSingle;
-            isoPathTB.Location = new Point(125, 147);
-            isoPathTB.Name = "isoPathTB";
-            isoPathTB.ReadOnly = true;
-            isoPathTB.Size = new Size(894, 23);
-            isoPathTB.TabIndex = 2;
-            isoPathTB.TextChanged += isoPathTB_TextChanged;
-            // 
-            // lblFileStatus
-            // 
-            lblFileStatus.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lblFileStatus.AutoEllipsis = true;
-            lblFileStatus.AutoSize = true;
-            lblFileStatus.Location = new Point(122, 248);
-            lblFileStatus.Name = "lblFileStatus";
-            lblFileStatus.Size = new Size(0, 15);
-            lblFileStatus.TabIndex = 1;
-            // 
-            // lblExtractionStatus
-            // 
-            lblExtractionStatus.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lblExtractionStatus.AutoEllipsis = true;
-            lblExtractionStatus.AutoSize = true;
-            lblExtractionStatus.Location = new Point(122, 200);
-            lblExtractionStatus.Name = "lblExtractionStatus";
-            lblExtractionStatus.Size = new Size(243, 15);
-            lblExtractionStatus.TabIndex = 1;
-            lblExtractionStatus.Text = "Disc image extraction status will appear here.";
-            // 
-            // label1
-            // 
-            label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            label1.AutoEllipsis = true;
-            label1.AutoSize = true;
-            label1.Location = new Point(122, 128);
-            label1.Name = "label1";
-            label1.Size = new Size(68, 15);
-            label1.TabIndex = 1;
-            label1.Text = "Disc image:";
-            // 
-            // SysCheckPage_Description
-            // 
-            SysCheckPage_Description.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            SysCheckPage_Description.AutoEllipsis = true;
-            SysCheckPage_Description.Location = new Point(17, 64);
-            SysCheckPage_Description.Name = "SysCheckPage_Description";
-            SysCheckPage_Description.Size = new Size(1233, 172);
-            SysCheckPage_Description.TabIndex = 1;
-            SysCheckPage_Description.Text = "Please specify the ISO that you want to use with this wizard. Supported operating systems are Windows 10 and Windows 11.";
-            // 
-            // SysCheckPage_Header
-            // 
-            SysCheckPage_Header.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            SysCheckPage_Header.AutoEllipsis = true;
-            SysCheckPage_Header.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            SysCheckPage_Header.Location = new Point(14, 12);
-            SysCheckPage_Header.Name = "SysCheckPage_Header";
-            SysCheckPage_Header.Size = new Size(1236, 45);
-            SysCheckPage_Header.TabIndex = 0;
-            SysCheckPage_Header.Text = "Choose a disc image";
             // 
             // FinishPage
             // 
@@ -680,6 +432,153 @@
             label15.Size = new Size(1236, 45);
             label15.TabIndex = 7;
             label15.Text = "Customizations in progress";
+            // 
+            // IsoSettingsPage
+            // 
+            IsoSettingsPage.Controls.Add(label19);
+            IsoSettingsPage.Controls.Add(UEFICA23CB);
+            IsoSettingsPage.Controls.Add(DriverExportCombo);
+            IsoSettingsPage.Controls.Add(label13);
+            IsoSettingsPage.Controls.Add(UnattendCopyCB);
+            IsoSettingsPage.Controls.Add(ReportToolCB);
+            IsoSettingsPage.Controls.Add(label11);
+            IsoSettingsPage.Controls.Add(label12);
+            IsoSettingsPage.Controls.Add(winutilConfigLabel);
+            IsoSettingsPage.Controls.Add(winutilConfigTextBox);
+            IsoSettingsPage.Controls.Add(winutilConfigBrowseBtn);
+            IsoSettingsPage.Controls.Add(CopyVirtIODrivers);
+            IsoSettingsPage.Dock = DockStyle.Fill;
+            IsoSettingsPage.Location = new Point(0, 0);
+            IsoSettingsPage.Name = "IsoSettingsPage";
+            IsoSettingsPage.Size = new Size(1264, 641);
+            IsoSettingsPage.TabIndex = 6;
+            // 
+            // label19
+            // 
+            label19.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label19.AutoEllipsis = true;
+            label19.Location = new Point(101, 340);
+            label19.Name = "label19";
+            label19.Size = new Size(1062, 243);
+            label19.TabIndex = 14;
+            label19.Text = resources.GetString("label19.Text");
+            label19.Visible = false;
+            // 
+            // UEFICA23CB
+            // 
+            UEFICA23CB.AutoSize = true;
+            UEFICA23CB.Checked = true;
+            UEFICA23CB.CheckState = CheckState.Checked;
+            UEFICA23CB.Location = new Point(83, 235);
+            UEFICA23CB.Name = "UEFICA23CB";
+            UEFICA23CB.Size = new Size(380, 19);
+            UEFICA23CB.TabIndex = 10;
+            UEFICA23CB.Text = "Use Windows UEFI CA 2023 boot binaries, if available on the ISO file";
+            UEFICA23CB.UseVisualStyleBackColor = true;
+            UEFICA23CB.CheckedChanged += UEFICA23CB_CheckedChanged;
+            // 
+            // DriverExportCombo
+            // 
+            DriverExportCombo.FormattingEnabled = true;
+            DriverExportCombo.Items.AddRange(new object[] { "Don't export drivers", "Export essential drivers (Storage Controllers and Network Adapters)", "Export all drivers" });
+            DriverExportCombo.Location = new Point(83, 206);
+            DriverExportCombo.Name = "DriverExportCombo";
+            DriverExportCombo.Size = new Size(412, 23);
+            DriverExportCombo.TabIndex = 9;
+            DriverExportCombo.SelectedIndexChanged += DriverExportCombo_SelectedIndexChanged;
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Location = new Point(80, 185);
+            label13.Name = "label13";
+            label13.Size = new Size(111, 15);
+            label13.TabIndex = 8;
+            label13.Text = "Driver export mode:";
+            // 
+            // UnattendCopyCB
+            // 
+            UnattendCopyCB.AutoSize = true;
+            UnattendCopyCB.Location = new Point(83, 158);
+            UnattendCopyCB.Name = "UnattendCopyCB";
+            UnattendCopyCB.Size = new Size(412, 19);
+            UnattendCopyCB.TabIndex = 7;
+            UnattendCopyCB.Text = "Make a copy of the unattended answer file that I can use on other images";
+            UnattendCopyCB.UseVisualStyleBackColor = true;
+            UnattendCopyCB.CheckedChanged += UnattendCopyCB_CheckedChanged;
+            // 
+            // ReportToolCB
+            // 
+            ReportToolCB.AutoSize = true;
+            ReportToolCB.Checked = true;
+            ReportToolCB.CheckState = CheckState.Checked;
+            ReportToolCB.Location = new Point(83, 133);
+            ReportToolCB.Name = "ReportToolCB";
+            ReportToolCB.Size = new Size(218, 19);
+            ReportToolCB.TabIndex = 7;
+            ReportToolCB.Text = "Add a shortcut for the reporting tool";
+            ReportToolCB.UseVisualStyleBackColor = true;
+            ReportToolCB.CheckedChanged += ReportToolCB_CheckedChanged;
+            // 
+            // label11
+            // 
+            label11.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            label11.AutoEllipsis = true;
+            label11.Location = new Point(17, 64);
+            label11.Name = "label11";
+            label11.Size = new Size(1233, 52);
+            label11.TabIndex = 6;
+            label11.Text = "Configure additional settings for your customized image.";
+            // 
+            // label12
+            // 
+            label12.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            label12.AutoEllipsis = true;
+            label12.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label12.Location = new Point(14, 12);
+            label12.Name = "label12";
+            label12.Size = new Size(1236, 45);
+            label12.TabIndex = 5;
+            label12.Text = "Specify additional settings for the image";
+            // 
+            // winutilConfigLabel
+            // 
+            winutilConfigLabel.AutoSize = true;
+            winutilConfigLabel.Location = new Point(80, 265);
+            winutilConfigLabel.Name = "winutilConfigLabel";
+            winutilConfigLabel.Size = new Size(127, 15);
+            winutilConfigLabel.TabIndex = 11;
+            winutilConfigLabel.Text = "WinUtil Config (JSON):";
+            // 
+            // winutilConfigTextBox
+            // 
+            winutilConfigTextBox.Location = new Point(83, 286);
+            winutilConfigTextBox.Name = "winutilConfigTextBox";
+            winutilConfigTextBox.Size = new Size(293, 23);
+            winutilConfigTextBox.TabIndex = 12;
+            winutilConfigTextBox.TextChanged += winutilConfigTextBox_TextChanged;
+            // 
+            // winutilConfigBrowseBtn
+            // 
+            winutilConfigBrowseBtn.FlatStyle = FlatStyle.System;
+            winutilConfigBrowseBtn.Location = new Point(382, 285);
+            winutilConfigBrowseBtn.Name = "winutilConfigBrowseBtn";
+            winutilConfigBrowseBtn.Size = new Size(80, 23);
+            winutilConfigBrowseBtn.TabIndex = 13;
+            winutilConfigBrowseBtn.Text = "Browse...";
+            winutilConfigBrowseBtn.UseVisualStyleBackColor = true;
+            winutilConfigBrowseBtn.Click += winutilConfigBrowseBtn_Click;
+            // 
+            // CopyVirtIODrivers
+            // 
+            CopyVirtIODrivers.AutoSize = true;
+            CopyVirtIODrivers.Location = new Point(83, 318);
+            CopyVirtIODrivers.Name = "CopyVirtIODrivers";
+            CopyVirtIODrivers.Size = new Size(125, 19);
+            CopyVirtIODrivers.TabIndex = 7;
+            CopyVirtIODrivers.Text = "Copy VirtIO drivers";
+            CopyVirtIODrivers.UseVisualStyleBackColor = true;
+            CopyVirtIODrivers.CheckedChanged += CopyVirtIODrivers_CheckedChanged;
             // 
             // UserAccountsPage
             // 
@@ -1021,6 +920,107 @@
             label3.TabIndex = 2;
             label3.Text = "Choose the image to modify";
             // 
+            // IsoChooserPage
+            // 
+            IsoChooserPage.Controls.Add(isoExtractionPB);
+            IsoChooserPage.Controls.Add(isoPickerBtn);
+            IsoChooserPage.Controls.Add(isoPathTB);
+            IsoChooserPage.Controls.Add(lblFileStatus);
+            IsoChooserPage.Controls.Add(lblExtractionStatus);
+            IsoChooserPage.Controls.Add(label1);
+            IsoChooserPage.Controls.Add(SysCheckPage_Description);
+            IsoChooserPage.Controls.Add(SysCheckPage_Header);
+            IsoChooserPage.Dock = DockStyle.Fill;
+            IsoChooserPage.Location = new Point(0, 0);
+            IsoChooserPage.Name = "IsoChooserPage";
+            IsoChooserPage.Size = new Size(1264, 641);
+            IsoChooserPage.TabIndex = 1;
+            IsoChooserPage.Visible = false;
+            // 
+            // isoExtractionPB
+            // 
+            isoExtractionPB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            isoExtractionPB.Location = new Point(125, 219);
+            isoExtractionPB.Name = "isoExtractionPB";
+            isoExtractionPB.Size = new Size(975, 23);
+            isoExtractionPB.TabIndex = 4;
+            // 
+            // isoPickerBtn
+            // 
+            isoPickerBtn.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            isoPickerBtn.FlatStyle = FlatStyle.System;
+            isoPickerBtn.Location = new Point(1025, 146);
+            isoPickerBtn.Name = "isoPickerBtn";
+            isoPickerBtn.Size = new Size(75, 23);
+            isoPickerBtn.TabIndex = 3;
+            isoPickerBtn.Text = "Browse...";
+            isoPickerBtn.UseVisualStyleBackColor = true;
+            isoPickerBtn.Click += isoPickerBtn_Click;
+            // 
+            // isoPathTB
+            // 
+            isoPathTB.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            isoPathTB.BorderStyle = BorderStyle.FixedSingle;
+            isoPathTB.Location = new Point(125, 147);
+            isoPathTB.Name = "isoPathTB";
+            isoPathTB.ReadOnly = true;
+            isoPathTB.Size = new Size(894, 23);
+            isoPathTB.TabIndex = 2;
+            isoPathTB.TextChanged += isoPathTB_TextChanged;
+            // 
+            // lblFileStatus
+            // 
+            lblFileStatus.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lblFileStatus.AutoEllipsis = true;
+            lblFileStatus.AutoSize = true;
+            lblFileStatus.Location = new Point(122, 248);
+            lblFileStatus.Name = "lblFileStatus";
+            lblFileStatus.Size = new Size(0, 15);
+            lblFileStatus.TabIndex = 1;
+            // 
+            // lblExtractionStatus
+            // 
+            lblExtractionStatus.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lblExtractionStatus.AutoEllipsis = true;
+            lblExtractionStatus.AutoSize = true;
+            lblExtractionStatus.Location = new Point(122, 200);
+            lblExtractionStatus.Name = "lblExtractionStatus";
+            lblExtractionStatus.Size = new Size(243, 15);
+            lblExtractionStatus.TabIndex = 1;
+            lblExtractionStatus.Text = "Disc image extraction status will appear here.";
+            // 
+            // label1
+            // 
+            label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label1.AutoEllipsis = true;
+            label1.AutoSize = true;
+            label1.Location = new Point(122, 128);
+            label1.Name = "label1";
+            label1.Size = new Size(68, 15);
+            label1.TabIndex = 1;
+            label1.Text = "Disc image:";
+            // 
+            // SysCheckPage_Description
+            // 
+            SysCheckPage_Description.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            SysCheckPage_Description.AutoEllipsis = true;
+            SysCheckPage_Description.Location = new Point(17, 64);
+            SysCheckPage_Description.Name = "SysCheckPage_Description";
+            SysCheckPage_Description.Size = new Size(1233, 172);
+            SysCheckPage_Description.TabIndex = 1;
+            SysCheckPage_Description.Text = "Please specify the ISO that you want to use with this wizard. Supported operating systems are Windows 10 and Windows 11.";
+            // 
+            // SysCheckPage_Header
+            // 
+            SysCheckPage_Header.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            SysCheckPage_Header.AutoEllipsis = true;
+            SysCheckPage_Header.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            SysCheckPage_Header.Location = new Point(14, 12);
+            SysCheckPage_Header.Name = "SysCheckPage_Header";
+            SysCheckPage_Header.Size = new Size(1236, 45);
+            SysCheckPage_Header.TabIndex = 0;
+            SysCheckPage_Header.Text = "Choose a disc image";
+            // 
             // WelcomePage
             // 
             WelcomePage.Controls.Add(lblDisclaimer);
@@ -1095,10 +1095,6 @@
             ButtonPanel.ResumeLayout(false);
             TableLayoutPanel1.ResumeLayout(false);
             PageContainerPanel.ResumeLayout(false);
-            IsoSettingsPage.ResumeLayout(false);
-            IsoSettingsPage.PerformLayout();
-            IsoChooserPage.ResumeLayout(false);
-            IsoChooserPage.PerformLayout();
             FinishPage.ResumeLayout(false);
             FinishPage.PerformLayout();
             panel4.ResumeLayout(false);
@@ -1107,6 +1103,8 @@
             IsoCreationPage.PerformLayout();
             pnlProgress.ResumeLayout(false);
             pnlProgress.PerformLayout();
+            IsoSettingsPage.ResumeLayout(false);
+            IsoSettingsPage.PerformLayout();
             UserAccountsPage.ResumeLayout(false);
             UserAccountsPage.PerformLayout();
             panel1.ResumeLayout(false);
@@ -1121,6 +1119,8 @@
             tableLayoutPanel2.PerformLayout();
             ImageChooserPage.ResumeLayout(false);
             ImageChooserPage.PerformLayout();
+            IsoChooserPage.ResumeLayout(false);
+            IsoChooserPage.PerformLayout();
             WelcomePage.ResumeLayout(false);
             ResumeLayout(false);
 
