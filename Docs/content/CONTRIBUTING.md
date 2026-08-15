@@ -14,3 +14,6 @@ To contribute to the repository:
 2. Open the project
 3. Make your changes **AND TEST THEM**
 4. Create a pull request
+
+>>[!WARNING]
+>>**No AI slop code is allowed in this repository!**
