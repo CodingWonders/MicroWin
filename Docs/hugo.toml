@@ -56,6 +56,10 @@ description = "Microwin Windows Utility - Customize Your windows iso"
 displayUpdatedDate = true
 dateFormat = "January 2, 2006"
 
+  [params.author]
+  name = "CodingWonders"
+  email = "contact@example.com"
+
   [params.navbar]
   displayTitle = false
   displayLogo = true
@@ -107,3 +111,4 @@ display = "hover"
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+
