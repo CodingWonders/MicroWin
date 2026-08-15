@@ -61,10 +61,10 @@ dateFormat = "January 2, 2006"
   displayLogo = true
 
     [params.navbar.logo]
-    path = "navlogo.png"
-    dark = "navlogo.png"
+    path = "logo.png"
+    dark = "logo.png"
     link = "/"
-    width = 150
+    width = 50
     height = 50
 
   [params.theme]
@@ -102,8 +102,15 @@ display = "hover"
   url = ""
   weight = 3
 
+[taxonomies]
 
 [markup]
   [markup.goldmark]
     [markup.goldmark.renderer]
       unsafe = true
+
+[outputs]
+  home = ["HTML"]
+  section = ["HTML"]
+  taxonomy = ["HTML"]
+  term = ["HTML"]
