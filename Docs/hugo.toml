@@ -1,6 +1,6 @@
 baseURL = "example.com"
 languageCode = "en-us"
-title = "Microwin Documentation"
+title = "MicroWin Documentation"
 enableGitInfo = true
 canonifyURLs = true
 
@@ -52,13 +52,13 @@ url = "https://github.com/CodingWonders/MicroWin"
   icon = "github"
 
 [params]
-description = "Microwin Windows Utility - Customize Your windows iso"
+description = "MicroWin Windows Utility - Customize Your Windows ISO"
 displayUpdatedDate = true
 dateFormat = "January 2, 2006"
 
   [params.author]
   name = "CodingWonders"
-  email = "contact@example.com"
+  email = "betareporter98@gmail.com"
 
   [params.navbar]
   displayTitle = false
@@ -97,7 +97,7 @@ display = "hover"
     type = "separator"
 
   [[menu.sidebar]]
-  name = "Github Repo ↗"
+  name = "GitHub Repo ↗"
   url = "https://github.com/CodingWonders/MicroWin"
   weight = 2
 
