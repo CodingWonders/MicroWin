@@ -178,13 +178,12 @@ namespace MicroWin
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            string disclaimerMessage = $"Thank you for trying this {swStatus} release of MicroWin .NET.\n\n" +
-                $"Because this is a prerelease version of a rewrite of the original PowerShell version, bugs may happen. We expect improvements in quality " +
-                $"as time goes on, but that can be done with your help. Report the bugs over on the GitHub repository.\n\n" +
-                $"This {swStatus} release already has almost every feature implemented, besides a few that couldn't make it to this release. Those will be " +
-                $"implemented in future releases. Head over to the roadmap available in the repository for more info.\n\n" +
+            string welcomeMessage = $"Welcome to MicroWin .NET.\n\n" +
+                $"This wizard will guide you through the creation of your ISO file, with a debloated Windows experience. You will need an official " +
+                $"ISO file for either Windows 10 and 11.\n\n" +
                 $"Please disable your antivirus or set an exclusion to prevent conflicts. Do not worry, this is an open-source project and we take " +
                 $"your computer's security seriously.\n\n" +
+                $"If you encounter any issues, don't hesitate to report feedback. Do the same if you would like to see a new feature.\n\n" +
                 $"Thanks,\n" +
                 $"CWSOFTWARE and the rest of the team behind MicroWin.";
 
@@ -194,7 +193,7 @@ namespace MicroWin
                 Environment.Exit(1);
             }
 
-            lblDisclaimer.Text = disclaimerMessage;
+            lblDisclaimer.Text = welcomeMessage;
 
             ChangePage(WizardPage.Page.WelcomePage);
 
@@ -207,6 +206,13 @@ namespace MicroWin
             DriverExportCombo.SelectedIndexChanged -= DriverExportCombo_SelectedIndexChanged;
             DriverExportCombo.SelectedIndex = (int)AppState.DriverExportMode;
             DriverExportCombo.SelectedIndexChanged += DriverExportCombo_SelectedIndexChanged;
+
+            // Scale column headers
+            columnHeader1.Width = WindowHelper.ScaleLogical(32);
+            columnHeader2.Width = WindowHelper.ScaleLogical(200);
+            columnHeader3.Width = WindowHelper.ScaleLogical(256);
+            columnHeader4.Width = WindowHelper.ScaleLogical(84);
+            columnHeader5.Width = WindowHelper.ScaleLogical(160);
         }
 
 
