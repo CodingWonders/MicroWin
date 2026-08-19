@@ -8,6 +8,7 @@ namespace MicroWin.functions.Helpers.PropertyCheckers
 {
     public static class VersionComparer
     {
+        public static readonly Version VERCONST_WIN10 = new(10, 0, 17763, 0);
         /// <summary>
         /// Version constant for the GA release of Windows 10 22H2.
         /// </summary>

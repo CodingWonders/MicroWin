@@ -151,11 +151,21 @@ namespace MicroWin
                     }
                     break;
                 case WizardPage.Page.ImageChooserPage:
+                    if (imageInfo is null)
+                        return false;
+
                     if (AppState.SelectedImageIndex < 1)
                     {
                         MessageBox.Show("Please specify an image to modify and try again.");
                         return false;
                     }
+
+#pragma warning disable CS8602
+                    if (VersionComparer.IsOlderThanVersion(imageInfo.ElementAtOrDefault(AppState.SelectedImageIndex - 1 ?? 0).ProductVersion, VersionComparer.VERCONST_WIN10)) {
+                        MessageBox.Show("Windows images containing Windows 10 1809 or earlier are not supported.");
+                        return false;
+                    }
+#pragma warning restore CS8602
 
                     // If we are in ESD mode, we'll begin the export procedure
                     if (isEsdFile) {
