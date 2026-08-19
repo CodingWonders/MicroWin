@@ -703,68 +703,73 @@ namespace MicroWin
                 RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinBuildDate", ValueKind.REG_SZ, $"{DateTime.Now}"));
                 if (AppState.CopyVirtIODrivers)
                 {
-                    WriteLogMessage("Downloading VirtIO Drivers. This will take several minutes, depending on the speed of your network connection...");
-
-                    HttpClientHandler handler = new() { AllowAutoRedirect = false };
-
-                    using (HttpClient client = new(handler))
+                    try
                     {
-                        string targetUrl = "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso";
-                        HttpResponseMessage downloadResponse = null;
-                        bool isRedirect = true;
-                        int maxRedirects = 5;
-                        int redirectCount = 0;
+                        WriteLogMessage("Downloading VirtIO Drivers. This will take several minutes, depending on the speed of your network connection...");
 
-                        while (isRedirect && redirectCount < maxRedirects)
+                        HttpClientHandler handler = new() { AllowAutoRedirect = false };
+
+                        using (HttpClient client = new(handler))
                         {
-                            downloadResponse = await client.GetAsync(targetUrl, HttpCompletionOption.ResponseHeadersRead);
+                            string targetUrl = "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso";
+                            HttpResponseMessage downloadResponse = null;
+                            bool isRedirect = true;
+                            int maxRedirects = 5;
+                            int redirectCount = 0;
 
-                            int statusCode = (int)downloadResponse.StatusCode;
-                            if (statusCode >= 300 && statusCode <= 399 && downloadResponse.Headers.Location != null)
+                            while (isRedirect && redirectCount < maxRedirects)
                             {
-                                targetUrl = downloadResponse.Headers.Location.ToString();
+                                downloadResponse = await client.GetAsync(targetUrl, HttpCompletionOption.ResponseHeadersRead);
 
-                                if (!targetUrl.StartsWith("http://") && !targetUrl.StartsWith("https://"))
+                                int statusCode = (int)downloadResponse.StatusCode;
+                                if (statusCode >= 300 && statusCode <= 399 && downloadResponse.Headers.Location != null)
                                 {
-                                    Uri baseUri = new(targetUrl);
-                                    targetUrl = new Uri(baseUri, downloadResponse.Headers.Location).ToString();
+                                    targetUrl = downloadResponse.Headers.Location.ToString();
+
+                                    if (!targetUrl.StartsWith("http://") && !targetUrl.StartsWith("https://"))
+                                    {
+                                        Uri baseUri = new(targetUrl);
+                                        targetUrl = new Uri(baseUri, downloadResponse.Headers.Location).ToString();
+                                    }
+
+                                    downloadResponse.Dispose();
+                                    redirectCount++;
                                 }
-
-                                downloadResponse.Dispose();
-                                redirectCount++;
+                                else
+                                {
+                                    isRedirect = false;
+                                }
                             }
-                            else
+                            string outputPath = Path.Combine(AppState.ScratchPath, "virtio-win.iso");
+                            using (downloadResponse)
                             {
-                                isRedirect = false;
+                                downloadResponse.EnsureSuccessStatusCode();
+
+                                using (Stream downloadStream = await downloadResponse.Content.ReadAsStreamAsync())
+                                using (FileStream fileStream = new(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                                {
+                                    await downloadStream.CopyToAsync(fileStream);
+                                }
                             }
+
+                            await Task.Run(() =>
+                            {
+                                IsoManager iso = new();
+
+                                char? drive = iso.MountAndGetDrive(outputPath);
+                                if (drive != '\0')
+                                {
+                                    string extractvirtio = Path.Combine(AppState.MountPath, "virtio");
+
+                                    iso.ExtractIso(drive?.ToString(), extractvirtio, (p) => { }, (file) => { });
+
+                                    InvokeFileProgressUIUpdate("");
+                                    iso.Dismount(outputPath);
+                                }
+                            });
                         }
-                        string outputPath = Path.Combine(AppState.ScratchPath, "virtio-win.iso");
-                        using (downloadResponse)
-                        {
-                            downloadResponse.EnsureSuccessStatusCode();
-
-                            using (Stream downloadStream = await downloadResponse.Content.ReadAsStreamAsync())
-                            using (FileStream fileStream = new(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
-                            {
-                                await downloadStream.CopyToAsync(fileStream);
-                            }
-                        }
-
-                        await Task.Run(() =>
-                        {
-                            IsoManager iso = new();
-
-                            char? drive = iso.MountAndGetDrive(outputPath);
-                            if (drive != '\0')
-                            {
-                                string extractvirtio = Path.Combine(AppState.MountPath, "virtio");
-
-                                iso.ExtractIso(drive?.ToString(), extractvirtio, (p) => { }, (file) => { });
-
-                                InvokeFileProgressUIUpdate("");
-                                iso.Dismount(outputPath);
-                            }
-                        });
+                    } catch {
+                        WriteLogMessage("Could not download VirtIO drivers...");
                     }
                 }
                 UpdateCurrentProgressBar(10);
@@ -912,7 +917,9 @@ namespace MicroWin
                 UpdateCurrentStatus("Mounting boot image...");
                 DismManager.MountImage(bootwimPath, 2, AppState.ScratchPath, (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
 
-                UpdateCurrentStatus("Modifying WinPE registry...");
+                UpdateOverallProgressBar(60);
+
+                UpdateCurrentStatus("Modifying Windows PE registry...");
                 WriteLogMessage("Loading image registry hives...");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "zSOFTWARE");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "zSYSTEM");
@@ -944,12 +951,16 @@ namespace MicroWin
                     shouldUsePanther = VersionComparer.IsNewerThanVersion(setupImage?.ProductVersion, new(10, 0, 26040, 0));
                 }
 
+                UpdateOverallProgressBar(75);
+
                 if (shouldUsePanther)
                 {
                     UpdateCurrentProgressBar(75);
                     WriteLogMessage("Imposing old Setup...");
                     RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup", new RegistryItem("CmdLine", ValueKind.REG_SZ, "\\sources\\setup.exe"));
                 }
+
+                UpdateOverallProgressBar(85);
 
                 UpdateCurrentProgressBar(95);
                 WriteLogMessage("Unloading image registry hives...");
@@ -958,11 +969,14 @@ namespace MicroWin
                 RegistryHelper.UnloadRegistryHive("zDEFAULT");
                 RegistryHelper.UnloadRegistryHive("zNTUSER");
 
-                if (Directory.Exists(bootDriverPath))
+                if (Directory.Exists(bootDriverPath)) {
+                    UpdateCurrentStatus("Installing system drivers...");
                     DriverInstallHelper.InstallDrivers(AppState.ScratchPath, bootDriverPath, (message) => WriteLogMessage(message));
+                }
 
                 if (AppState.UseUEFICA23Bins)
                 {
+                    UpdateCurrentStatus("Extracting boot binaries...");
                     WriteLogMessage("Copying UEFI CA 2023 binaries to ISO root...");
                     try
                     {

@@ -143,7 +143,7 @@ $SPIF_SENDCHANGE = 0x02
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\CDP" /f /v DragTrayEnabled /t REG_DWORD /d 0
 
 # Show File Extensions
-reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v HideFileExt /t REG_DWORD /d 0 /f
+reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" /f /v HideFileExt /t REG_DWORD /d 0
 
 # Other Windows crap
 reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\UserProfileEngagement" /f
