@@ -85,6 +85,8 @@ namespace MicroWin
             DriverExportCombo.ForeColor = ForeColor;
             logTB.BackColor = BackColor;
             logTB.ForeColor = ForeColor;
+            winutilConfigTextBox.BackColor = BackColor;
+            winutilConfigTextBox.ForeColor = ForeColor;
 
             WindowHelper.ToggleDarkTitleBar(Handle, colorVal == 0);
         }
