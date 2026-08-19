@@ -48,6 +48,8 @@ namespace MicroWin
 
         private DismImageInfo? installImageInfo;
 
+        private bool isEsdFile = false;
+
         public MainForm()
         {
             InitializeComponent();
@@ -154,6 +156,70 @@ namespace MicroWin
                         MessageBox.Show("Please specify an image to modify and try again.");
                         return false;
                     }
+
+                    // If we are in ESD mode, we'll begin the export procedure
+                    if (isEsdFile) {
+                        string sourceEsd = Path.Combine(AppState.MountPath, "sources", "install.esd"),
+                               destinationWim = Path.Combine(AppState.MountPath, "sources", "install.wim");
+
+                        MessageBox.Show("Your Windows image will be converted to an editable format.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        if (!DismManager.ExportImage(sourceEsd, AppState.SelectedImageIndex, destinationWim, "max")) {
+                            MessageBox.Show("Your Windows image could not be converted to an editable format.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return false;
+                        }
+
+                        try {
+                            File.Delete(sourceEsd);
+                        } catch {
+                            string cmdProcPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "cmd.exe"),
+                                   takeownPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "takeown.exe"),
+                                   icaclsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "icacls.exe");
+
+                            Process cmdRemoverProc = new()
+                            {
+                                StartInfo = new()
+                                {
+                                    FileName = takeownPath,
+                                    Arguments = $"/F \"{sourceEsd}\" /A",
+                                    UseShellExecute = true,
+                                    CreateNoWindow = !Debugger.IsAttached,
+                                    WindowStyle = Debugger.IsAttached ? ProcessWindowStyle.Normal : ProcessWindowStyle.Hidden
+                                }
+                            };
+                            cmdRemoverProc.Start();
+                            cmdRemoverProc.WaitForExit();
+                            // since groups in Windows are localized, we need to grab the name of the Administrators group based on its SID
+                            ManagementObjectCollection? adminGroupMOC = WMIHelper.GetResultsFromManagementQuery("SELECT * FROM Win32_Group WHERE SID = \"S-1-5-32-544\"");
+                            if (adminGroupMOC is not null)
+                            {
+                                // I enjoy the simplicity of VB in some cases, such as this one. In there, ElementAtOrDefault works without having to cast stuff first...
+                                string? adminGroupName = WMIHelper.GetObjectValue(adminGroupMOC.Cast<ManagementObject>().ElementAtOrDefault(0), "Name")?.ToString();
+                                if (adminGroupName != "")
+                                {
+                                    cmdRemoverProc.StartInfo.FileName = icaclsPath;
+                                    cmdRemoverProc.StartInfo.Arguments = $"\"{sourceEsd}\" /C /grant \"{adminGroupName}:(M)\"";
+                                    cmdRemoverProc.Start();
+                                    cmdRemoverProc.WaitForExit();
+                                }
+                            }
+                            try
+                            {
+                                File.Delete(sourceEsd);
+                            }
+                            catch
+                            {
+                                cmdRemoverProc.StartInfo.FileName = cmdProcPath;
+                                cmdRemoverProc.StartInfo.Arguments = $"/c del \"{sourceEsd}\" /f /q";
+                                cmdRemoverProc.Start();
+                                cmdRemoverProc.WaitForExit();
+                            }
+                        }
+
+                        imageInfo = DismManager.GetImageInformation(destinationWim);
+                        AppState.SelectedImageIndex = 1;
+                    }
+
                     // Store information about the selected image only. We can access it later if we see fit
                     installImageInfo = imageInfo?.ElementAtOrDefault(AppState.SelectedImageIndex - 1 ?? 0);
                     break;
@@ -287,8 +353,16 @@ namespace MicroWin
             string wimPath = Path.Combine(AppState.MountPath, "sources", "install.wim");
             if (!File.Exists(wimPath)) wimPath = Path.Combine(AppState.MountPath, "sources", "install.esd");
 
+            isEsdFile = false;
+
             if (File.Exists(wimPath))
             {
+                if (Path.GetExtension(wimPath).EndsWith("esd", StringComparison.OrdinalIgnoreCase)) {
+                    // ESD files require that we export them first to WIM. This will be done later,
+                    // because we'll be able to know the index.
+                    isEsdFile = true;
+                }
+
 #pragma warning disable CS8602
                 imageInfo = DismManager.GetImageInformation(wimPath, (ex) => MessageBox.Show($"Could not get Windows image information: {ex.Message}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error));
 #pragma warning restore CS8602
@@ -790,23 +864,32 @@ namespace MicroWin
                 RegistryHelper.UnloadRegistryHive("zNTUSER");
                 UpdateCurrentProgressBar(100);
 
+                UpdateOverallProgressBar(45);
+
+                UpdateCurrentStatus("Cleaning up installation image...");
+                DismManager.CleanupImage(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
+
                 UpdateCurrentStatus("Unmounting install image...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
 
                 UpdateOverallProgressBar(50);
 
-                string exportedWimFile = $"{AppState.ScratchPath.TrimEnd("\\")}\\install2.wim";
-                UpdateCurrentStatus("Exporting install image...");
-                if (DismManager.ExportImage(installwimPath, AppState.SelectedImageIndex, exportedWimFile, "max", (p) => WriteLogMessage(p)))
+                // We don't really need to do this if we only have 1 image.
+                if (imageInfo.Count > 1)
                 {
-                    try
+                    string exportedWimFile = $"{AppState.ScratchPath.TrimEnd("\\")}\\install2.wim";
+                    UpdateCurrentStatus("Exporting install image...");
+                    if (DismManager.ExportImage(installwimPath, AppState.SelectedImageIndex, exportedWimFile, "max", (p) => WriteLogMessage(p)))
                     {
-                        UpdateCurrentStatus("Instating exported image...");
-                        File.Move(exportedWimFile, installwimPath, true);
-                    }
-                    catch (Exception)
-                    {
+                        try
+                        {
+                            UpdateCurrentStatus("Instating exported image...");
+                            File.Move(exportedWimFile, installwimPath, true);
+                        }
+                        catch (Exception)
+                        {
 
+                        }
                     }
                 }
 

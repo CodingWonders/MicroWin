@@ -270,5 +270,33 @@ namespace MicroWin.functions.dism
 
             return RunDismProcess($"/english /export-image /sourceimagefile=\"{sourceImage}\" /sourceindex={sourceIndex} /destinationimagefile=\"{destinationImage}\" /compress={compressionType}", actionReporter) == 0;
         }
+
+        public static bool CleanupImage(string mountPath, Action<int> progress, Action<string?> logMessage) {
+            if (!Directory.Exists(mountPath))
+                return false;
+
+            bool cleaned = false;
+
+            try {
+                logMessage.Invoke($"Cleaning up image...");
+                DismApi.Initialize(DismLogLevel.LogErrors);
+                using DismSession session = DismApi.OpenOfflineSession(mountPath.TrimEnd('\\'));
+
+                DismProgressCallback progressCallback = (currentProgress) => {
+                    progress(currentProgress.Current);
+                };
+
+                DismApi.CleanImage(session, DismCleanImageType.Component, DismCleanImageFlags.ResetBase, progressCallback);
+                cleaned = true;
+            } catch {
+                cleaned = RunDismProcess($"/english /mountdir=\"{mountPath.TrimEnd('\\')} /cleanup-image /startcomponentcleanup /resetbase", logMessage) == 0;
+            } finally {
+                try {
+                    DismApi.Shutdown();
+                } catch { }
+            }
+
+            return cleaned;
+        }
     }
 }
