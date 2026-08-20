@@ -14,6 +14,7 @@ namespace MicroWin.functions.dism
 {
     public static class DismManager
     {
+        private const int DISM_ERR_CANT_UNMOUNT_OPEN_FILE_HANDLES = -1052638953;
 
         public static int RunDismProcess(string? args, Action<string?>? actionReporter = null)
         {
@@ -211,6 +212,25 @@ namespace MicroWin.functions.dism
 
                 DismApi.UnmountImage(mountPath, true, progressCallback);
             }
+            catch (DismException openHandleOnUnmountException) when (openHandleOnUnmountException.HResult == DISM_ERR_CANT_UNMOUNT_OPEN_FILE_HANDLES)
+            {
+                // We keep unmounting the image until it succeeds. The changes have already been committed at this point,
+                // so unmount discarding changes.
+                DynaLog.logMessage("Could not unmount Windows image because there are open handles. Retrying operation until it succeeds...");
+                int unmountAttempt = 2;
+                bool unmounted = false;
+                while (!unmounted) {
+                    logMessage.Invoke($"Attempting image unmount on attempt {unmountAttempt}");
+                    try {
+                        DismApi.UnmountImage(mountPath, false);
+                        unmounted = true;
+                        DynaLog.logMessage($"The image was unmounted successfully on attempt {unmountAttempt}");
+                    } catch {
+                        DynaLog.logMessage($"Attempt {unmountAttempt} failed. Trying again...");
+                    }
+                    unmountAttempt++;
+                }
+            }
             catch (Exception ex)
             {
                 DynaLog.logMessage($"The image could not be unmounted: {ex.Message}");
@@ -242,8 +262,25 @@ namespace MicroWin.functions.dism
             try
             {
                 DismApi.Initialize(DismLogLevel.LogErrors);
-
                 DismApi.UnmountImage(mountPath, false);
+            }
+            catch (DismException openHandleOnUnmountException) when (openHandleOnUnmountException.HResult == DISM_ERR_CANT_UNMOUNT_OPEN_FILE_HANDLES)
+            {
+                // We keep unmounting the image until it succeeds. The changes have already been committed at this point,
+                // so unmount discarding changes.
+                DynaLog.logMessage("Could not unmount Windows image because there are open handles. Retrying operation until it succeeds...");
+                int unmountAttempt = 2;
+                bool unmounted = false;
+                while (!unmounted) {
+                    try {
+                        DismApi.UnmountImage(mountPath, false);
+                        unmounted = true;
+                        DynaLog.logMessage($"The image was unmounted successfully on attempt {unmountAttempt}");
+                    } catch {
+                        DynaLog.logMessage($"Attempt {unmountAttempt} failed. Trying again...");
+                    }
+                    unmountAttempt++;
+                }
             }
             catch (Exception ex)
             {
