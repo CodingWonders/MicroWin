@@ -33,7 +33,7 @@ namespace MicroWin
     [SupportedOSPlatform("Windows")]
     public partial class MainForm : Form
     {
-        private const string swStatus = "RC";
+        private const string swStatus = "stable";
         private const string appVer = "2.0";
 
         private WizardPage CurrentWizardPage = new();
