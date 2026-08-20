@@ -691,11 +691,18 @@ namespace MicroWin
                 UpdateCurrentStatus("Modifying install image...");
                 if (AppState.AddReportingToolShortcut)
                 {
-                    WriteLogMessage("Downloading and integrating reporting tool...");
-                    using (HttpClient client = new())
+                    try
                     {
-                        byte[] data = await client.GetByteArrayAsync("https://raw.githubusercontent.com/CodingWonders/MyScripts/refs/heads/main/MicroWinHelperTools/ReportingTool/ReportingTool.ps1");
-                        File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "ReportingTool.ps1"), data);
+                        WriteLogMessage("Downloading and integrating reporting tool...");
+                        using (HttpClient client = new())
+                        {
+                            byte[] data = await client.GetByteArrayAsync("https://raw.githubusercontent.com/CodingWonders/MyScripts/refs/heads/main/MicroWinHelperTools/ReportingTool/ReportingTool.ps1");
+                            File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "ReportingTool.ps1"), data);
+                        }
+                    }
+                    catch
+                    {
+                        // ignore reporting tool
                     }
                 }
                 RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin");
@@ -1031,7 +1038,7 @@ namespace MicroWin
                         }
                     } while (!success);
                 }
-                OscdimgUtilities.CheckAndInvokeOscdimgBinaries((p) => WriteLogMessage(p), AppState.UseUEFICA23Bins);
+                OscdimgUtilities.CheckAndInvokeOscdimgBinaries((p) => WriteLogMessage(p), (percent) => UpdateCurrentProgressBar(percent), AppState.UseUEFICA23Bins);
 
                 UpdateOverallStatus("Finishing up...");
                 UpdateOverallProgressBar(95);

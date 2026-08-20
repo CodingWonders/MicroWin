@@ -24,7 +24,7 @@ namespace MicroWin.OSCDIMG
         public static string oscdimgPath { get; set; } = Path.Combine(AppState.TempRoot, "oscdimg.exe");
         public static bool oscdImgFound => File.Exists(oscdimgPath);
         
-        public static void CheckAndInvokeOscdimgBinaries(Action<string?>? outputReporter = null, bool UEFICA23Bins = true)
+        public static void CheckAndInvokeOscdimgBinaries(Action<string?>? outputReporter = null, Action<int>? progressReporter = null, bool UEFICA23Bins = true)
         {
             if (!oscdImgFound && TestKitRootPaths(expectedADKPath, expectedADKPath_WOW64Environ))
             {
@@ -47,10 +47,10 @@ namespace MicroWin.OSCDIMG
                     File.WriteAllBytes(oscdimgPath, data);
                 }
             }
-            InvokeOscdimg(outputReporter, UEFICA23Bins);
+            InvokeOscdimg(outputReporter, progressReporter, UEFICA23Bins);
         }
 
-        private static void InvokeOscdimg(Action<string?>? actionReporter = null, bool UEFICA23Bins = true)
+        private static void InvokeOscdimg(Action<string?>? actionReporter = null, Action<int>? progressReporter = null, bool UEFICA23Bins = true)
         {
             string bootBinsPath = Path.Combine(AppState.MountPath, "boot"),
                    efiBootBinsPath = Path.Combine(AppState.MountPath, "EFI", "Microsoft", "Boot"),
@@ -89,6 +89,25 @@ namespace MicroWin.OSCDIMG
                     if (!string.IsNullOrEmpty(e.Data))
                     {
                         actionReporter.Invoke(e.Data);
+
+                        try
+                        {
+                            if (progressReporter is not null)
+                            {
+                                // If we have a x% complete message we grab the number
+                                int percentIdx = e.Data.IndexOf('%');
+                                if (percentIdx > -1)
+                                {
+                                    string percentStr = e.Data.Substring(0, percentIdx);
+                                    if (int.TryParse(percentStr, out int percent))
+                                        progressReporter.Invoke(percent);
+                                }
+                            }
+                        }
+                        catch
+                        {
+
+                        }
                     }
                 };
 
