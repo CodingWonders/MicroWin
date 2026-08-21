@@ -289,8 +289,9 @@ namespace MicroWin
             columnHeader1.Width = WindowHelper.ScaleLogical(32);
             columnHeader2.Width = WindowHelper.ScaleLogical(200);
             columnHeader3.Width = WindowHelper.ScaleLogical(256);
-            columnHeader4.Width = WindowHelper.ScaleLogical(84);
-            columnHeader5.Width = WindowHelper.ScaleLogical(160);
+            columnHeader4.Width = WindowHelper.ScaleLogical(128);
+            columnHeader5.Width = WindowHelper.ScaleLogical(84);
+            columnHeader6.Width = WindowHelper.ScaleLogical(160);
         }
 
 
@@ -391,6 +392,7 @@ namespace MicroWin
                         image.ImageIndex.ToString(),
                         image.ImageName ?? string.Empty,
                         image.ImageDescription ?? string.Empty,
+                        image.ProductVersion?.ToString() ?? string.Empty,
                         image.Architecture.ToString(),
                         modified
                     });

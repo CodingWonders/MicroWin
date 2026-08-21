@@ -97,6 +97,7 @@
             columnHeader3 = new ColumnHeader();
             columnHeader4 = new ColumnHeader();
             columnHeader5 = new ColumnHeader();
+            columnHeader6 = new ColumnHeader();
             label3 = new Label();
             IsoChooserPage = new Panel();
             isoExtractionPB = new ProgressBar();
@@ -872,7 +873,7 @@
             // 
             lvVersions.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             lvVersions.BorderStyle = BorderStyle.FixedSingle;
-            lvVersions.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3, columnHeader4, columnHeader5 });
+            lvVersions.Columns.AddRange(new ColumnHeader[] { columnHeader1, columnHeader2, columnHeader3, columnHeader4, columnHeader5, columnHeader6 });
             lvVersions.FullRowSelect = true;
             lvVersions.Location = new Point(80, 89);
             lvVersions.MultiSelect = false;
@@ -901,13 +902,18 @@
             // 
             // columnHeader4
             // 
-            columnHeader4.Text = "Architecture";
-            columnHeader4.Width = 84;
+            columnHeader4.Text = "Version";
+            columnHeader4.Width = 128;
             // 
             // columnHeader5
             // 
-            columnHeader5.Text = "Last Modified";
-            columnHeader5.Width = 160;
+            columnHeader5.Text = "Architecture";
+            columnHeader5.Width = 84;
+            // 
+            // columnHeader6
+            // 
+            columnHeader6.Text = "Last Modified";
+            columnHeader6.Width = 160;
             // 
             // label3
             // 
@@ -1153,8 +1159,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         internal System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel UserAccountsPage;
         internal System.Windows.Forms.Label label4;
@@ -1213,5 +1219,6 @@
         internal Label lblFileStatus;
         private CheckBox UEFICA23CB;
         internal Label label19;
+        private ColumnHeader columnHeader4;
     }
 }
