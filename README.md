@@ -3,7 +3,7 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
 ![Platform: Windows](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011-0078d4)
 
-This repository contains the source code for the C# rewrite of MicroWin. This serves as the continuation of MicroWin from [WinUtil](https://github.com/ChrisTitusTech/winutil) that got removed recently.
+This repository contains the source code for the C# rewrite of MicroWin. This serves as the continuation of MicroWin from [WinUtil](https://github.com/ChrisTitusTech/winutil).
 
 If you encounter an issue, or want to suggest a new feature, don't hesitate to send feedback!
 
