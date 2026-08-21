@@ -44,6 +44,8 @@ namespace MicroWin.OSCDIMG
                 try
                 {
 #pragma warning disable CS8600
+                    if (outputReporter is not null)
+                        outputReporter.Invoke("Extracting OSCDIMG binaries...");
                     Assembly currentAssembly = Assembly.GetExecutingAssembly();
                     using Stream resourceStream = currentAssembly.GetManifestResourceStream("MicroWin.tools.oscdimg.exe");
                     if (resourceStream is not null)
@@ -57,7 +59,7 @@ namespace MicroWin.OSCDIMG
                 catch
                 {
                     if (outputReporter is not null)
-                        outputReporter.Invoke("Attempting to download OSCDIMG from GitHub...");
+                        outputReporter.Invoke("Could not extract binaries. Attempting to download OSCDIMG from GitHub...");
                     using (HttpClient client = new())
                     {
                         byte[] data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/oscdimg.exe").GetAwaiter().GetResult();
