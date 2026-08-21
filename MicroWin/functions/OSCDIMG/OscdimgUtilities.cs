@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Windows.Forms;
@@ -39,12 +40,29 @@ namespace MicroWin.OSCDIMG
 
             if (!File.Exists(oscdimgPath))
             {
-                if (outputReporter is not null)
-                    outputReporter.Invoke("Attempting to download OSCDIMG from GitHub...");
-                using (HttpClient client = new())
+                // try to grab it from embedded resources
+                try
                 {
-                    byte[] data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/oscdimg.exe").GetAwaiter().GetResult();
-                    File.WriteAllBytes(oscdimgPath, data);
+#pragma warning disable CS8600
+                    Assembly currentAssembly = Assembly.GetExecutingAssembly();
+                    using Stream resourceStream = currentAssembly.GetManifestResourceStream("MicroWin.tools.oscdimg.exe");
+                    if (resourceStream is not null)
+                    {
+                        byte[] oscdimgBytes = new byte[resourceStream.Length];
+                        resourceStream.ReadExactly(oscdimgBytes);
+                        File.WriteAllBytes(oscdimgPath, oscdimgBytes);
+                    }
+#pragma warning restore CS8600
+                }
+                catch
+                {
+                    if (outputReporter is not null)
+                        outputReporter.Invoke("Attempting to download OSCDIMG from GitHub...");
+                    using (HttpClient client = new())
+                    {
+                        byte[] data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/oscdimg.exe").GetAwaiter().GetResult();
+                        File.WriteAllBytes(oscdimgPath, data);
+                    }
                 }
             }
             InvokeOscdimg(outputReporter, progressReporter, UEFICA23Bins);
