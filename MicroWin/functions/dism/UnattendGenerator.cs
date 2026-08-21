@@ -1,4 +1,5 @@
-﻿using MicroWin.functions.Helpers.Loggers;
+﻿using MicroWin.Classes;
+using MicroWin.functions.Helpers.Loggers;
 using MicroWin.functions.Helpers.PropertyCheckers;
 using System;
 using System.IO;
@@ -92,7 +93,7 @@ namespace MicroWin.functions.dism
             xml.AppendLine("    <component name=\"Microsoft-Windows-Shell-Setup\" processorArchitecture=\"amd64\" publicKeyToken=\"31bf3856ad364e35\" language=\"neutral\" versionScope=\"nonSxS\">");
             xml.AppendLine("      <UserAccounts>");
             xml.AppendLine("        <LocalAccounts>");
-            foreach (var user in AppState.UserAccounts)
+            foreach (UserAccount user in AppState.UserAccounts)
             {
                 xml.AppendLine("          <LocalAccount wcm:action=\"add\">");
                 xml.AppendLine($"            <Password>");

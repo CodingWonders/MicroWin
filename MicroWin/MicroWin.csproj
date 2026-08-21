@@ -14,8 +14,8 @@
     <!-- Disable auto-generated assembly attributes to avoid duplication with Properties/AssemblyInfo.cs -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ApplicationIcon>logo.ico</ApplicationIcon>
-    <AssemblyVersion>0.2.1.0</AssemblyVersion>
-    <FileVersion>0.2.1.0</FileVersion>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,14 +24,14 @@
 
   <ItemGroup>
     <!-- Migrate Microsoft.Dism to PackageReference; keep pinned version from assessment -->
-    <PackageReference Include="Microsoft.Dism" Version="6.0.0" />
-    <PackageReference Include="System.Management" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Dism" Version="6.1.0" />
+    <PackageReference Include="System.Management" Version="10.0.10" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- Keep native/tools files as content so they remain in the output and/or source tree -->
-    <None Include="tools\oscdimg.exe" />
-    <None Include="tools\FirstStartup.ps1" />
+    <EmbeddedResource Include="tools\oscdimg.exe" />
+    <EmbeddedResource Include="tools\FirstStartup.ps1" />
     <None Include="tools\RemoveTempDir.bat" />
     <None Include="app.manifest" />
   </ItemGroup>

@@ -123,5 +123,37 @@ namespace MicroWin.functions.Helpers.DesktopWindowManager
                 displayedToolTip.SetToolTip(ctrl, tooltipMessage);
             }
         }
+
+        private static NotifyIcon notificationBalloon = new();
+
+        public static void DisplayNotificationBalloon(ToolTipIcon balloonIcon, string balloonCaption, string balloonMessage) {
+            if (notificationBalloon is not null)
+                notificationBalloon.Dispose();
+
+#pragma warning disable CS8600
+            notificationBalloon = new()
+            {
+                BalloonTipIcon = balloonIcon,
+                Icon = (Icon)new System.ComponentModel.ComponentResourceManager(typeof(MainForm)).GetObject("$this.Icon"),
+                Text = "MicroWin",
+                BalloonTipTitle = balloonCaption,
+                BalloonTipText = balloonMessage,
+                Visible = true
+            };
+#pragma warning restore CS8600
+
+#pragma warning disable CS8622
+            notificationBalloon.BalloonTipClosed += OnBalloonClosed;
+            notificationBalloon.BalloonTipClicked += OnBalloonClosed;
+#pragma warning restore CS8622
+
+            notificationBalloon.ShowBalloonTip(5000);
+        }
+
+        private static void OnBalloonClosed(object sender, EventArgs e) {
+            NotifyIcon icon = (NotifyIcon)sender;
+            icon.Visible = false;
+            icon.Dispose();
+        }
     }
 }

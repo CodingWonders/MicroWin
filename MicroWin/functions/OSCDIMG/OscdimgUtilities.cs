@@ -2,9 +2,12 @@ using MicroWin.functions.Helpers.Loggers;
 using MicroWin.functions.Helpers.RegistryHelpers;
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.Versioning;
+using System.Text;
 using System.Windows.Forms;
 
 namespace MicroWin.OSCDIMG
@@ -22,7 +25,7 @@ namespace MicroWin.OSCDIMG
         public static string oscdimgPath { get; set; } = Path.Combine(AppState.TempRoot, "oscdimg.exe");
         public static bool oscdImgFound => File.Exists(oscdimgPath);
         
-        public static void CheckAndInvokeOscdimgBinaries(Action<string?>? outputReporter = null)
+        public static void CheckAndInvokeOscdimgBinaries(Action<string?>? outputReporter = null, Action<int>? progressReporter = null, bool UEFICA23Bins = true)
         {
             if (!oscdImgFound && TestKitRootPaths(expectedADKPath, expectedADKPath_WOW64Environ))
             {
@@ -37,24 +40,53 @@ namespace MicroWin.OSCDIMG
 
             if (!File.Exists(oscdimgPath))
             {
-                using (var client = new HttpClient())
+                // try to grab it from embedded resources
+                try
                 {
-                    var data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/oscdimg.exe").GetAwaiter().GetResult();
-                    File.WriteAllBytes(oscdimgPath, data);
+#pragma warning disable CS8600
+                    if (outputReporter is not null)
+                        outputReporter.Invoke("Extracting OSCDIMG binaries...");
+                    Assembly currentAssembly = Assembly.GetExecutingAssembly();
+                    using Stream resourceStream = currentAssembly.GetManifestResourceStream("MicroWin.tools.oscdimg.exe");
+                    if (resourceStream is not null)
+                    {
+                        byte[] oscdimgBytes = new byte[resourceStream.Length];
+                        resourceStream.ReadExactly(oscdimgBytes);
+                        File.WriteAllBytes(oscdimgPath, oscdimgBytes);
+                    }
+#pragma warning restore CS8600
+                }
+                catch
+                {
+                    if (outputReporter is not null)
+                        outputReporter.Invoke("Could not extract binaries. Attempting to download OSCDIMG from GitHub...");
+                    using (HttpClient client = new())
+                    {
+                        byte[] data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/oscdimg.exe").GetAwaiter().GetResult();
+                        File.WriteAllBytes(oscdimgPath, data);
+                    }
                 }
             }
-            InvokeOscdimg(outputReporter);
+            InvokeOscdimg(outputReporter, progressReporter, UEFICA23Bins);
         }
 
-        private static void InvokeOscdimg(Action<string?>? actionReporter = null)
+        private static void InvokeOscdimg(Action<string?>? actionReporter = null, Action<int>? progressReporter = null, bool UEFICA23Bins = true)
         {
+            string bootBinsPath = Path.Combine(AppState.MountPath, "boot"),
+                   efiBootBinsPath = Path.Combine(AppState.MountPath, "EFI", "Microsoft", "Boot"),
+                   etfsbootPath = Path.Combine(bootBinsPath, "etfsboot.com"),
+                   efisysPath = Path.Combine(efiBootBinsPath, "efisys.bin"),
+                   efisysExPath = Path.Combine(efiBootBinsPath, "efisys_EX.bin");
+
+            string bootDataString = $"2#p0,e,b{etfsbootPath}#pEF,e,b{(UEFICA23Bins && File.Exists(efisysExPath) ? efisysExPath : efisysPath)}";
+
             // Start the ISO building
             Process oscdimgProc = new Process()
             {
                 StartInfo = new ProcessStartInfo()
                 {
                     FileName = oscdimgPath,
-                    Arguments = $"-m -o -u2 -udfver102 -bootdata:2#p0,e,b{Path.Combine(AppState.MountPath, "boot", "etfsboot.com")}#pEF,e,b{Path.Combine(AppState.MountPath, "efi", "microsoft", "boot", "efisys.bin")} \"{AppState.MountPath}\" \"{AppState.SaveISO}\""
+                    Arguments = $"-m -o -u2 -udfver102 -bootdata:{bootDataString} \"{AppState.MountPath}\" \"{AppState.SaveISO}\""
                 }
             };
             if (actionReporter is not null)
@@ -77,8 +109,39 @@ namespace MicroWin.OSCDIMG
                     if (!string.IsNullOrEmpty(e.Data))
                     {
                         actionReporter.Invoke(e.Data);
+
+                        try
+                        {
+                            if (progressReporter is not null)
+                            {
+                                // If we have a x% complete message we grab the number
+                                int percentIdx = e.Data.IndexOf('%');
+                                if (percentIdx > -1)
+                                {
+                                    string percentStr = e.Data.Substring(0, percentIdx);
+                                    if (int.TryParse(percentStr, out int percent))
+                                        progressReporter.Invoke(percent);
+                                }
+                            }
+                        }
+                        catch
+                        {
+
+                        }
                     }
                 };
+
+                try
+                {
+                    oscdimgProc.StartInfo.StandardOutputEncoding = Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.OEMCodePage);
+                    oscdimgProc.StartInfo.StandardErrorEncoding = Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.OEMCodePage);
+                }
+                catch (Exception ex)
+                {
+                    DynaLog.logMessage($"Could not set STDOUT/STDERR encodings: {ex.Message}");
+                    oscdimgProc.StartInfo.StandardOutputEncoding = null;
+                    oscdimgProc.StartInfo.StandardErrorEncoding = null;
+                }
             }
             oscdimgProc.Start();
             if (actionReporter is not null)
@@ -103,10 +166,10 @@ namespace MicroWin.OSCDIMG
 
             if (wow64environment) 
             {
-                regPath = "SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots";
+                regPath = "HKLM\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows Kits\\Installed Roots";
             }
             else {
-                regPath = "SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots";
+                regPath = "HKLM\\SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots";
             };
 
             if (RegistryHelper.RegistryKeyExists(regPath) == false) 
@@ -125,6 +188,9 @@ namespace MicroWin.OSCDIMG
 
         public static bool TestKitRootPaths(string adkKitsRootPath, string adkKitsRootPath_WOW64Environ)
         {
+            adkKitsRootPath = Path.Combine(adkKitsRootPath, "Deployment Tools", "amd64", "Oscdimg", "oscdimg.exe");
+            adkKitsRootPath_WOW64Environ = Path.Combine(adkKitsRootPath_WOW64Environ, "Deployment Tools", "amd64", "Oscdimg", "oscdimg.exe");
+
             if (File.Exists(adkKitsRootPath) | File.Exists(adkKitsRootPath_WOW64Environ))
             {
                 return true;

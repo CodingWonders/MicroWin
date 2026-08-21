@@ -22,7 +22,9 @@ using System.Linq;
 using System.Management;
 using System.Media;
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.Versioning;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -31,8 +33,8 @@ namespace MicroWin
     [SupportedOSPlatform("Windows")]
     public partial class MainForm : Form
     {
-        private const string swStatus = "BETA";
-        private const string appVer = "0.2.1";
+        private const string swStatus = "stable";
+        private const string appVer = "2.0";
 
         private WizardPage CurrentWizardPage = new();
         private List<WizardPage.Page> VerifyInPages = [
@@ -45,6 +47,8 @@ namespace MicroWin
         private DismImageInfoCollection? imageInfo;
 
         private DismImageInfo? installImageInfo;
+
+        private bool isEsdFile = false;
 
         public MainForm()
         {
@@ -81,6 +85,8 @@ namespace MicroWin
             DriverExportCombo.ForeColor = ForeColor;
             logTB.BackColor = BackColor;
             logTB.ForeColor = ForeColor;
+            winutilConfigTextBox.BackColor = BackColor;
+            winutilConfigTextBox.ForeColor = ForeColor;
 
             WindowHelper.ToggleDarkTitleBar(Handle, colorVal == 0);
         }
@@ -147,11 +153,85 @@ namespace MicroWin
                     }
                     break;
                 case WizardPage.Page.ImageChooserPage:
+                    if (imageInfo is null)
+                        return false;
+
                     if (AppState.SelectedImageIndex < 1)
                     {
                         MessageBox.Show("Please specify an image to modify and try again.");
                         return false;
                     }
+
+#pragma warning disable CS8602
+                    if (VersionComparer.IsOlderThanVersion(imageInfo.ElementAtOrDefault(AppState.SelectedImageIndex - 1 ?? 0).ProductVersion, VersionComparer.VERCONST_WIN10)) {
+                        MessageBox.Show("Windows images containing Windows 10 1809 or earlier are not supported.");
+                        return false;
+                    }
+#pragma warning restore CS8602
+
+                    // If we are in ESD mode, we'll begin the export procedure
+                    if (isEsdFile) {
+                        string sourceEsd = Path.Combine(AppState.MountPath, "sources", "install.esd"),
+                               destinationWim = Path.Combine(AppState.MountPath, "sources", "install.wim");
+
+                        MessageBox.Show("Your Windows image will be converted to an editable format.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        if (!DismManager.ExportImage(sourceEsd, AppState.SelectedImageIndex, destinationWim, "max")) {
+                            MessageBox.Show("Your Windows image could not be converted to an editable format.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return false;
+                        }
+
+                        try {
+                            File.Delete(sourceEsd);
+                        } catch {
+                            string cmdProcPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "cmd.exe"),
+                                   takeownPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "takeown.exe"),
+                                   icaclsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "icacls.exe");
+
+                            Process cmdRemoverProc = new()
+                            {
+                                StartInfo = new()
+                                {
+                                    FileName = takeownPath,
+                                    Arguments = $"/F \"{sourceEsd}\" /A",
+                                    UseShellExecute = true,
+                                    CreateNoWindow = !Debugger.IsAttached,
+                                    WindowStyle = Debugger.IsAttached ? ProcessWindowStyle.Normal : ProcessWindowStyle.Hidden
+                                }
+                            };
+                            cmdRemoverProc.Start();
+                            cmdRemoverProc.WaitForExit();
+                            // since groups in Windows are localized, we need to grab the name of the Administrators group based on its SID
+                            ManagementObjectCollection? adminGroupMOC = WMIHelper.GetResultsFromManagementQuery("SELECT * FROM Win32_Group WHERE SID = \"S-1-5-32-544\"");
+                            if (adminGroupMOC is not null)
+                            {
+                                // I enjoy the simplicity of VB in some cases, such as this one. In there, ElementAtOrDefault works without having to cast stuff first...
+                                string? adminGroupName = WMIHelper.GetObjectValue(adminGroupMOC.Cast<ManagementObject>().ElementAtOrDefault(0), "Name")?.ToString();
+                                if (adminGroupName != "")
+                                {
+                                    cmdRemoverProc.StartInfo.FileName = icaclsPath;
+                                    cmdRemoverProc.StartInfo.Arguments = $"\"{sourceEsd}\" /C /grant \"{adminGroupName}:(M)\"";
+                                    cmdRemoverProc.Start();
+                                    cmdRemoverProc.WaitForExit();
+                                }
+                            }
+                            try
+                            {
+                                File.Delete(sourceEsd);
+                            }
+                            catch
+                            {
+                                cmdRemoverProc.StartInfo.FileName = cmdProcPath;
+                                cmdRemoverProc.StartInfo.Arguments = $"/c del \"{sourceEsd}\" /f /q";
+                                cmdRemoverProc.Start();
+                                cmdRemoverProc.WaitForExit();
+                            }
+                        }
+
+                        imageInfo = DismManager.GetImageInformation(destinationWim);
+                        AppState.SelectedImageIndex = 1;
+                    }
+
                     // Store information about the selected image only. We can access it later if we see fit
                     installImageInfo = imageInfo?.ElementAtOrDefault(AppState.SelectedImageIndex - 1 ?? 0);
                     break;
@@ -176,15 +256,12 @@ namespace MicroWin
 
         private void MainForm_Load(object sender, EventArgs e)
         {
-            Text = $"MicroWin .NET ({swStatus} {appVer})";
-
-            string disclaimerMessage = $"Thank you for trying this {swStatus} release of MicroWin .NET.\n\n" +
-                $"Because this is a prerelease version of a rewrite of the original PowerShell version, bugs may happen. We expect improvements in quality " +
-                $"as time goes on, but that can be done with your help. Report the bugs over on the GitHub repository.\n\n" +
-                $"This {swStatus} release already has almost every feature implemented, besides a few that couldn't make it to this release. Those will be " +
-                $"implemented in future releases. Head over to the roadmap available in the repository for more info.\n\n" +
+            string welcomeMessage = $"Welcome to MicroWin .NET.\n\n" +
+                $"This wizard will guide you through the creation of your ISO file, with a debloated Windows experience. You will need an official " +
+                $"ISO file for either Windows 10 and 11.\n\n" +
                 $"Please disable your antivirus or set an exclusion to prevent conflicts. Do not worry, this is an open-source project and we take " +
                 $"your computer's security seriously.\n\n" +
+                $"If you encounter any issues, don't hesitate to report feedback. Do the same if you would like to see a new feature.\n\n" +
                 $"Thanks,\n" +
                 $"CWSOFTWARE and the rest of the team behind MicroWin.";
 
@@ -194,7 +271,7 @@ namespace MicroWin
                 Environment.Exit(1);
             }
 
-            lblDisclaimer.Text = disclaimerMessage;
+            lblDisclaimer.Text = welcomeMessage;
 
             ChangePage(WizardPage.Page.WelcomePage);
 
@@ -207,6 +284,14 @@ namespace MicroWin
             DriverExportCombo.SelectedIndexChanged -= DriverExportCombo_SelectedIndexChanged;
             DriverExportCombo.SelectedIndex = (int)AppState.DriverExportMode;
             DriverExportCombo.SelectedIndexChanged += DriverExportCombo_SelectedIndexChanged;
+
+            // Scale column headers
+            columnHeader1.Width = WindowHelper.ScaleLogical(32);
+            columnHeader2.Width = WindowHelper.ScaleLogical(200);
+            columnHeader3.Width = WindowHelper.ScaleLogical(256);
+            columnHeader4.Width = WindowHelper.ScaleLogical(128);
+            columnHeader5.Width = WindowHelper.ScaleLogical(84);
+            columnHeader6.Width = WindowHelper.ScaleLogical(160);
         }
 
 
@@ -281,8 +366,16 @@ namespace MicroWin
             string wimPath = Path.Combine(AppState.MountPath, "sources", "install.wim");
             if (!File.Exists(wimPath)) wimPath = Path.Combine(AppState.MountPath, "sources", "install.esd");
 
+            isEsdFile = false;
+
             if (File.Exists(wimPath))
             {
+                if (Path.GetExtension(wimPath).EndsWith("esd", StringComparison.OrdinalIgnoreCase)) {
+                    // ESD files require that we export them first to WIM. This will be done later,
+                    // because we'll be able to know the index.
+                    isEsdFile = true;
+                }
+
 #pragma warning disable CS8602
                 imageInfo = DismManager.GetImageInformation(wimPath, (ex) => MessageBox.Show($"Could not get Windows image information: {ex.Message}", Text, MessageBoxButtons.OK, MessageBoxIcon.Error));
 #pragma warning restore CS8602
@@ -291,7 +384,7 @@ namespace MicroWin
 
                 lvVersions.Items.Clear();
 
-                var items = imageInfo.Select(image =>
+                ListViewItem[] items = imageInfo.Select(image =>
                 {
                     string modified = image.CustomizedInfo?.ModifiedTime.ToString("dd/MM/yyyy HH:mm:ss") ?? "N/A";
                     return new ListViewItem(new[]
@@ -299,6 +392,7 @@ namespace MicroWin
                         image.ImageIndex.ToString(),
                         image.ImageName ?? string.Empty,
                         image.ImageDescription ?? string.Empty,
+                        image.ProductVersion?.ToString() ?? string.Empty,
                         image.Architecture.ToString(),
                         modified
                     });
@@ -337,7 +431,7 @@ namespace MicroWin
 
                 await Task.Run(() =>
                 {
-                    var iso = new IsoManager();
+                    IsoManager iso = new();
                     InvokeIsoExtractionUIUpdate("Mounting ISO...", 5);
 
                     char? drive = iso.MountAndGetDrive(AppState.IsoPath);
@@ -438,12 +532,35 @@ namespace MicroWin
             AppState.AddReportingToolShortcut = ReportToolCB.Checked;
         }
 
+        private void CopyVirtIODrivers_CheckedChanged(Object sender, EventArgs e)
+        {
+            AppState.CopyVirtIODrivers = CopyVirtIODrivers.Checked;
+            label19.Visible = CopyVirtIODrivers.Checked;
+        }
+
 
         private void UnattendCopyCB_CheckedChanged(object sender, EventArgs e)
         {
             AppState.CopyUnattendToFileSystem = UnattendCopyCB.Checked;
         }
 
+        private void UEFICA23CB_CheckedChanged(object sender, EventArgs e)
+        {
+            AppState.UseUEFICA23Bins = UEFICA23CB.Checked;
+        }
+
+        private void winutilConfigTextBox_TextChanged(object sender, EventArgs e)
+        {
+            AppState.WinUtilConfigPath = winutilConfigTextBox.Text;
+        }
+
+        private void winutilConfigBrowseBtn_Click(object sender, EventArgs e)
+        {
+            if (winutilConfigDialog.ShowDialog() == DialogResult.OK)
+            {
+                winutilConfigTextBox.Text = winutilConfigDialog.FileName;
+            }
+        }
 
         private void UpdateCurrentStatus(string text, bool resetBar = true)
         {
@@ -510,9 +627,13 @@ namespace MicroWin
   / /\/\ \| || (__ | |   | (_) | \  /\  / | || | | |
   \/    \/|_| \___||_|    \___/   \/  \/  |_||_| |_|
 
-              MicroWin .NET (BETA {appVer})
+
 
 """;
+
+#pragma warning disable CS8600
+#pragma warning disable CS8602
+#pragma warning disable CS8604
 
             WindowHelper.DisableCloseCapability(Handle);
             BusyCannotClose = true;
@@ -536,12 +657,11 @@ namespace MicroWin
                 WriteLogMessage("Creating unattended answer file...");
                 UnattendGenerator.CreateUnattend($"{Path.Combine(AppState.ScratchPath, "Windows", "Panther")}", installImageInfo?.ProductVersion);
 
-#pragma warning disable CS8604
                 if (AppState.DriverExportMode > DriverExportMode.NoExport)
                 {
                     UpdateOverallProgressBar(5);
                     WriteLogMessage("Beginning driver export...");
-                    DriverExportHelper.ExportDrivers(bootDriverPath, "SCSIAdapter", (message) => WriteLogMessage(message));
+                    DriverExportHelper.ExportDrivers(bootDriverPath, ["SCSIAdapter", "Net"], (message) => WriteLogMessage(message));
                     if (AppState.DriverExportMode == DriverExportMode.ExportAll)
                         DriverExportHelper.ExportDrivers(allDriversPath, (message) => WriteLogMessage(message));
 
@@ -555,7 +675,6 @@ namespace MicroWin
 
                     WriteLogMessage("Driver import complete.");
                 }
-#pragma warning restore CS8604
 
                 UpdateOverallProgressBar(10);
                 new OsFeatureDisabler().RunTask((p) => UpdateCurrentProgressBar(p), (msg) => UpdateCurrentStatus(msg, false), (msg) => WriteLogMessage(msg));
@@ -574,17 +693,93 @@ namespace MicroWin
                 UpdateCurrentStatus("Modifying install image...");
                 if (AppState.AddReportingToolShortcut)
                 {
-                    WriteLogMessage("Downloading and integrating reporting tool...");
-                    using (var client = new HttpClient())
+                    try
                     {
-                        var data = await client.GetByteArrayAsync("https://raw.githubusercontent.com/CodingWonders/MyScripts/refs/heads/main/MicroWinHelperTools/ReportingTool/ReportingTool.ps1");
-                        File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "ReportingTool.ps1"), data);
+                        WriteLogMessage("Downloading and integrating reporting tool...");
+                        using (HttpClient client = new())
+                        {
+                            byte[] data = await client.GetByteArrayAsync("https://raw.githubusercontent.com/CodingWonders/MyScripts/refs/heads/main/MicroWinHelperTools/ReportingTool/ReportingTool.ps1");
+                            File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "ReportingTool.ps1"), data);
+                        }
                     }
+                    catch
+                    {
+                        // ignore reporting tool
+                    }
+                }
+                RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin");
+                RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinVersion", ValueKind.REG_SZ, $"{AppState.Version}"));
+                RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinBuildDate", ValueKind.REG_SZ, $"{DateTime.Now}"));
+                if (AppState.CopyVirtIODrivers)
+                {
+                    try
+                    {
+                        WriteLogMessage("Downloading VirtIO Drivers. This will take several minutes, depending on the speed of your network connection...");
 
-                    RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin");
-                    RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinVersion", ValueKind.REG_SZ, $"{AppState.Version}"));
-                    RegistryHelper.AddRegistryItem("HKLM\\zSOFTWARE\\MicroWin", new RegistryItem("MicroWinBuildDate", ValueKind.REG_SZ, $"{DateTime.Now}"));
+                        HttpClientHandler handler = new() { AllowAutoRedirect = false };
 
+                        using (HttpClient client = new(handler))
+                        {
+                            string targetUrl = "https://fedorapeople.org/groups/virt/virtio-win/direct-downloads/stable-virtio/virtio-win.iso";
+                            HttpResponseMessage downloadResponse = null;
+                            bool isRedirect = true;
+                            int maxRedirects = 5;
+                            int redirectCount = 0;
+
+                            while (isRedirect && redirectCount < maxRedirects)
+                            {
+                                downloadResponse = await client.GetAsync(targetUrl, HttpCompletionOption.ResponseHeadersRead);
+
+                                int statusCode = (int)downloadResponse.StatusCode;
+                                if (statusCode >= 300 && statusCode <= 399 && downloadResponse.Headers.Location != null)
+                                {
+                                    targetUrl = downloadResponse.Headers.Location.ToString();
+
+                                    if (!targetUrl.StartsWith("http://") && !targetUrl.StartsWith("https://"))
+                                    {
+                                        Uri baseUri = new(targetUrl);
+                                        targetUrl = new Uri(baseUri, downloadResponse.Headers.Location).ToString();
+                                    }
+
+                                    downloadResponse.Dispose();
+                                    redirectCount++;
+                                }
+                                else
+                                {
+                                    isRedirect = false;
+                                }
+                            }
+                            string outputPath = Path.Combine(AppState.ScratchPath, "virtio-win.iso");
+                            using (downloadResponse)
+                            {
+                                downloadResponse.EnsureSuccessStatusCode();
+
+                                using (Stream downloadStream = await downloadResponse.Content.ReadAsStreamAsync())
+                                using (FileStream fileStream = new(outputPath, FileMode.Create, FileAccess.Write, FileShare.None, 8192, true))
+                                {
+                                    await downloadStream.CopyToAsync(fileStream);
+                                }
+                            }
+
+                            await Task.Run(() =>
+                            {
+                                IsoManager iso = new();
+
+                                char? drive = iso.MountAndGetDrive(outputPath);
+                                if (drive != '\0')
+                                {
+                                    string extractvirtio = Path.Combine(AppState.MountPath, "virtio");
+
+                                    iso.ExtractIso(drive?.ToString(), extractvirtio, (p) => { }, (file) => { });
+
+                                    InvokeFileProgressUIUpdate("");
+                                    iso.Dismount(outputPath);
+                                }
+                            });
+                        }
+                    } catch {
+                        WriteLogMessage("Could not download VirtIO drivers...");
+                    }
                 }
                 UpdateCurrentProgressBar(10);
 
@@ -652,15 +847,40 @@ namespace MicroWin
                 RegistryHelper.AddRegistryItem("HKLM\\zNTUSER\\Software\\Microsoft\\Terminal Server Client", new RegistryItem("RdpLaunchConsentAccepted", ValueKind.REG_DWORD, 1));
 
                 UpdateCurrentProgressBar(50);
-                using (var client = new HttpClient())
+                try
                 {
-                    try
-                    {
-                        var data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/FirstStartup.ps1").GetAwaiter().GetResult();
-                        File.WriteAllBytes(Path.Combine(AppState.ScratchPath, "Windows", "FirstStartup.ps1"), data);
+                    // Check if we can do it using the embedded resource; otherwise grab it from the internet.
+                    string firstStartupPath = Path.Combine(AppState.ScratchPath, "Windows", "FirstStartup.ps1");
+                    try {
+                        Assembly currentAssembly = Assembly.GetExecutingAssembly();
+                        using Stream resourceStream = currentAssembly.GetManifestResourceStream("MicroWin.tools.FirstStartup.ps1");
+                        if (resourceStream is null)
+                            throw new Exception();
+
+                        using StreamReader sr = new(resourceStream);
+                        string firstRunScriptContents = sr.ReadToEnd();
+                        File.WriteAllText(firstStartupPath, firstRunScriptContents, new UTF8Encoding(false));
+                    } catch {
+                        DynaLog.logMessage("Could not get embedded res. Downloading from internet.");
+                        using HttpClient client = new();
+                        byte[] data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/FirstStartup.ps1").GetAwaiter().GetResult();
+                        File.WriteAllBytes(firstStartupPath, data);
                     }
-                    catch { }
+
+                    if (!string.IsNullOrWhiteSpace(AppState.WinUtilConfigPath) && File.Exists(AppState.WinUtilConfigPath))
+                    {
+                        File.Copy(AppState.WinUtilConfigPath, Path.Combine(AppState.ScratchPath, "winutil-config.json"), true);
+                        WriteLogMessage("WinUtil configuration file copied to image.");
+
+                        string scriptToAppend = "\n\nif (Test-Path -Path \"$env:HOMEDRIVE\\winutil-config.json\")\n" +
+                                                "{\n" +
+                                                "    Write-Host \"Configuration file detected. Applying...\"\n" +
+                                                "    iex \"& { $(irm christitus.com/win) } -Config `\"$env:HOMEDRIVE\\winutil-config.json`\"\"\n" +
+                                                "}\n";
+                        File.AppendAllText(firstStartupPath, scriptToAppend);
+                    }
                 }
+                catch { }
 
                 UpdateCurrentProgressBar(90);
                 WriteLogMessage("Unloading image registry hives...");
@@ -670,27 +890,34 @@ namespace MicroWin
                 RegistryHelper.UnloadRegistryHive("zNTUSER");
                 UpdateCurrentProgressBar(100);
 
+                UpdateOverallProgressBar(45);
+
+                UpdateCurrentStatus("Cleaning up installation image...");
+                DismManager.CleanupImage(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
+
                 UpdateCurrentStatus("Unmounting install image...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
 
                 UpdateOverallProgressBar(50);
 
-                string exportedWimFile = $"{AppState.ScratchPath.TrimEnd("\\")}\\install2.wim";
-                UpdateCurrentStatus("Exporting install image...");
-#pragma warning disable CS8604
-                if (DismManager.ExportImage(installwimPath, AppState.SelectedImageIndex, exportedWimFile, "max", (p) => WriteLogMessage(p)))
+                // We don't really need to do this if we only have 1 image.
+                if (imageInfo.Count > 1)
                 {
-                    try
+                    string exportedWimFile = $"{AppState.ScratchPath.TrimEnd("\\")}\\install2.wim";
+                    UpdateCurrentStatus("Exporting install image...");
+                    if (DismManager.ExportImage(installwimPath, AppState.SelectedImageIndex, exportedWimFile, "max", (p) => WriteLogMessage(p)))
                     {
-                        UpdateCurrentStatus("Instating exported image...");
-                        File.Move(exportedWimFile, installwimPath, true);
-                    }
-                    catch (Exception)
-                    {
+                        try
+                        {
+                            UpdateCurrentStatus("Instating exported image...");
+                            File.Move(exportedWimFile, installwimPath, true);
+                        }
+                        catch (Exception)
+                        {
 
+                        }
                     }
                 }
-#pragma warning restore CS8604
 
                 string bootwimPath = Path.Combine(AppState.MountPath, "sources", "boot.wim");
                 if (!File.Exists(bootwimPath)) bootwimPath = Path.Combine(AppState.MountPath, "sources", "boot.esd");
@@ -699,7 +926,9 @@ namespace MicroWin
                 UpdateCurrentStatus("Mounting boot image...");
                 DismManager.MountImage(bootwimPath, 2, AppState.ScratchPath, (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
 
-                UpdateCurrentStatus("Modifying WinPE registry...");
+                UpdateOverallProgressBar(60);
+
+                UpdateCurrentStatus("Modifying Windows PE registry...");
                 WriteLogMessage("Loading image registry hives...");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SOFTWARE"), "zSOFTWARE");
                 RegistryHelper.LoadRegistryHive(Path.Combine(AppState.ScratchPath, "Windows", "System32", "config", "SYSTEM"), "zSYSTEM");
@@ -723,15 +952,15 @@ namespace MicroWin
                 // Old Setup should only be imposed on 24H2 and later (builds 26040 and later). Get this information
                 bool shouldUsePanther = false;
 
-#pragma warning disable CS8602
                 DismImageInfoCollection? bootImageInfo = DismManager.GetImageInformation(bootwimPath, (ex) => WriteLogMessage($"Could not get WinPE image info: {ex.Message}"));
-#pragma warning restore CS8602
                 if (bootImageInfo is not null)
                 {
                     // Get the second index then get version
                     DismImageInfo? setupImage = bootImageInfo.ElementAtOrDefault(1);
                     shouldUsePanther = VersionComparer.IsNewerThanVersion(setupImage?.ProductVersion, new(10, 0, 26040, 0));
                 }
+
+                UpdateOverallProgressBar(75);
 
                 if (shouldUsePanther)
                 {
@@ -740,6 +969,8 @@ namespace MicroWin
                     RegistryHelper.AddRegistryItem("HKLM\\zSYSTEM\\Setup", new RegistryItem("CmdLine", ValueKind.REG_SZ, "\\sources\\setup.exe"));
                 }
 
+                UpdateOverallProgressBar(85);
+
                 UpdateCurrentProgressBar(95);
                 WriteLogMessage("Unloading image registry hives...");
                 RegistryHelper.UnloadRegistryHive("zSYSTEM");
@@ -747,10 +978,39 @@ namespace MicroWin
                 RegistryHelper.UnloadRegistryHive("zDEFAULT");
                 RegistryHelper.UnloadRegistryHive("zNTUSER");
 
-#pragma warning disable CS8604
-                if (Directory.Exists(bootDriverPath))
+                if (Directory.Exists(bootDriverPath)) {
+                    UpdateCurrentStatus("Installing system drivers...");
                     DriverInstallHelper.InstallDrivers(AppState.ScratchPath, bootDriverPath, (message) => WriteLogMessage(message));
-#pragma warning restore CS8604
+                }
+
+                if (AppState.UseUEFICA23Bins)
+                {
+                    UpdateCurrentStatus("Extracting boot binaries...");
+                    WriteLogMessage("Copying UEFI CA 2023 binaries to ISO root...");
+                    try
+                    {
+                        // The ISO may not have EFISYS_EX. In that case, it's most likely going to be in
+                        // winpe.
+                        DynaLog.logMessage("Preparing to copy EFISYS_EX binaries...");
+                        string wimEXPath = Path.Combine(AppState.ScratchPath, "Windows", "Boot", "DVD_EX", "EFI");
+                        if (Directory.Exists(wimEXPath))
+                        {
+                            DynaLog.logMessage("EFISYS_EX binary path exists. Enumerating EFI binaries...");
+                            IEnumerable<string> efiExFiles = Directory.EnumerateFiles(wimEXPath, "efisys_EX.bin", SearchOption.AllDirectories);
+                            if (efiExFiles.Any())
+                            {
+                                DynaLog.logMessage("Copying EFI binary to ISO root...");
+                                File.Copy(efiExFiles.ElementAt(0), Path.Combine(AppState.MountPath, "boot", "efisys_EX.bin"), true);
+                                DynaLog.logMessage("File copy complete.");
+                                WriteLogMessage("UEFI CA 2023 binaries were copied.");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        DynaLog.logMessage($"Could not prepare EFISYS_EX binaries: {ex.Message}");
+                    }
+                }
 
                 UpdateCurrentStatus("Unmounting boot image...");
                 DismManager.UnmountAndSave(AppState.ScratchPath.TrimEnd('\\'), (p) => UpdateCurrentProgressBar(p), (msg) => WriteLogMessage(msg));
@@ -758,7 +1018,7 @@ namespace MicroWin
                 UpdateOverallStatus("Generating ISO file...");
                 UpdateOverallProgressBar(90);
                 UpdateCurrentStatus("Generating ISO file...");
-#pragma warning disable CS8604
+
                 // If the ISO file already exists then we keep trying to delete it until it succeeds.
                 if (File.Exists(AppState.SaveISO))
                 {
@@ -780,8 +1040,7 @@ namespace MicroWin
                         }
                     } while (!success);
                 }
-                OscdimgUtilities.CheckAndInvokeOscdimgBinaries((p) => WriteLogMessage(p));
-#pragma warning restore CS8604
+                OscdimgUtilities.CheckAndInvokeOscdimgBinaries((p) => WriteLogMessage(p), (percent) => UpdateCurrentProgressBar(percent), AppState.UseUEFICA23Bins);
 
                 UpdateOverallStatus("Finishing up...");
                 UpdateOverallProgressBar(95);
@@ -833,7 +1092,12 @@ namespace MicroWin
             UpdateOverallProgressBar(100);
             UpdateCurrentProgressBar(100);
             BusyCannotClose = false;
+            WindowHelper.DisplayNotificationBalloon(ToolTipIcon.Info, "ISO file creation results", "Your ISO file has been successfully created.");
             ChangePage(WizardPage.Page.FinishPage);
+
+#pragma warning restore CS8600
+#pragma warning restore CS8602
+#pragma warning restore CS8604
         }
 
         private void lnkUseDT_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

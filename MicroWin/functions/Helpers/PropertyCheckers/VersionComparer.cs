@@ -8,6 +8,7 @@ namespace MicroWin.functions.Helpers.PropertyCheckers
 {
     public static class VersionComparer
     {
+        public static readonly Version VERCONST_WIN10 = new(10, 0, 17763, 0);
         /// <summary>
         /// Version constant for the GA release of Windows 10 22H2.
         /// </summary>
@@ -36,6 +37,10 @@ namespace MicroWin.functions.Helpers.PropertyCheckers
         /// Version constant for the GA release of Windows 11 26H1.
         /// </summary>
         public static readonly Version VERCONST_WIN11_26H1 = new(10, 0, 28000, 1575);
+        /// <summary>
+        /// Version constant for Windows 11 26H2 as of 19 August 2026.
+        /// </summary>
+        public static readonly Version VERCONST_WIN11_26H2 = new(10, 0, 26300, 9212);
 
         /// <summary>
         /// Compares versions to determine if the source version is greater than or equal to the minimum threshold.

@@ -16,7 +16,7 @@ namespace MicroWin.functions.dism
             protected set;
         } = [
                 "ApplicationModel",
-                "indows-Client-LanguagePack",
+                "Windows-Client-LanguagePack",
                 "LanguageFeatures-Basic",
                 "Package_for_ServicingStack",
                 "DotNet",
@@ -64,10 +64,12 @@ namespace MicroWin.functions.dism
                 {
                     curOpReporter.Invoke($"Removing package {packageToRemove}...");
                     pbReporter.Invoke((int)(((double)idx / packagesToRemove.ToList().Count) * 100));
+
                     // we have this because the API throws an exception on removal error
                     try
                     {
                         DismApi.RemovePackageByName(session, packageToRemove);
+                        logWriter.Invoke($"Package {packageToRemove} was successfully removed.");
                     }
                     catch (Exception ex)
                     {
@@ -77,9 +79,10 @@ namespace MicroWin.functions.dism
                     idx++;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO implement logging here
+                DynaLog.logMessage($"Could not perform task: {ex.Message}");
+                logWriter.Invoke($"This image modification task could not be performed because of the following error: {ex.Message}");
             }
             finally
             {
@@ -89,6 +92,9 @@ namespace MicroWin.functions.dism
                     DismApi.Shutdown();
                 }
                 catch { }
+
+                logWriter.Invoke("For packages that couldn't be removed with either \"Permanent package cannot be uninstalled\" or \"The specified package is not a valid Windows package\", " +
+                                 "do not worry. These point to packages that can't be removed, or that were already removed. THIS IS NOT AN ERROR CONDITION.");
             }
         }
 
@@ -102,9 +108,9 @@ namespace MicroWin.functions.dism
                 using DismSession session = DismApi.OpenOfflineSession(AppState.ScratchPath);
                 packages = DismApi.GetPackages(session);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO implement the logging
+                DynaLog.logMessage($"Could not get package list: {ex.Message}");
             }
             finally
             {

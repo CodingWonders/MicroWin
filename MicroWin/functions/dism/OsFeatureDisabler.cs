@@ -60,6 +60,7 @@ namespace MicroWin.functions.dism
                     {
 #pragma warning disable CS8625
                         DismApi.DisableFeature(session, featureToDisable, null, true);
+                        logWriter.Invoke($"Feature {featureToDisable} was successfully disabled.");
 #pragma warning restore CS8625
                     }
                     catch (Exception ex)
@@ -70,9 +71,10 @@ namespace MicroWin.functions.dism
                     idx++;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                DynaLog.logMessage("ERROR: Failed to Initialize DISM");
+                DynaLog.logMessage($"Could not perform task: {ex.Message}");
+                logWriter.Invoke($"This image modification task could not be performed because of the following error: {ex.Message}");
             }
             finally
             {
@@ -82,6 +84,8 @@ namespace MicroWin.functions.dism
                     DismApi.Shutdown();
                 }
                 catch { }
+
+                logWriter.Invoke("You can re-enable the disabled features at any time, using either Windows Update or the SxS folder in <installation media>\\Sources.");
             }
         }
 

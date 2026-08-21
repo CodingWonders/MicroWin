@@ -68,9 +68,9 @@ namespace MicroWin.functions.Helpers.DriverHelpers
                 using DismSession session = DismApi.OpenOnlineSession();
                 drivers = DismApi.GetDrivers(session, false);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO log
+                DynaLog.logMessage($"Could not get drivers: {ex.Message}");
             }
             finally
             {
@@ -103,13 +103,13 @@ namespace MicroWin.functions.Helpers.DriverHelpers
             return DismManager.RunDismProcess($"/online /English /export-driver /destination=\"{DestinationDir}\"", progressReporter) == 0;
         }
 
-        public static bool ExportDrivers(string DestinationDir, string ClassName, Action<string?>? progressReporter = null)
+        public static bool ExportDrivers(string DestinationDir, List<string> ClassNames, Action<string?>? progressReporter = null)
         {
             DismDriverPackageCollection? onlineDrivers = GetOnlineDrivers();
             if (onlineDrivers is null)
                 return false;
 
-            IEnumerable<DismDriverPackage> filteredDrivers = onlineDrivers.Where(driver => driver.ClassName.Equals(ClassName, StringComparison.OrdinalIgnoreCase));
+            IEnumerable<DismDriverPackage> filteredDrivers = onlineDrivers.Where(driver => ClassNames.Contains(driver.ClassName));
             if (filteredDrivers is null)
                 return false;
 

@@ -18,10 +18,13 @@ namespace MicroWin
         /// </summary>
         public static bool EncodeWithB64 { get; set; } = true;
         public static bool AddReportingToolShortcut { get; set; } = true;
+        public static bool CopyVirtIODrivers { get; set; }
         public static bool CopyUnattendToFileSystem { get; set; }
         public static DriverExportMode DriverExportMode { get; set; } = DriverExportMode.NoExport;
+        public static bool UseUEFICA23Bins { get; set; } = true;
         public static string? SaveISO { get; set; }
+        public static string? WinUtilConfigPath { get; set; }
 
-        public static string Version => "v1.99.2.1";
+        public static string Version => "v2.0";
     }
 }

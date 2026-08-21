@@ -7,11 +7,14 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Globalization;
 
 namespace MicroWin.functions.dism
 {
     public static class DismManager
     {
+        private const int DISM_ERR_CANT_UNMOUNT_OPEN_FILE_HANDLES = -1052638953;
 
         public static int RunDismProcess(string? args, Action<string?>? actionReporter = null)
         {
@@ -40,6 +43,18 @@ namespace MicroWin.functions.dism
                     if (!string.IsNullOrEmpty(e.Data))
                         actionReporter.Invoke(e.Data);
                 };
+
+                try
+                {
+                    dismProc.StartInfo.StandardOutputEncoding = Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.OEMCodePage);
+                    dismProc.StartInfo.StandardErrorEncoding = Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.OEMCodePage);
+                }
+                catch (Exception ex)
+                {
+                    DynaLog.logMessage($"Could not set STDOUT/STDERR encodings: {ex.Message}");
+                    dismProc.StartInfo.StandardOutputEncoding = null;
+                    dismProc.StartInfo.StandardErrorEncoding = null;
+                }
             }
 
             dismProc.Start();
@@ -173,7 +188,7 @@ namespace MicroWin.functions.dism
             logMessage.Invoke($"Preparing to unmount image...");
             if (!Directory.Exists(mountPath))
             {
-                // TODO log this; we immediately return if it doesn't exist.
+                DynaLog.logMessage("Mount path does not exist.");
                 return;
             }
 
@@ -197,9 +212,28 @@ namespace MicroWin.functions.dism
 
                 DismApi.UnmountImage(mountPath, true, progressCallback);
             }
-            catch (Exception)
+            catch (DismException openHandleOnUnmountException) when (openHandleOnUnmountException.HResult == DISM_ERR_CANT_UNMOUNT_OPEN_FILE_HANDLES)
             {
-                // TODO implement logging
+                // We keep unmounting the image until it succeeds. The changes have already been committed at this point,
+                // so unmount discarding changes.
+                DynaLog.logMessage("Could not unmount Windows image because there are open handles. Retrying operation until it succeeds...");
+                int unmountAttempt = 2;
+                bool unmounted = false;
+                while (!unmounted) {
+                    logMessage.Invoke($"Attempting image unmount on attempt {unmountAttempt}");
+                    try {
+                        DismApi.UnmountImage(mountPath, false);
+                        unmounted = true;
+                        DynaLog.logMessage($"The image was unmounted successfully on attempt {unmountAttempt}");
+                    } catch {
+                        DynaLog.logMessage($"Attempt {unmountAttempt} failed. Trying again...");
+                    }
+                    unmountAttempt++;
+                }
+            }
+            catch (Exception ex)
+            {
+                DynaLog.logMessage($"The image could not be unmounted: {ex.Message}");
             }
             finally
             {
@@ -214,7 +248,7 @@ namespace MicroWin.functions.dism
         {
             if (!Directory.Exists(mountPath))
             {
-                // TODO log this; we immediately return if it doesn't exist.
+                DynaLog.logMessage("Mount path does not exist.");
                 return;
             }
 
@@ -228,12 +262,29 @@ namespace MicroWin.functions.dism
             try
             {
                 DismApi.Initialize(DismLogLevel.LogErrors);
-
                 DismApi.UnmountImage(mountPath, false);
             }
-            catch (Exception)
+            catch (DismException openHandleOnUnmountException) when (openHandleOnUnmountException.HResult == DISM_ERR_CANT_UNMOUNT_OPEN_FILE_HANDLES)
             {
-                // TODO implement logging
+                // We keep unmounting the image until it succeeds. The changes have already been committed at this point,
+                // so unmount discarding changes.
+                DynaLog.logMessage("Could not unmount Windows image because there are open handles. Retrying operation until it succeeds...");
+                int unmountAttempt = 2;
+                bool unmounted = false;
+                while (!unmounted) {
+                    try {
+                        DismApi.UnmountImage(mountPath, false);
+                        unmounted = true;
+                        DynaLog.logMessage($"The image was unmounted successfully on attempt {unmountAttempt}");
+                    } catch {
+                        DynaLog.logMessage($"Attempt {unmountAttempt} failed. Trying again...");
+                    }
+                    unmountAttempt++;
+                }
+            }
+            catch (Exception ex)
+            {
+                DynaLog.logMessage($"The image could not be unmounted: {ex.Message}");
             }
             finally
             {
@@ -255,6 +306,34 @@ namespace MicroWin.functions.dism
                 return false;
 
             return RunDismProcess($"/english /export-image /sourceimagefile=\"{sourceImage}\" /sourceindex={sourceIndex} /destinationimagefile=\"{destinationImage}\" /compress={compressionType}", actionReporter) == 0;
+        }
+
+        public static bool CleanupImage(string mountPath, Action<int> progress, Action<string?> logMessage) {
+            if (!Directory.Exists(mountPath))
+                return false;
+
+            bool cleaned = false;
+
+            try {
+                logMessage.Invoke($"Cleaning up image...");
+                DismApi.Initialize(DismLogLevel.LogErrors);
+                using DismSession session = DismApi.OpenOfflineSession(mountPath.TrimEnd('\\'));
+
+                DismProgressCallback progressCallback = (currentProgress) => {
+                    progress(currentProgress.Current);
+                };
+
+                DismApi.CleanImage(session, DismCleanImageType.Component, DismCleanImageFlags.ResetBase, progressCallback);
+                cleaned = true;
+            } catch {
+                cleaned = RunDismProcess($"/english /mountdir=\"{mountPath.TrimEnd('\\')} /cleanup-image /startcomponentcleanup /resetbase", logMessage) == 0;
+            } finally {
+                try {
+                    DismApi.Shutdown();
+                } catch { }
+            }
+
+            return cleaned;
         }
     }
 }

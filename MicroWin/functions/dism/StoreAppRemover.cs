@@ -64,6 +64,7 @@ namespace MicroWin.functions.dism
                     try
                     {
                         DismApi.RemoveProvisionedAppxPackage(session, appToRemove);
+                        logWriter.Invoke($"AppX package {appToRemove} was successfully removed.");
                     }
                     catch (Exception ex)
                     {
@@ -73,9 +74,10 @@ namespace MicroWin.functions.dism
                     idx++;
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // log
+                DynaLog.logMessage($"Could not perform task: {ex.Message}");
+                logWriter.Invoke($"This image modification task could not be performed because of the following error: {ex.Message}");
             }
             finally
             {
@@ -85,6 +87,8 @@ namespace MicroWin.functions.dism
                     DismApi.Shutdown();
                 }
                 catch { }
+
+                logWriter.Invoke("Some Store applications are available in the Microsoft Store, if you need them back.");
             }
         }
 
@@ -98,9 +102,9 @@ namespace MicroWin.functions.dism
                 using DismSession session = DismApi.OpenOfflineSession(AppState.ScratchPath);
                 storeApps = DismApi.GetProvisionedAppxPackages(session);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // TODO implement logging
+                DynaLog.logMessage($"Could not get package list: {ex.Message}");
             }
             finally
             {
