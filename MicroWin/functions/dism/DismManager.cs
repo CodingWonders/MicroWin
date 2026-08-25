@@ -320,7 +320,7 @@ namespace MicroWin.functions.dism
                 using DismSession session = DismApi.OpenOfflineSession(mountPath.TrimEnd('\\'));
 
                 DismProgressCallback progressCallback = (currentProgress) => {
-                    progress(currentProgress.Current);
+                    progress(currentProgress.Current / 10);
                 };
 
                 DismApi.CleanImage(session, DismCleanImageType.Component, DismCleanImageFlags.ResetBase, progressCallback);
