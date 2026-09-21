@@ -34,7 +34,7 @@ namespace MicroWin
     public partial class MainForm : Form
     {
         private const string swStatus = "stable";
-        private const string appVer = "2.0";
+        private const string appVer = "2.0.1";
 
         private WizardPage CurrentWizardPage = new();
         private List<WizardPage.Page> VerifyInPages = [
