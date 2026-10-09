@@ -50,6 +50,7 @@ jobs:
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
       - name: Convert Line Endings
         run: |
+          sudo apt install dos2unix -y
           for file in `find ./Docs/layouts/shortcodes -name *.html`; do /usr/bin/dos2unix "$file"; done
       - name: Build with Hugo
         env:
