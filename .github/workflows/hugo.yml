@@ -50,7 +50,7 @@ jobs:
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
       - name: Convert Line Endings
         run: |
-          for file in `find ./Docs/layouts/shortcodes -name *.html`; do dos2unix "$file"; done
+          for file in `find ./Docs/layouts/shortcodes -name *.html`; do /usr/bin/dos2unix "$file"; done
       - name: Build with Hugo
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
