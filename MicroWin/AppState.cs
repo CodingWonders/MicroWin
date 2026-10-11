@@ -25,6 +25,6 @@ namespace MicroWin
         public static string? SaveISO { get; set; }
         public static string? WinUtilConfigPath { get; set; }
 
-        public static string Version => "v2.0";
+        public static string Version => "v2.1";
     }
 }
