@@ -78,7 +78,7 @@ namespace MicroWin.OSCDIMG
                    efisysPath = Path.Combine(efiBootBinsPath, "efisys.bin"),
                    efisysExPath = Path.Combine(efiBootBinsPath, "efisys_EX.bin");
 
-            string bootDataString = $"2#p0,e,b{etfsbootPath}#pEF,e,b{(UEFICA23Bins && File.Exists(efisysExPath) ? efisysExPath : efisysPath)}";
+            string bootDataString = $"2#p0,e,b\"{etfsbootPath}\"#pEF,e,b\"{(UEFICA23Bins && File.Exists(efisysExPath) ? efisysExPath : efisysPath)}\"";
 
             // Start the ISO building
             Process oscdimgProc = new Process()
