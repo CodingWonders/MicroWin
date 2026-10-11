@@ -42,7 +42,7 @@ namespace MicroWin.functions.Helpers.Loggers
             logMessage($"Removing archived logs older than {DYNALOG_LOG_ARCHIVE_RETENTION_MAXIMUM_THRESHOLD_DAYS_ABS} days...", false);
             try
             {
-                string[] LogArchives = Directory.GetFiles(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs"), "MW_DynaLog_*.old", SearchOption.TopDirectoryOnly);
+                string[] LogArchives = Directory.GetFiles(Path.Combine(AppState.TempRootlogs, "logs"), "MW_DynaLog_*.old", SearchOption.TopDirectoryOnly);
                 logMessage($"Archives found: {LogArchives.Length}");
                 if (LogArchives.Any())
                 {
@@ -79,21 +79,21 @@ namespace MicroWin.functions.Helpers.Loggers
         public static void CheckLogAge()
         {
             logMessage("Checking existing logs...", false);
-            if (File.Exists($"{AppDomain.CurrentDomain.BaseDirectory}\\logs\\MW_DynaLog.log"))
+            if (File.Exists($"{AppState.TempRootlogs}\\logs\\MW_DynaLog.log"))
             {
                 logMessage("Log File Found. Checking log file creation DateTime...", false);
                 try
                 {
-                    DateTime CreationDate = File.GetCreationTimeUtc($"{AppDomain.CurrentDomain.BaseDirectory}\\logs\\MW_DynaLog.log");
+                    DateTime CreationDate = File.GetCreationTimeUtc($"{AppState.TempRootlogs}\\logs\\MW_DynaLog.log");
                     if (CreationDate < DateTime.UtcNow.AddDays(DYNALOG_LOG_ARCHIVE_MINIMUM_THRESHOLD_DAYS))
                     {
                         logMessage("Current log file is more than 2 weeks old. Archiving...", false);
                         string ArchivedFileName = $"MW_DynaLog_{DateTime.UtcNow.ToString("yyMMdd-HHmm")}.old";
                         try
                         {
-                            File.Move("{AppDomain.CurrentDomain.BaseDirectory}\\logs\\MW_DynaLog.log", $"{AppDomain.CurrentDomain.BaseDirectory}\\logs\\{ArchivedFileName}");
+                            File.Move("{AppState.TempRootlogs}\\logs\\MW_DynaLog.log", $"{AppState.TempRootlogs}\\logs\\{ArchivedFileName}");
                             logMessage("The old log file has been archived. New messages will be shown in a new log file", false);      // A blank sheet of... logs?
-                            File.SetCreationTimeUtc($"{AppDomain.CurrentDomain.BaseDirectory}\\logs\\MW_DynaLog.log", DateTime.UtcNow);
+                            File.SetCreationTimeUtc($"{AppState.TempRootlogs}\\logs\\MW_DynaLog.log", DateTime.UtcNow);
                         }
                         catch (Exception ex)
                         {
@@ -144,19 +144,19 @@ namespace MicroWin.functions.Helpers.Loggers
             Debug.WriteLine(message);
             try
             {
-                if (!Directory.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs")))
+                if (!Directory.Exists(Path.Combine(AppState.TempRootlogs, "logs")))
                 {
                     Debug.WriteLine("Creating log directory...");
-                    Directory.CreateDirectory(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs"));
+                    Directory.CreateDirectory(Path.Combine(AppState.TempRootlogs, "logs"));
                 }
                 long fileLength = 0L;
-                if (File.Exists(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "MW_DynaLog.log")))
+                if (File.Exists(Path.Combine(AppState.TempRootlogs, "logs", "MW_DynaLog.log")))
                 {
-                    fileLength = new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "MW_DynaLog.log")).Length;
+                    fileLength = new FileInfo(Path.Combine(AppState.TempRootlogs, "logs", "MW_DynaLog.log")).Length;
                 }
                 string messagePrefix = $"[{DateTime.UtcNow.ToString("MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture)}] [PID {Process.GetCurrentProcess().Id}] [{new StackFrame(1)?.GetMethod()?.Name}{(getParentCaller ? $" ({new StackFrame(2)?.GetMethod()?.Name})" : "")}] ";
                 string messageLine = $"{messagePrefix}{message.Replace("\n", $"\n{messagePrefix}").Trim()}";
-                File.AppendAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs", "MW_DynaLog.log"), $"{(fileLength > 0 ? "\n" : "")}{messageLine}");
+                File.AppendAllText(Path.Combine(AppState.TempRootlogs, "logs", "MW_DynaLog.log"), $"{(fileLength > 0 ? "\n" : "")}{messageLine}");
             }
             catch (Exception ex)
             {

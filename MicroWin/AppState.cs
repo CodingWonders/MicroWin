@@ -9,6 +9,7 @@ namespace MicroWin
     {
         public static string? IsoPath { get; set; }
         public static string TempRoot => Path.Combine(Path.GetTempPath(), "microwin");
+        public static string TempRootlogs => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Temp", "microwin");
         public static string MountPath => $"{Path.Combine(TempRoot, "mount")}";
         public static string ScratchPath => $"{Path.Combine(TempRoot, "scratch")}";
         public static int? SelectedImageIndex { get; set; } = 0;
