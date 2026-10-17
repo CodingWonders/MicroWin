@@ -1,8 +1,11 @@
 ﻿using MicroWin.Classes;
+using MicroWin.Classes.Regional;
 using MicroWin.functions.Helpers.Loggers;
 using MicroWin.functions.Helpers.PropertyCheckers;
 using System;
+using System.Globalization;
 using System.IO;
+using System.Security;
 using System.Text;
 
 namespace MicroWin.functions.dism
@@ -90,7 +93,21 @@ namespace MicroWin.functions.dism
             xml.AppendLine("    </component>");
             xml.AppendLine("  </settings>");
             xml.AppendLine("  <settings pass=\"oobeSystem\">");
+            xml.AppendLine("    <component name=\"Microsoft-Windows-International-Core\" processorArchitecture=\"amd64\" publicKeyToken=\"31bf3856ad364e35\" language=\"neutral\" versionScope=\"nonSxS\">");
+            xml.AppendLine("      <InputLocale>");
+            string? inputLocale = GetInputLocale(AppState.userLocale);
+            if (!string.IsNullOrEmpty(inputLocale))
+                xml.AppendLine($"{EscapeXml(inputLocale)}");
+            xml.AppendLine("      </InputLocale>");
+            if (!string.IsNullOrWhiteSpace(AppState.userLocale?.Id))
+            {
+                xml.AppendLine($"      <SystemLocale>{EscapeXml(AppState.userLocale.Id)}</SystemLocale>");
+                xml.AppendLine($"      <UserLocale>{EscapeXml(AppState.userLocale.Id)}</UserLocale>");
+            }
+            xml.AppendLine("    </component>");
             xml.AppendLine("    <component name=\"Microsoft-Windows-Shell-Setup\" processorArchitecture=\"amd64\" publicKeyToken=\"31bf3856ad364e35\" language=\"neutral\" versionScope=\"nonSxS\">");
+            if (!string.IsNullOrWhiteSpace(AppState.timeOffset?.Id))
+                xml.AppendLine($"      <TimeZone>{EscapeXml(AppState.timeOffset.Id)}</TimeZone>");
             xml.AppendLine("      <UserAccounts>");
             xml.AppendLine("        <LocalAccounts>");
             foreach (UserAccount user in AppState.UserAccounts)
@@ -149,6 +166,13 @@ namespace MicroWin.functions.dism
             xml.AppendLine("          <Order>4</Order>");
             xml.AppendLine("          <CommandLine>powershell -ExecutionPolicy Bypass -File c:\\windows\\FirstStartup.ps1</CommandLine>");
             xml.AppendLine("        </SynchronousCommand>");
+            if (int.TryParse(AppState.userLocale?.GeoLocation, NumberStyles.None, CultureInfo.InvariantCulture, out int geoId))
+            {
+                xml.AppendLine("        <SynchronousCommand wcm:action=\"add\">");
+                xml.AppendLine("          <Order>5</Order>");
+                xml.AppendLine($"          <CommandLine>powershell.exe -NoProfile -Command \"Set-WinHomeLocation -GeoId {geoId}\"</CommandLine>");
+                xml.AppendLine("        </SynchronousCommand>");
+            }
             xml.AppendLine("      </FirstLogonCommands>");
             xml.AppendLine("    </component>");
             xml.AppendLine("  </settings>");
@@ -178,6 +202,38 @@ namespace MicroWin.functions.dism
             {
                 DynaLog.logMessage($"Unattended file could not be made: {ex.Message}");
             }
+        }
+
+        private static string? GetInputLocale(UserLocale? locale)
+        {
+            if (locale is null || string.IsNullOrWhiteSpace(locale.KeyboardLayout))
+                return null;
+
+            string keyboardLayout = locale.KeyboardLayout;
+            KeyboardIdentifier? keyboard = KeyboardIdentifier.LoadItems().Find(item =>
+                string.Equals(item.Id, keyboardLayout, StringComparison.OrdinalIgnoreCase));
+
+            if (keyboard?.GetKeyboardType() == KeyboardType.IME)
+                return EscapeXml(keyboardLayout);
+
+            string lcid = locale.LCID;
+            if (string.Equals(lcid, "1000", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    lcid = CultureInfo.GetCultureInfo(locale.Id).LCID.ToString("x4", CultureInfo.InvariantCulture);
+                }
+                catch (CultureNotFoundException)
+                {
+                }
+            }
+
+            return EscapeXml($"{lcid}:{keyboardLayout}");
+        }
+
+        private static string EscapeXml(string value)
+        {
+            return SecurityElement.Escape(value) ?? string.Empty;
         }
     }
 }

@@ -19,6 +19,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Regional\GeoId.xml" />
+    <None Remove="Resources\Regional\ImageLanguage.xml" />
+    <None Remove="Resources\Regional\KeyboardIdentifier.xml" />
+    <None Remove="Resources\Regional\TimeOffset.xml" />
+    <None Remove="Resources\Regional\UserLocale.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="logo.ico" />
   </ItemGroup>
 
@@ -30,6 +38,11 @@
 
   <ItemGroup>
     <!-- Keep native/tools files as content so they remain in the output and/or source tree -->
+    <EmbeddedResource Include="Resources\Regional\GeoId.xml" />
+    <EmbeddedResource Include="Resources\Regional\ImageLanguage.xml" />
+    <EmbeddedResource Include="Resources\Regional\KeyboardIdentifier.xml" />
+    <EmbeddedResource Include="Resources\Regional\TimeOffset.xml" />
+    <EmbeddedResource Include="Resources\Regional\UserLocale.xml" />
     <EmbeddedResource Include="tools\oscdimg.exe" />
     <EmbeddedResource Include="tools\FirstStartup.ps1" />
     <None Include="tools\RemoveTempDir.bat" />
