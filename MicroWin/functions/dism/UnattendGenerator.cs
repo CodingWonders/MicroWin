@@ -96,6 +96,7 @@ namespace MicroWin.functions.dism
             xml.AppendLine("    <component name=\"Microsoft-Windows-International-Core\" processorArchitecture=\"amd64\" publicKeyToken=\"31bf3856ad364e35\" language=\"neutral\" versionScope=\"nonSxS\">");
             xml.AppendLine("      <InputLocale>");
             string? inputLocale = GetInputLocale(AppState.userLocale);
+            DynaLog.logMessage($"Regional locale settings: locale={AppState.userLocale?.Id ?? "(not set)"}, inputLocale={inputLocale ?? "(not set)"}, GeoID={AppState.userLocale?.GeoLocation ?? "(not set)"}.");
             if (!string.IsNullOrEmpty(inputLocale))
                 xml.AppendLine($"{EscapeXml(inputLocale)}");
             xml.AppendLine("      </InputLocale>");
@@ -106,6 +107,7 @@ namespace MicroWin.functions.dism
             }
             xml.AppendLine("    </component>");
             xml.AppendLine("    <component name=\"Microsoft-Windows-Shell-Setup\" processorArchitecture=\"amd64\" publicKeyToken=\"31bf3856ad364e35\" language=\"neutral\" versionScope=\"nonSxS\">");
+            DynaLog.logMessage($"Regional time zone setting: {AppState.timeOffset?.Id ?? "(not set)"}.");
             if (!string.IsNullOrWhiteSpace(AppState.timeOffset?.Id))
                 xml.AppendLine($"      <TimeZone>{EscapeXml(AppState.timeOffset.Id)}</TimeZone>");
             xml.AppendLine("      <UserAccounts>");
@@ -168,10 +170,15 @@ namespace MicroWin.functions.dism
             xml.AppendLine("        </SynchronousCommand>");
             if (int.TryParse(AppState.userLocale?.GeoLocation, NumberStyles.None, CultureInfo.InvariantCulture, out int geoId))
             {
+                DynaLog.logMessage($"GeoID {geoId} will be applied during first logon.");
                 xml.AppendLine("        <SynchronousCommand wcm:action=\"add\">");
                 xml.AppendLine("          <Order>5</Order>");
                 xml.AppendLine($"          <CommandLine>powershell.exe -NoProfile -Command \"Set-WinHomeLocation -GeoId {geoId}\"</CommandLine>");
                 xml.AppendLine("        </SynchronousCommand>");
+            }
+            else if (!string.IsNullOrWhiteSpace(AppState.userLocale?.GeoLocation))
+            {
+                DynaLog.logMessage($"GeoID value '{AppState.userLocale.GeoLocation}' is invalid and will not be applied.");
             }
             xml.AppendLine("      </FirstLogonCommands>");
             xml.AppendLine("    </component>");
