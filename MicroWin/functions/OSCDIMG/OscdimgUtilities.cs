@@ -1,4 +1,5 @@
 using MicroWin.functions.Helpers.Loggers;
+using MicroWin.functions.Helpers.ProgramResources;
 using MicroWin.functions.Helpers.RegistryHelpers;
 using System;
 using System.Diagnostics;
@@ -46,8 +47,7 @@ namespace MicroWin.OSCDIMG
 #pragma warning disable CS8600
                     if (outputReporter is not null)
                         outputReporter.Invoke("Extracting OSCDIMG binaries...");
-                    Assembly currentAssembly = Assembly.GetExecutingAssembly();
-                    using Stream resourceStream = currentAssembly.GetManifestResourceStream("MicroWin.tools.oscdimg.exe");
+                    using Stream resourceStream = ResourceHelper.GetProgramResourceStream("MicroWin.tools.oscdimg.exe");
                     if (resourceStream is not null)
                     {
                         byte[] oscdimgBytes = new byte[resourceStream.Length];
