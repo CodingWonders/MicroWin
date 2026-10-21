@@ -34,6 +34,7 @@
     <!-- Migrate Microsoft.Dism to PackageReference; keep pinned version from assessment -->
     <PackageReference Include="Microsoft.Dism" Version="6.1.0" />
     <PackageReference Include="System.Management" Version="10.0.10" />
+    <PackageReference Include="System.ServiceModel.Syndication" Version="10.0.13" />
   </ItemGroup>
 
   <ItemGroup>

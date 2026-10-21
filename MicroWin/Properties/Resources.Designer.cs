@@ -63,6 +63,16 @@ namespace MicroWin.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap updates {
+            get {
+                object obj = ResourceManager.GetObject("updates", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap user_creation_lusrmgr {
             get {
                 object obj = ResourceManager.GetObject("user_creation_lusrmgr", resourceCulture);
@@ -76,6 +86,16 @@ namespace MicroWin.Properties {
         public static System.Drawing.Bitmap user_creation_settings {
             get {
                 object obj = ResourceManager.GetObject("user_creation_settings", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap website {
+            get {
+                object obj = ResourceManager.GetObject("website", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

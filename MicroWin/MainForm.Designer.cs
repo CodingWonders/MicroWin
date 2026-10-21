@@ -36,6 +36,25 @@
             Cancel_Button = new Button();
             About_Button = new Button();
             PageContainerPanel = new Panel();
+            WelcomePage = new Panel();
+            tlpOnlineServices = new TableLayoutPanel();
+            lblNewsDate = new Label();
+            lblUpdateStatus = new Label();
+            lnkLatestBlogPost = new LinkLabel();
+            pictureBox3 = new PictureBox();
+            pictureBox4 = new PictureBox();
+            lblDisclaimer = new Label();
+            WelcomePage_Description = new Label();
+            WelcomePage_Header = new Label();
+            FinishPage = new Panel();
+            lnkViewCreationLogs = new LinkLabel();
+            lnkOpenIsoLoc = new LinkLabel();
+            panel4 = new Panel();
+            lnkUseNtLite = new LinkLabel();
+            lnkUseDT = new LinkLabel();
+            label18 = new Label();
+            label16 = new Label();
+            label17 = new Label();
             IsoSettingsPage = new Panel();
             label19 = new Label();
             UEFICA23CB = new CheckBox();
@@ -60,15 +79,6 @@
             comboIme = new ComboBox();
             comboRegion = new ComboBox();
             label20 = new Label();
-            FinishPage = new Panel();
-            lnkViewCreationLogs = new LinkLabel();
-            lnkOpenIsoLoc = new LinkLabel();
-            panel4 = new Panel();
-            lnkUseNtLite = new LinkLabel();
-            lnkUseDT = new LinkLabel();
-            label18 = new Label();
-            label16 = new Label();
-            label17 = new Label();
             IsoCreationPage = new Panel();
             pnlProgress = new Panel();
             pbOverall = new ProgressBar();
@@ -119,21 +129,21 @@
             label1 = new Label();
             SysCheckPage_Description = new Label();
             SysCheckPage_Header = new Label();
-            WelcomePage = new Panel();
-            lblDisclaimer = new Label();
-            WelcomePage_Description = new Label();
-            WelcomePage_Header = new Label();
             winutilConfigDialog = new OpenFileDialog();
             isoPickerOFD = new OpenFileDialog();
             isoSaverSFD = new SaveFileDialog();
             ButtonPanel.SuspendLayout();
             TableLayoutPanel1.SuspendLayout();
             PageContainerPanel.SuspendLayout();
+            WelcomePage.SuspendLayout();
+            tlpOnlineServices.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
+            FinishPage.SuspendLayout();
+            panel4.SuspendLayout();
             IsoSettingsPage.SuspendLayout();
             gbRegionalOptions.SuspendLayout();
             tableLayoutPanel4.SuspendLayout();
-            FinishPage.SuspendLayout();
-            panel4.SuspendLayout();
             IsoCreationPage.SuspendLayout();
             pnlProgress.SuspendLayout();
             UserAccountsPage.SuspendLayout();
@@ -146,7 +156,6 @@
             tableLayoutPanel2.SuspendLayout();
             ImageChooserPage.SuspendLayout();
             IsoChooserPage.SuspendLayout();
-            WelcomePage.SuspendLayout();
             SuspendLayout();
             // 
             // ButtonPanel
@@ -227,19 +236,257 @@
             // 
             // PageContainerPanel
             // 
-            PageContainerPanel.Controls.Add(IsoSettingsPage);
+            PageContainerPanel.Controls.Add(WelcomePage);
             PageContainerPanel.Controls.Add(FinishPage);
+            PageContainerPanel.Controls.Add(IsoSettingsPage);
             PageContainerPanel.Controls.Add(IsoCreationPage);
             PageContainerPanel.Controls.Add(UserAccountsPage);
             PageContainerPanel.Controls.Add(ImageChooserPage);
             PageContainerPanel.Controls.Add(IsoChooserPage);
-            PageContainerPanel.Controls.Add(WelcomePage);
             PageContainerPanel.Dock = DockStyle.Fill;
             PageContainerPanel.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             PageContainerPanel.Location = new Point(0, 0);
             PageContainerPanel.Name = "PageContainerPanel";
             PageContainerPanel.Size = new Size(1264, 641);
             PageContainerPanel.TabIndex = 3;
+            // 
+            // WelcomePage
+            // 
+            WelcomePage.Controls.Add(tlpOnlineServices);
+            WelcomePage.Controls.Add(lblDisclaimer);
+            WelcomePage.Controls.Add(WelcomePage_Description);
+            WelcomePage.Controls.Add(WelcomePage_Header);
+            WelcomePage.Dock = DockStyle.Fill;
+            WelcomePage.Location = new Point(0, 0);
+            WelcomePage.Name = "WelcomePage";
+            WelcomePage.Size = new Size(1264, 641);
+            WelcomePage.TabIndex = 0;
+            // 
+            // tlpOnlineServices
+            // 
+            tlpOnlineServices.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            tlpOnlineServices.ColumnCount = 3;
+            tlpOnlineServices.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 3.649635F));
+            tlpOnlineServices.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 96.3503647F));
+            tlpOnlineServices.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 260F));
+            tlpOnlineServices.Controls.Add(lblNewsDate, 2, 1);
+            tlpOnlineServices.Controls.Add(lblUpdateStatus, 1, 0);
+            tlpOnlineServices.Controls.Add(lnkLatestBlogPost, 1, 1);
+            tlpOnlineServices.Controls.Add(pictureBox3, 0, 0);
+            tlpOnlineServices.Controls.Add(pictureBox4, 0, 1);
+            tlpOnlineServices.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            tlpOnlineServices.Location = new Point(30, 547);
+            tlpOnlineServices.Name = "tlpOnlineServices";
+            tlpOnlineServices.RowCount = 2;
+            tlpOnlineServices.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tlpOnlineServices.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tlpOnlineServices.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tlpOnlineServices.Size = new Size(1083, 60);
+            tlpOnlineServices.TabIndex = 2;
+            // 
+            // lblNewsDate
+            // 
+            lblNewsDate.AutoSize = true;
+            lblNewsDate.Dock = DockStyle.Fill;
+            lblNewsDate.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblNewsDate.Location = new Point(825, 30);
+            lblNewsDate.Name = "lblNewsDate";
+            lblNewsDate.Size = new Size(255, 30);
+            lblNewsDate.TabIndex = 3;
+            lblNewsDate.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // lblUpdateStatus
+            // 
+            lblUpdateStatus.AutoEllipsis = true;
+            lblUpdateStatus.AutoSize = true;
+            tlpOnlineServices.SetColumnSpan(lblUpdateStatus, 2);
+            lblUpdateStatus.Dock = DockStyle.Fill;
+            lblUpdateStatus.Location = new Point(33, 0);
+            lblUpdateStatus.Name = "lblUpdateStatus";
+            lblUpdateStatus.Size = new Size(1047, 30);
+            lblUpdateStatus.TabIndex = 0;
+            lblUpdateStatus.Text = "Checking for updates...";
+            lblUpdateStatus.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // lnkLatestBlogPost
+            // 
+            lnkLatestBlogPost.AutoEllipsis = true;
+            lnkLatestBlogPost.AutoSize = true;
+            lnkLatestBlogPost.Dock = DockStyle.Fill;
+            lnkLatestBlogPost.LinkBehavior = LinkBehavior.NeverUnderline;
+            lnkLatestBlogPost.LinkColor = Color.DodgerBlue;
+            lnkLatestBlogPost.Location = new Point(33, 30);
+            lnkLatestBlogPost.Name = "lnkLatestBlogPost";
+            lnkLatestBlogPost.Size = new Size(786, 30);
+            lnkLatestBlogPost.TabIndex = 1;
+            lnkLatestBlogPost.TextAlign = ContentAlignment.MiddleLeft;
+            lnkLatestBlogPost.LinkClicked += lnkLatestBlogPost_LinkClicked;
+            // 
+            // pictureBox3
+            // 
+            pictureBox3.Dock = DockStyle.Fill;
+            pictureBox3.Image = Properties.Resources.updates;
+            pictureBox3.Location = new Point(3, 3);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new Size(24, 24);
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox3.TabIndex = 2;
+            pictureBox3.TabStop = false;
+            // 
+            // pictureBox4
+            // 
+            pictureBox4.Dock = DockStyle.Fill;
+            pictureBox4.Image = Properties.Resources.website;
+            pictureBox4.InitialImage = null;
+            pictureBox4.Location = new Point(3, 33);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(24, 24);
+            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox4.TabIndex = 2;
+            pictureBox4.TabStop = false;
+            // 
+            // lblDisclaimer
+            // 
+            lblDisclaimer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lblDisclaimer.AutoEllipsis = true;
+            lblDisclaimer.Location = new Point(119, 128);
+            lblDisclaimer.Name = "lblDisclaimer";
+            lblDisclaimer.Size = new Size(1026, 368);
+            lblDisclaimer.TabIndex = 1;
+            // 
+            // WelcomePage_Description
+            // 
+            WelcomePage_Description.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            WelcomePage_Description.AutoEllipsis = true;
+            WelcomePage_Description.Location = new Point(17, 64);
+            WelcomePage_Description.Name = "WelcomePage_Description";
+            WelcomePage_Description.Size = new Size(1233, 172);
+            WelcomePage_Description.TabIndex = 1;
+            WelcomePage_Description.Text = "This wizard will help you configure your Windows image. To begin, click Next.";
+            // 
+            // WelcomePage_Header
+            // 
+            WelcomePage_Header.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            WelcomePage_Header.AutoEllipsis = true;
+            WelcomePage_Header.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            WelcomePage_Header.Location = new Point(14, 12);
+            WelcomePage_Header.Name = "WelcomePage_Header";
+            WelcomePage_Header.Size = new Size(1236, 45);
+            WelcomePage_Header.TabIndex = 0;
+            WelcomePage_Header.Text = "Welcome";
+            // 
+            // FinishPage
+            // 
+            FinishPage.Controls.Add(lnkViewCreationLogs);
+            FinishPage.Controls.Add(lnkOpenIsoLoc);
+            FinishPage.Controls.Add(panel4);
+            FinishPage.Controls.Add(label16);
+            FinishPage.Controls.Add(label17);
+            FinishPage.Dock = DockStyle.Fill;
+            FinishPage.Location = new Point(0, 0);
+            FinishPage.Name = "FinishPage";
+            FinishPage.Size = new Size(1264, 641);
+            FinishPage.TabIndex = 8;
+            // 
+            // lnkViewCreationLogs
+            // 
+            lnkViewCreationLogs.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lnkViewCreationLogs.AutoSize = true;
+            lnkViewCreationLogs.LinkBehavior = LinkBehavior.NeverUnderline;
+            lnkViewCreationLogs.LinkColor = Color.DodgerBlue;
+            lnkViewCreationLogs.Location = new Point(99, 561);
+            lnkViewCreationLogs.Name = "lnkViewCreationLogs";
+            lnkViewCreationLogs.Size = new Size(124, 15);
+            lnkViewCreationLogs.TabIndex = 12;
+            lnkViewCreationLogs.TabStop = true;
+            lnkViewCreationLogs.Text = "View ISO creation logs";
+            lnkViewCreationLogs.LinkClicked += lnkViewCreationLogs_LinkClicked;
+            // 
+            // lnkOpenIsoLoc
+            // 
+            lnkOpenIsoLoc.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            lnkOpenIsoLoc.AutoSize = true;
+            lnkOpenIsoLoc.LinkBehavior = LinkBehavior.NeverUnderline;
+            lnkOpenIsoLoc.LinkColor = Color.DodgerBlue;
+            lnkOpenIsoLoc.Location = new Point(99, 536);
+            lnkOpenIsoLoc.Name = "lnkOpenIsoLoc";
+            lnkOpenIsoLoc.Size = new Size(103, 15);
+            lnkOpenIsoLoc.TabIndex = 12;
+            lnkOpenIsoLoc.TabStop = true;
+            lnkOpenIsoLoc.Text = "Open ISO location";
+            lnkOpenIsoLoc.LinkClicked += lnkOpenIsoLoc_LinkClicked;
+            // 
+            // panel4
+            // 
+            panel4.Anchor = AnchorStyles.None;
+            panel4.Controls.Add(lnkUseNtLite);
+            panel4.Controls.Add(lnkUseDT);
+            panel4.Controls.Add(label18);
+            panel4.Location = new Point(229, 183);
+            panel4.Name = "panel4";
+            panel4.Size = new Size(806, 276);
+            panel4.TabIndex = 11;
+            // 
+            // lnkUseNtLite
+            // 
+            lnkUseNtLite.AutoSize = true;
+            lnkUseNtLite.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lnkUseNtLite.LinkBehavior = LinkBehavior.NeverUnderline;
+            lnkUseNtLite.LinkColor = Color.DodgerBlue;
+            lnkUseNtLite.Location = new Point(101, 193);
+            lnkUseNtLite.Name = "lnkUseNtLite";
+            lnkUseNtLite.Size = new Size(55, 21);
+            lnkUseNtLite.TabIndex = 11;
+            lnkUseNtLite.TabStop = true;
+            lnkUseNtLite.Text = "NTLite";
+            lnkUseNtLite.LinkClicked += lnkUseNtLite_LinkClicked;
+            // 
+            // lnkUseDT
+            // 
+            lnkUseDT.AutoSize = true;
+            lnkUseDT.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lnkUseDT.LinkBehavior = LinkBehavior.NeverUnderline;
+            lnkUseDT.LinkColor = Color.DodgerBlue;
+            lnkUseDT.Location = new Point(101, 160);
+            lnkUseDT.Name = "lnkUseDT";
+            lnkUseDT.Size = new Size(83, 21);
+            lnkUseDT.TabIndex = 11;
+            lnkUseDT.TabStop = true;
+            lnkUseDT.Text = "DISMTools";
+            lnkUseDT.LinkClicked += lnkUseDT_LinkClicked;
+            // 
+            // label18
+            // 
+            label18.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            label18.AutoEllipsis = true;
+            label18.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label18.Location = new Point(51, 31);
+            label18.Name = "label18";
+            label18.Size = new Size(704, 95);
+            label18.TabIndex = 10;
+            label18.Text = resources.GetString("label18.Text");
+            label18.TextAlign = ContentAlignment.TopCenter;
+            // 
+            // label16
+            // 
+            label16.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label16.AutoEllipsis = true;
+            label16.Location = new Point(17, 64);
+            label16.Name = "label16";
+            label16.Size = new Size(1233, 172);
+            label16.TabIndex = 10;
+            label16.Text = "Your ISO file is now ready for operating system installation.";
+            // 
+            // label17
+            // 
+            label17.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            label17.AutoEllipsis = true;
+            label17.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label17.Location = new Point(14, 12);
+            label17.Name = "label17";
+            label17.Size = new Size(1236, 45);
+            label17.TabIndex = 9;
+            label17.Text = "Customizations complete";
             // 
             // IsoSettingsPage
             // 
@@ -518,119 +765,6 @@
             label20.Size = new Size(648, 23);
             label20.TabIndex = 0;
             label20.Text = "Configure the regional options for the target system. You can change these after the operating system finishes installing.";
-            // 
-            // FinishPage
-            // 
-            FinishPage.Controls.Add(lnkViewCreationLogs);
-            FinishPage.Controls.Add(lnkOpenIsoLoc);
-            FinishPage.Controls.Add(panel4);
-            FinishPage.Controls.Add(label16);
-            FinishPage.Controls.Add(label17);
-            FinishPage.Dock = DockStyle.Fill;
-            FinishPage.Location = new Point(0, 0);
-            FinishPage.Name = "FinishPage";
-            FinishPage.Size = new Size(1264, 641);
-            FinishPage.TabIndex = 8;
-            // 
-            // lnkViewCreationLogs
-            // 
-            lnkViewCreationLogs.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            lnkViewCreationLogs.AutoSize = true;
-            lnkViewCreationLogs.LinkBehavior = LinkBehavior.NeverUnderline;
-            lnkViewCreationLogs.LinkColor = Color.DodgerBlue;
-            lnkViewCreationLogs.Location = new Point(99, 561);
-            lnkViewCreationLogs.Name = "lnkViewCreationLogs";
-            lnkViewCreationLogs.Size = new Size(124, 15);
-            lnkViewCreationLogs.TabIndex = 12;
-            lnkViewCreationLogs.TabStop = true;
-            lnkViewCreationLogs.Text = "View ISO creation logs";
-            lnkViewCreationLogs.LinkClicked += lnkViewCreationLogs_LinkClicked;
-            // 
-            // lnkOpenIsoLoc
-            // 
-            lnkOpenIsoLoc.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            lnkOpenIsoLoc.AutoSize = true;
-            lnkOpenIsoLoc.LinkBehavior = LinkBehavior.NeverUnderline;
-            lnkOpenIsoLoc.LinkColor = Color.DodgerBlue;
-            lnkOpenIsoLoc.Location = new Point(99, 536);
-            lnkOpenIsoLoc.Name = "lnkOpenIsoLoc";
-            lnkOpenIsoLoc.Size = new Size(103, 15);
-            lnkOpenIsoLoc.TabIndex = 12;
-            lnkOpenIsoLoc.TabStop = true;
-            lnkOpenIsoLoc.Text = "Open ISO location";
-            lnkOpenIsoLoc.LinkClicked += lnkOpenIsoLoc_LinkClicked;
-            // 
-            // panel4
-            // 
-            panel4.Anchor = AnchorStyles.None;
-            panel4.Controls.Add(lnkUseNtLite);
-            panel4.Controls.Add(lnkUseDT);
-            panel4.Controls.Add(label18);
-            panel4.Location = new Point(229, 183);
-            panel4.Name = "panel4";
-            panel4.Size = new Size(806, 276);
-            panel4.TabIndex = 11;
-            // 
-            // lnkUseNtLite
-            // 
-            lnkUseNtLite.AutoSize = true;
-            lnkUseNtLite.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lnkUseNtLite.LinkBehavior = LinkBehavior.NeverUnderline;
-            lnkUseNtLite.LinkColor = Color.DodgerBlue;
-            lnkUseNtLite.Location = new Point(101, 193);
-            lnkUseNtLite.Name = "lnkUseNtLite";
-            lnkUseNtLite.Size = new Size(55, 21);
-            lnkUseNtLite.TabIndex = 11;
-            lnkUseNtLite.TabStop = true;
-            lnkUseNtLite.Text = "NTLite";
-            lnkUseNtLite.LinkClicked += lnkUseNtLite_LinkClicked;
-            // 
-            // lnkUseDT
-            // 
-            lnkUseDT.AutoSize = true;
-            lnkUseDT.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            lnkUseDT.LinkBehavior = LinkBehavior.NeverUnderline;
-            lnkUseDT.LinkColor = Color.DodgerBlue;
-            lnkUseDT.Location = new Point(101, 160);
-            lnkUseDT.Name = "lnkUseDT";
-            lnkUseDT.Size = new Size(83, 21);
-            lnkUseDT.TabIndex = 11;
-            lnkUseDT.TabStop = true;
-            lnkUseDT.Text = "DISMTools";
-            lnkUseDT.LinkClicked += lnkUseDT_LinkClicked;
-            // 
-            // label18
-            // 
-            label18.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            label18.AutoEllipsis = true;
-            label18.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label18.Location = new Point(51, 31);
-            label18.Name = "label18";
-            label18.Size = new Size(704, 95);
-            label18.TabIndex = 10;
-            label18.Text = resources.GetString("label18.Text");
-            label18.TextAlign = ContentAlignment.TopCenter;
-            // 
-            // label16
-            // 
-            label16.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            label16.AutoEllipsis = true;
-            label16.Location = new Point(17, 64);
-            label16.Name = "label16";
-            label16.Size = new Size(1233, 172);
-            label16.TabIndex = 10;
-            label16.Text = "Your ISO file is now ready for operating system installation.";
-            // 
-            // label17
-            // 
-            label17.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            label17.AutoEllipsis = true;
-            label17.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label17.Location = new Point(14, 12);
-            label17.Name = "label17";
-            label17.Size = new Size(1236, 45);
-            label17.TabIndex = 9;
-            label17.Text = "Customizations complete";
             // 
             // IsoCreationPage
             // 
@@ -1171,47 +1305,6 @@
             SysCheckPage_Header.TabIndex = 0;
             SysCheckPage_Header.Text = "Choose a disc image";
             // 
-            // WelcomePage
-            // 
-            WelcomePage.Controls.Add(lblDisclaimer);
-            WelcomePage.Controls.Add(WelcomePage_Description);
-            WelcomePage.Controls.Add(WelcomePage_Header);
-            WelcomePage.Dock = DockStyle.Fill;
-            WelcomePage.Location = new Point(0, 0);
-            WelcomePage.Name = "WelcomePage";
-            WelcomePage.Size = new Size(1264, 641);
-            WelcomePage.TabIndex = 0;
-            // 
-            // lblDisclaimer
-            // 
-            lblDisclaimer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lblDisclaimer.AutoEllipsis = true;
-            lblDisclaimer.Location = new Point(119, 128);
-            lblDisclaimer.Name = "lblDisclaimer";
-            lblDisclaimer.Size = new Size(1026, 433);
-            lblDisclaimer.TabIndex = 1;
-            // 
-            // WelcomePage_Description
-            // 
-            WelcomePage_Description.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            WelcomePage_Description.AutoEllipsis = true;
-            WelcomePage_Description.Location = new Point(17, 64);
-            WelcomePage_Description.Name = "WelcomePage_Description";
-            WelcomePage_Description.Size = new Size(1233, 172);
-            WelcomePage_Description.TabIndex = 1;
-            WelcomePage_Description.Text = "This wizard will help you configure your Windows image. To begin, click Next.";
-            // 
-            // WelcomePage_Header
-            // 
-            WelcomePage_Header.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            WelcomePage_Header.AutoEllipsis = true;
-            WelcomePage_Header.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            WelcomePage_Header.Location = new Point(14, 12);
-            WelcomePage_Header.Name = "WelcomePage_Header";
-            WelcomePage_Header.Size = new Size(1236, 45);
-            WelcomePage_Header.TabIndex = 0;
-            WelcomePage_Header.Text = "Welcome";
-            // 
             // winutilConfigDialog
             // 
             winutilConfigDialog.Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
@@ -1245,16 +1338,21 @@
             ButtonPanel.ResumeLayout(false);
             TableLayoutPanel1.ResumeLayout(false);
             PageContainerPanel.ResumeLayout(false);
+            WelcomePage.ResumeLayout(false);
+            tlpOnlineServices.ResumeLayout(false);
+            tlpOnlineServices.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
+            FinishPage.ResumeLayout(false);
+            FinishPage.PerformLayout();
+            panel4.ResumeLayout(false);
+            panel4.PerformLayout();
             IsoSettingsPage.ResumeLayout(false);
             IsoSettingsPage.PerformLayout();
             gbRegionalOptions.ResumeLayout(false);
             gbRegionalOptions.PerformLayout();
             tableLayoutPanel4.ResumeLayout(false);
             tableLayoutPanel4.PerformLayout();
-            FinishPage.ResumeLayout(false);
-            FinishPage.PerformLayout();
-            panel4.ResumeLayout(false);
-            panel4.PerformLayout();
             IsoCreationPage.ResumeLayout(false);
             IsoCreationPage.PerformLayout();
             pnlProgress.ResumeLayout(false);
@@ -1275,7 +1373,6 @@
             ImageChooserPage.PerformLayout();
             IsoChooserPage.ResumeLayout(false);
             IsoChooserPage.PerformLayout();
-            WelcomePage.ResumeLayout(false);
             ResumeLayout(false);
 
         }
@@ -1379,5 +1476,11 @@
         private ComboBox comboTimeFormat;
         private ComboBox comboIme;
         private ComboBox comboRegion;
+        private TableLayoutPanel tlpOnlineServices;
+        private Label lblUpdateStatus;
+        private LinkLabel lnkLatestBlogPost;
+        private PictureBox pictureBox3;
+        private PictureBox pictureBox4;
+        private Label lblNewsDate;
     }
 }

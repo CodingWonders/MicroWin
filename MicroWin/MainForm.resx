@@ -117,17 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="label18.Text" xml:space="preserve">
+    <value>To continue with OS installation, use a tool to create bootable USB drives, such as Rufus or Ventoy, and install the system.
+
+If you want to continue customizing this system, use either of the following:</value>
+  </data>
   <data name="label19.Text" xml:space="preserve">
     <value>To proceed with installation of the MicroWin image in QEMU/Proxmox VE:
 1. Proceed with Setup until you reach the disk selection screen, in which you won't see any drives
 2. Click "Load Driver" and click Browse
 3. In the folder selection dialog, point to this path: "D:\VirtIO\vioscsi\w11\amd64" (replace amd64 with ARM64 if you are using Windows on ARM, and "D:" with the drive letter of the ISO)
 4. Select all drivers that will appear in the list box and click OK"</value>
-  </data>
-  <data name="label18.Text" xml:space="preserve">
-    <value>To continue with OS installation, use a tool to create bootable USB drives, such as Rufus or Ventoy, and install the system.
-
-If you want to continue customizing this system, use either of the following:</value>
   </data>
   <data name="label5.Text" xml:space="preserve">
     <value>Enter the information that will be used to create the first user account on the target system. Additional users can be created later. You can skip entering this information. In that case, default values will be used.</value>

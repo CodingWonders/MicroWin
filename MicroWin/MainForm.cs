@@ -30,6 +30,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using System.ServiceModel.Syndication;
+using System.Net;
+using System.Xml;
+
 namespace MicroWin
 {
     [SupportedOSPlatform("Windows")]
@@ -284,7 +288,7 @@ namespace MicroWin
             return true;
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private async void MainForm_Load(object sender, EventArgs e)
         {
             string welcomeMessage = $"Welcome to MicroWin .NET.\n\n" +
                 $"This wizard will guide you through the creation of your ISO file, with a debloated Windows experience. You will need an official " +
@@ -349,8 +353,69 @@ namespace MicroWin
 
             AppState.userLocale = finalLocale.Clone();
             AppState.timeOffset = finalOffset.Clone();
+
+            await CheckFeedsAsync();
+            if (feedContents is not null && feedContents.Items.Any())
+            {
+                lnkLatestBlogPost.Text = feedContents.Items.ElementAt(0).Title.Text;
+                lblNewsDate.Text = feedContents.Items.ElementAt(0).PublishDate.ToString("D");
+            }
+
+            bool updatesAvailable = await AreUpdatesAvailableAsync();
+            if (updatesAvailable) {
+                lblUpdateStatus.Text = $"Updates are available. The latest version is {targetVer}.";
+            } else {
+                lblUpdateStatus.Text = "You are up to date.";
+            }
         }
 
+        // Online Services
+        SyndicationFeed? feedContents = new();
+        private static readonly HttpClient client = new();
+
+        private async Task CheckFeedsAsync()
+        {
+            try
+            {
+                const string rssUrl = "https://codingwonders.github.io/feed.xml";
+                string rssContent = await client.GetStringAsync(rssUrl);
+
+                if (!string.IsNullOrWhiteSpace(rssContent))
+                {
+                    using XmlReader reader = XmlReader.Create(new StringReader(rssContent));
+                    feedContents = SyndicationFeed.Load(reader);
+                }
+            }
+            catch (Exception)
+            {
+                feedContents = null;
+            }
+        }
+
+        private string targetVer = "";
+
+        private async Task<bool> AreUpdatesAvailableAsync() {
+            try
+            {
+                const string updateUrl = "https://raw.githubusercontent.com/CodingWonders/MicroWin/refs/heads/main/VERSION";
+
+                string verIdentifierContent = await client.GetStringAsync(updateUrl);
+
+                if (Version.TryParse(verIdentifierContent, out Version? latestVersion))
+                {
+                    targetVer = verIdentifierContent;
+                    return !VersionComparer.IsNewerThanVersion(new Version(Application.ProductVersion), latestVersion);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         private void Next_Button_Click(object sender, EventArgs e)
         {
@@ -1270,6 +1335,13 @@ namespace MicroWin
         {
             finalOffset = timeOffsets[comboOffset.SelectedIndex].Clone();
             AppState.timeOffset = finalOffset.Clone();
+        }
+
+        private void lnkLatestBlogPost_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (feedContents is not null && feedContents.Items.Any()) {
+                Process.Start(new ProcessStartInfo() { UseShellExecute = true, FileName = feedContents.Items.ElementAt(0).Links[0].Uri.ToString() });
+            }
         }
     }
 }
