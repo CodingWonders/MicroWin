@@ -36,6 +36,16 @@
             Cancel_Button = new Button();
             About_Button = new Button();
             PageContainerPanel = new Panel();
+            WelcomePage = new Panel();
+            tlpOnlineServices = new TableLayoutPanel();
+            lblNewsDate = new Label();
+            lblUpdateStatus = new Label();
+            lnkLatestBlogPost = new LinkLabel();
+            pictureBox3 = new PictureBox();
+            pictureBox4 = new PictureBox();
+            lblDisclaimer = new Label();
+            WelcomePage_Description = new Label();
+            WelcomePage_Header = new Label();
             FinishPage = new Panel();
             lnkViewCreationLogs = new LinkLabel();
             lnkOpenIsoLoc = new LinkLabel();
@@ -45,15 +55,6 @@
             label18 = new Label();
             label16 = new Label();
             label17 = new Label();
-            IsoCreationPage = new Panel();
-            pnlProgress = new Panel();
-            pbOverall = new ProgressBar();
-            pbCurrent = new ProgressBar();
-            lblOverallStatus = new Label();
-            lblCurrentStatus = new Label();
-            logTB = new TextBox();
-            label14 = new Label();
-            label15 = new Label();
             IsoSettingsPage = new Panel();
             label19 = new Label();
             UEFICA23CB = new CheckBox();
@@ -67,6 +68,26 @@
             winutilConfigTextBox = new TextBox();
             winutilConfigBrowseBtn = new Button();
             CopyVirtIODrivers = new CheckBox();
+            gbRegionalOptions = new GroupBox();
+            tableLayoutPanel4 = new TableLayoutPanel();
+            comboOffset = new ComboBox();
+            label24 = new Label();
+            label23 = new Label();
+            label22 = new Label();
+            label21 = new Label();
+            comboTimeFormat = new ComboBox();
+            comboIme = new ComboBox();
+            comboRegion = new ComboBox();
+            label20 = new Label();
+            IsoCreationPage = new Panel();
+            pnlProgress = new Panel();
+            pbOverall = new ProgressBar();
+            pbCurrent = new ProgressBar();
+            lblOverallStatus = new Label();
+            lblCurrentStatus = new Label();
+            logTB = new TextBox();
+            label14 = new Label();
+            label15 = new Label();
             UserAccountsPage = new Panel();
             panel1 = new Panel();
             tableLayoutPanel3 = new TableLayoutPanel();
@@ -108,21 +129,23 @@
             label1 = new Label();
             SysCheckPage_Description = new Label();
             SysCheckPage_Header = new Label();
-            WelcomePage = new Panel();
-            lblDisclaimer = new Label();
-            WelcomePage_Description = new Label();
-            WelcomePage_Header = new Label();
             winutilConfigDialog = new OpenFileDialog();
             isoPickerOFD = new OpenFileDialog();
             isoSaverSFD = new SaveFileDialog();
             ButtonPanel.SuspendLayout();
             TableLayoutPanel1.SuspendLayout();
             PageContainerPanel.SuspendLayout();
+            WelcomePage.SuspendLayout();
+            tlpOnlineServices.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             FinishPage.SuspendLayout();
             panel4.SuspendLayout();
+            IsoSettingsPage.SuspendLayout();
+            gbRegionalOptions.SuspendLayout();
+            tableLayoutPanel4.SuspendLayout();
             IsoCreationPage.SuspendLayout();
             pnlProgress.SuspendLayout();
-            IsoSettingsPage.SuspendLayout();
             UserAccountsPage.SuspendLayout();
             panel1.SuspendLayout();
             tableLayoutPanel3.SuspendLayout();
@@ -133,7 +156,6 @@
             tableLayoutPanel2.SuspendLayout();
             ImageChooserPage.SuspendLayout();
             IsoChooserPage.SuspendLayout();
-            WelcomePage.SuspendLayout();
             SuspendLayout();
             // 
             // ButtonPanel
@@ -214,19 +236,144 @@
             // 
             // PageContainerPanel
             // 
+            PageContainerPanel.Controls.Add(WelcomePage);
             PageContainerPanel.Controls.Add(FinishPage);
-            PageContainerPanel.Controls.Add(IsoCreationPage);
             PageContainerPanel.Controls.Add(IsoSettingsPage);
+            PageContainerPanel.Controls.Add(IsoCreationPage);
             PageContainerPanel.Controls.Add(UserAccountsPage);
             PageContainerPanel.Controls.Add(ImageChooserPage);
             PageContainerPanel.Controls.Add(IsoChooserPage);
-            PageContainerPanel.Controls.Add(WelcomePage);
             PageContainerPanel.Dock = DockStyle.Fill;
             PageContainerPanel.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             PageContainerPanel.Location = new Point(0, 0);
             PageContainerPanel.Name = "PageContainerPanel";
             PageContainerPanel.Size = new Size(1264, 641);
             PageContainerPanel.TabIndex = 3;
+            // 
+            // WelcomePage
+            // 
+            WelcomePage.Controls.Add(tlpOnlineServices);
+            WelcomePage.Controls.Add(lblDisclaimer);
+            WelcomePage.Controls.Add(WelcomePage_Description);
+            WelcomePage.Controls.Add(WelcomePage_Header);
+            WelcomePage.Dock = DockStyle.Fill;
+            WelcomePage.Location = new Point(0, 0);
+            WelcomePage.Name = "WelcomePage";
+            WelcomePage.Size = new Size(1264, 641);
+            WelcomePage.TabIndex = 0;
+            // 
+            // tlpOnlineServices
+            // 
+            tlpOnlineServices.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            tlpOnlineServices.ColumnCount = 3;
+            tlpOnlineServices.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 3.649635F));
+            tlpOnlineServices.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 96.3503647F));
+            tlpOnlineServices.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 260F));
+            tlpOnlineServices.Controls.Add(lblNewsDate, 2, 1);
+            tlpOnlineServices.Controls.Add(lblUpdateStatus, 1, 0);
+            tlpOnlineServices.Controls.Add(lnkLatestBlogPost, 1, 1);
+            tlpOnlineServices.Controls.Add(pictureBox3, 0, 0);
+            tlpOnlineServices.Controls.Add(pictureBox4, 0, 1);
+            tlpOnlineServices.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            tlpOnlineServices.Location = new Point(30, 547);
+            tlpOnlineServices.Name = "tlpOnlineServices";
+            tlpOnlineServices.RowCount = 2;
+            tlpOnlineServices.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tlpOnlineServices.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+            tlpOnlineServices.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            tlpOnlineServices.Size = new Size(1083, 60);
+            tlpOnlineServices.TabIndex = 2;
+            // 
+            // lblNewsDate
+            // 
+            lblNewsDate.AutoSize = true;
+            lblNewsDate.Dock = DockStyle.Fill;
+            lblNewsDate.Font = new Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblNewsDate.Location = new Point(825, 30);
+            lblNewsDate.Name = "lblNewsDate";
+            lblNewsDate.Size = new Size(255, 30);
+            lblNewsDate.TabIndex = 3;
+            lblNewsDate.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // lblUpdateStatus
+            // 
+            lblUpdateStatus.AutoEllipsis = true;
+            lblUpdateStatus.AutoSize = true;
+            tlpOnlineServices.SetColumnSpan(lblUpdateStatus, 2);
+            lblUpdateStatus.Dock = DockStyle.Fill;
+            lblUpdateStatus.Location = new Point(33, 0);
+            lblUpdateStatus.Name = "lblUpdateStatus";
+            lblUpdateStatus.Size = new Size(1047, 30);
+            lblUpdateStatus.TabIndex = 0;
+            lblUpdateStatus.Text = "Checking for updates...";
+            lblUpdateStatus.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // lnkLatestBlogPost
+            // 
+            lnkLatestBlogPost.AutoEllipsis = true;
+            lnkLatestBlogPost.AutoSize = true;
+            lnkLatestBlogPost.Dock = DockStyle.Fill;
+            lnkLatestBlogPost.LinkBehavior = LinkBehavior.NeverUnderline;
+            lnkLatestBlogPost.LinkColor = Color.DodgerBlue;
+            lnkLatestBlogPost.Location = new Point(33, 30);
+            lnkLatestBlogPost.Name = "lnkLatestBlogPost";
+            lnkLatestBlogPost.Size = new Size(786, 30);
+            lnkLatestBlogPost.TabIndex = 1;
+            lnkLatestBlogPost.TextAlign = ContentAlignment.MiddleLeft;
+            lnkLatestBlogPost.LinkClicked += lnkLatestBlogPost_LinkClicked;
+            // 
+            // pictureBox3
+            // 
+            pictureBox3.Dock = DockStyle.Fill;
+            pictureBox3.Image = Properties.Resources.updates;
+            pictureBox3.Location = new Point(3, 3);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new Size(24, 24);
+            pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox3.TabIndex = 2;
+            pictureBox3.TabStop = false;
+            // 
+            // pictureBox4
+            // 
+            pictureBox4.Dock = DockStyle.Fill;
+            pictureBox4.Image = Properties.Resources.website;
+            pictureBox4.InitialImage = null;
+            pictureBox4.Location = new Point(3, 33);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(24, 24);
+            pictureBox4.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox4.TabIndex = 2;
+            pictureBox4.TabStop = false;
+            // 
+            // lblDisclaimer
+            // 
+            lblDisclaimer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            lblDisclaimer.AutoEllipsis = true;
+            lblDisclaimer.Location = new Point(119, 128);
+            lblDisclaimer.Name = "lblDisclaimer";
+            lblDisclaimer.Size = new Size(1026, 368);
+            lblDisclaimer.TabIndex = 1;
+            // 
+            // WelcomePage_Description
+            // 
+            WelcomePage_Description.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            WelcomePage_Description.AutoEllipsis = true;
+            WelcomePage_Description.Location = new Point(17, 64);
+            WelcomePage_Description.Name = "WelcomePage_Description";
+            WelcomePage_Description.Size = new Size(1233, 172);
+            WelcomePage_Description.TabIndex = 1;
+            WelcomePage_Description.Text = "This wizard will help you configure your Windows image. To begin, click Next.";
+            // 
+            // WelcomePage_Header
+            // 
+            WelcomePage_Header.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            WelcomePage_Header.AutoEllipsis = true;
+            WelcomePage_Header.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            WelcomePage_Header.Location = new Point(14, 12);
+            WelcomePage_Header.Name = "WelcomePage_Header";
+            WelcomePage_Header.Size = new Size(1236, 45);
+            WelcomePage_Header.TabIndex = 0;
+            WelcomePage_Header.Text = "Welcome";
             // 
             // FinishPage
             // 
@@ -341,6 +488,284 @@
             label17.TabIndex = 9;
             label17.Text = "Customizations complete";
             // 
+            // IsoSettingsPage
+            // 
+            IsoSettingsPage.Controls.Add(label19);
+            IsoSettingsPage.Controls.Add(UEFICA23CB);
+            IsoSettingsPage.Controls.Add(DriverExportCombo);
+            IsoSettingsPage.Controls.Add(label13);
+            IsoSettingsPage.Controls.Add(UnattendCopyCB);
+            IsoSettingsPage.Controls.Add(ReportToolCB);
+            IsoSettingsPage.Controls.Add(label11);
+            IsoSettingsPage.Controls.Add(label12);
+            IsoSettingsPage.Controls.Add(winutilConfigLabel);
+            IsoSettingsPage.Controls.Add(winutilConfigTextBox);
+            IsoSettingsPage.Controls.Add(winutilConfigBrowseBtn);
+            IsoSettingsPage.Controls.Add(CopyVirtIODrivers);
+            IsoSettingsPage.Controls.Add(gbRegionalOptions);
+            IsoSettingsPage.Dock = DockStyle.Fill;
+            IsoSettingsPage.Location = new Point(0, 0);
+            IsoSettingsPage.Name = "IsoSettingsPage";
+            IsoSettingsPage.Size = new Size(1264, 641);
+            IsoSettingsPage.TabIndex = 6;
+            // 
+            // label19
+            // 
+            label19.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            label19.AutoEllipsis = true;
+            label19.Location = new Point(101, 504);
+            label19.Name = "label19";
+            label19.Size = new Size(1084, 89);
+            label19.TabIndex = 14;
+            label19.Text = resources.GetString("label19.Text");
+            label19.Visible = false;
+            // 
+            // UEFICA23CB
+            // 
+            UEFICA23CB.AutoSize = true;
+            UEFICA23CB.Checked = true;
+            UEFICA23CB.CheckState = CheckState.Checked;
+            UEFICA23CB.Location = new Point(83, 399);
+            UEFICA23CB.Name = "UEFICA23CB";
+            UEFICA23CB.Size = new Size(380, 19);
+            UEFICA23CB.TabIndex = 10;
+            UEFICA23CB.Text = "Use Windows UEFI CA 2023 boot binaries, if available on the ISO file";
+            UEFICA23CB.UseVisualStyleBackColor = true;
+            UEFICA23CB.CheckedChanged += UEFICA23CB_CheckedChanged;
+            // 
+            // DriverExportCombo
+            // 
+            DriverExportCombo.FormattingEnabled = true;
+            DriverExportCombo.Items.AddRange(new object[] { "Don't export drivers", "Export essential drivers (Storage Controllers and Network Adapters)", "Export all drivers" });
+            DriverExportCombo.Location = new Point(83, 370);
+            DriverExportCombo.Name = "DriverExportCombo";
+            DriverExportCombo.Size = new Size(412, 23);
+            DriverExportCombo.TabIndex = 9;
+            DriverExportCombo.SelectedIndexChanged += DriverExportCombo_SelectedIndexChanged;
+            // 
+            // label13
+            // 
+            label13.AutoSize = true;
+            label13.Location = new Point(80, 349);
+            label13.Name = "label13";
+            label13.Size = new Size(111, 15);
+            label13.TabIndex = 8;
+            label13.Text = "Driver export mode:";
+            // 
+            // UnattendCopyCB
+            // 
+            UnattendCopyCB.AutoSize = true;
+            UnattendCopyCB.Location = new Point(83, 322);
+            UnattendCopyCB.Name = "UnattendCopyCB";
+            UnattendCopyCB.Size = new Size(412, 19);
+            UnattendCopyCB.TabIndex = 7;
+            UnattendCopyCB.Text = "Make a copy of the unattended answer file that I can use on other images";
+            UnattendCopyCB.UseVisualStyleBackColor = true;
+            UnattendCopyCB.CheckedChanged += UnattendCopyCB_CheckedChanged;
+            // 
+            // ReportToolCB
+            // 
+            ReportToolCB.AutoSize = true;
+            ReportToolCB.Checked = true;
+            ReportToolCB.CheckState = CheckState.Checked;
+            ReportToolCB.Location = new Point(83, 297);
+            ReportToolCB.Name = "ReportToolCB";
+            ReportToolCB.Size = new Size(218, 19);
+            ReportToolCB.TabIndex = 7;
+            ReportToolCB.Text = "Add a shortcut for the reporting tool";
+            ReportToolCB.UseVisualStyleBackColor = true;
+            ReportToolCB.CheckedChanged += ReportToolCB_CheckedChanged;
+            // 
+            // label11
+            // 
+            label11.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            label11.AutoEllipsis = true;
+            label11.Location = new Point(17, 64);
+            label11.Name = "label11";
+            label11.Size = new Size(1233, 52);
+            label11.TabIndex = 6;
+            label11.Text = "Configure additional settings for your customized image.";
+            // 
+            // label12
+            // 
+            label12.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            label12.AutoEllipsis = true;
+            label12.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label12.Location = new Point(14, 12);
+            label12.Name = "label12";
+            label12.Size = new Size(1236, 45);
+            label12.TabIndex = 5;
+            label12.Text = "Specify additional settings for the image";
+            // 
+            // winutilConfigLabel
+            // 
+            winutilConfigLabel.AutoSize = true;
+            winutilConfigLabel.Location = new Point(80, 429);
+            winutilConfigLabel.Name = "winutilConfigLabel";
+            winutilConfigLabel.Size = new Size(127, 15);
+            winutilConfigLabel.TabIndex = 11;
+            winutilConfigLabel.Text = "WinUtil Config (JSON):";
+            // 
+            // winutilConfigTextBox
+            // 
+            winutilConfigTextBox.Location = new Point(83, 450);
+            winutilConfigTextBox.Name = "winutilConfigTextBox";
+            winutilConfigTextBox.Size = new Size(293, 23);
+            winutilConfigTextBox.TabIndex = 12;
+            winutilConfigTextBox.TextChanged += winutilConfigTextBox_TextChanged;
+            // 
+            // winutilConfigBrowseBtn
+            // 
+            winutilConfigBrowseBtn.FlatStyle = FlatStyle.System;
+            winutilConfigBrowseBtn.Location = new Point(382, 449);
+            winutilConfigBrowseBtn.Name = "winutilConfigBrowseBtn";
+            winutilConfigBrowseBtn.Size = new Size(80, 23);
+            winutilConfigBrowseBtn.TabIndex = 13;
+            winutilConfigBrowseBtn.Text = "Browse...";
+            winutilConfigBrowseBtn.UseVisualStyleBackColor = true;
+            winutilConfigBrowseBtn.Click += winutilConfigBrowseBtn_Click;
+            // 
+            // CopyVirtIODrivers
+            // 
+            CopyVirtIODrivers.AutoSize = true;
+            CopyVirtIODrivers.Location = new Point(83, 482);
+            CopyVirtIODrivers.Name = "CopyVirtIODrivers";
+            CopyVirtIODrivers.Size = new Size(125, 19);
+            CopyVirtIODrivers.TabIndex = 7;
+            CopyVirtIODrivers.Text = "Copy VirtIO drivers";
+            CopyVirtIODrivers.UseVisualStyleBackColor = true;
+            CopyVirtIODrivers.CheckedChanged += CopyVirtIODrivers_CheckedChanged;
+            // 
+            // gbRegionalOptions
+            // 
+            gbRegionalOptions.Controls.Add(tableLayoutPanel4);
+            gbRegionalOptions.Controls.Add(label20);
+            gbRegionalOptions.Location = new Point(80, 133);
+            gbRegionalOptions.Name = "gbRegionalOptions";
+            gbRegionalOptions.Size = new Size(738, 158);
+            gbRegionalOptions.TabIndex = 15;
+            gbRegionalOptions.TabStop = false;
+            gbRegionalOptions.Text = "Regional Settings";
+            // 
+            // tableLayoutPanel4
+            // 
+            tableLayoutPanel4.ColumnCount = 2;
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 23.2240429F));
+            tableLayoutPanel4.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 76.7759552F));
+            tableLayoutPanel4.Controls.Add(comboOffset, 1, 3);
+            tableLayoutPanel4.Controls.Add(label24, 0, 3);
+            tableLayoutPanel4.Controls.Add(label23, 0, 2);
+            tableLayoutPanel4.Controls.Add(label22, 0, 1);
+            tableLayoutPanel4.Controls.Add(label21, 0, 0);
+            tableLayoutPanel4.Controls.Add(comboTimeFormat, 1, 0);
+            tableLayoutPanel4.Controls.Add(comboIme, 1, 1);
+            tableLayoutPanel4.Controls.Add(comboRegion, 1, 2);
+            tableLayoutPanel4.Dock = DockStyle.Fill;
+            tableLayoutPanel4.Location = new Point(3, 42);
+            tableLayoutPanel4.Name = "tableLayoutPanel4";
+            tableLayoutPanel4.RowCount = 4;
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            tableLayoutPanel4.RowStyles.Add(new RowStyle(SizeType.Percent, 25F));
+            tableLayoutPanel4.Size = new Size(732, 113);
+            tableLayoutPanel4.TabIndex = 1;
+            // 
+            // comboOffset
+            // 
+            comboOffset.Dock = DockStyle.Fill;
+            comboOffset.FormattingEnabled = true;
+            comboOffset.Location = new Point(173, 87);
+            comboOffset.Name = "comboOffset";
+            comboOffset.Size = new Size(556, 23);
+            comboOffset.TabIndex = 6;
+            comboOffset.SelectedIndexChanged += comboOffset_SelectedIndexChanged;
+            // 
+            // label24
+            // 
+            label24.AutoSize = true;
+            label24.Dock = DockStyle.Fill;
+            label24.Location = new Point(3, 84);
+            label24.Name = "label24";
+            label24.Size = new Size(164, 29);
+            label24.TabIndex = 5;
+            label24.Text = "Time zone:";
+            label24.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label23
+            // 
+            label23.AutoSize = true;
+            label23.Dock = DockStyle.Fill;
+            label23.Location = new Point(3, 56);
+            label23.Name = "label23";
+            label23.Size = new Size(164, 28);
+            label23.TabIndex = 3;
+            label23.Text = "Region:";
+            label23.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label22
+            // 
+            label22.AutoSize = true;
+            label22.Dock = DockStyle.Fill;
+            label22.Location = new Point(3, 28);
+            label22.Name = "label22";
+            label22.Size = new Size(164, 28);
+            label22.TabIndex = 2;
+            label22.Text = "Keyboard or input method:";
+            label22.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label21
+            // 
+            label21.AutoSize = true;
+            label21.Dock = DockStyle.Fill;
+            label21.Location = new Point(3, 0);
+            label21.Name = "label21";
+            label21.Size = new Size(164, 28);
+            label21.TabIndex = 1;
+            label21.Text = "Time and currency format:";
+            label21.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // comboTimeFormat
+            // 
+            comboTimeFormat.Dock = DockStyle.Fill;
+            comboTimeFormat.FormattingEnabled = true;
+            comboTimeFormat.Location = new Point(173, 3);
+            comboTimeFormat.Name = "comboTimeFormat";
+            comboTimeFormat.Size = new Size(556, 23);
+            comboTimeFormat.TabIndex = 4;
+            comboTimeFormat.SelectedIndexChanged += comboTimeFormat_SelectedIndexChanged;
+            // 
+            // comboIme
+            // 
+            comboIme.Dock = DockStyle.Fill;
+            comboIme.FormattingEnabled = true;
+            comboIme.Location = new Point(173, 31);
+            comboIme.Name = "comboIme";
+            comboIme.Size = new Size(556, 23);
+            comboIme.TabIndex = 4;
+            comboIme.SelectedIndexChanged += comboIme_SelectedIndexChanged;
+            // 
+            // comboRegion
+            // 
+            comboRegion.Dock = DockStyle.Fill;
+            comboRegion.FormattingEnabled = true;
+            comboRegion.Location = new Point(173, 59);
+            comboRegion.Name = "comboRegion";
+            comboRegion.Size = new Size(556, 23);
+            comboRegion.TabIndex = 4;
+            comboRegion.SelectedIndexChanged += comboRegion_SelectedIndexChanged;
+            // 
+            // label20
+            // 
+            label20.AutoSize = true;
+            label20.Dock = DockStyle.Top;
+            label20.Location = new Point(3, 19);
+            label20.Name = "label20";
+            label20.Padding = new Padding(4);
+            label20.Size = new Size(648, 23);
+            label20.TabIndex = 0;
+            label20.Text = "Configure the regional options for the target system. You can change these after the operating system finishes installing.";
+            // 
             // IsoCreationPage
             // 
             IsoCreationPage.Controls.Add(pnlProgress);
@@ -433,153 +858,6 @@
             label15.Size = new Size(1236, 45);
             label15.TabIndex = 7;
             label15.Text = "Customizations in progress";
-            // 
-            // IsoSettingsPage
-            // 
-            IsoSettingsPage.Controls.Add(label19);
-            IsoSettingsPage.Controls.Add(UEFICA23CB);
-            IsoSettingsPage.Controls.Add(DriverExportCombo);
-            IsoSettingsPage.Controls.Add(label13);
-            IsoSettingsPage.Controls.Add(UnattendCopyCB);
-            IsoSettingsPage.Controls.Add(ReportToolCB);
-            IsoSettingsPage.Controls.Add(label11);
-            IsoSettingsPage.Controls.Add(label12);
-            IsoSettingsPage.Controls.Add(winutilConfigLabel);
-            IsoSettingsPage.Controls.Add(winutilConfigTextBox);
-            IsoSettingsPage.Controls.Add(winutilConfigBrowseBtn);
-            IsoSettingsPage.Controls.Add(CopyVirtIODrivers);
-            IsoSettingsPage.Dock = DockStyle.Fill;
-            IsoSettingsPage.Location = new Point(0, 0);
-            IsoSettingsPage.Name = "IsoSettingsPage";
-            IsoSettingsPage.Size = new Size(1264, 641);
-            IsoSettingsPage.TabIndex = 6;
-            // 
-            // label19
-            // 
-            label19.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            label19.AutoEllipsis = true;
-            label19.Location = new Point(101, 340);
-            label19.Name = "label19";
-            label19.Size = new Size(1062, 243);
-            label19.TabIndex = 14;
-            label19.Text = resources.GetString("label19.Text");
-            label19.Visible = false;
-            // 
-            // UEFICA23CB
-            // 
-            UEFICA23CB.AutoSize = true;
-            UEFICA23CB.Checked = true;
-            UEFICA23CB.CheckState = CheckState.Checked;
-            UEFICA23CB.Location = new Point(83, 235);
-            UEFICA23CB.Name = "UEFICA23CB";
-            UEFICA23CB.Size = new Size(380, 19);
-            UEFICA23CB.TabIndex = 10;
-            UEFICA23CB.Text = "Use Windows UEFI CA 2023 boot binaries, if available on the ISO file";
-            UEFICA23CB.UseVisualStyleBackColor = true;
-            UEFICA23CB.CheckedChanged += UEFICA23CB_CheckedChanged;
-            // 
-            // DriverExportCombo
-            // 
-            DriverExportCombo.FormattingEnabled = true;
-            DriverExportCombo.Items.AddRange(new object[] { "Don't export drivers", "Export essential drivers (Storage Controllers and Network Adapters)", "Export all drivers" });
-            DriverExportCombo.Location = new Point(83, 206);
-            DriverExportCombo.Name = "DriverExportCombo";
-            DriverExportCombo.Size = new Size(412, 23);
-            DriverExportCombo.TabIndex = 9;
-            DriverExportCombo.SelectedIndexChanged += DriverExportCombo_SelectedIndexChanged;
-            // 
-            // label13
-            // 
-            label13.AutoSize = true;
-            label13.Location = new Point(80, 185);
-            label13.Name = "label13";
-            label13.Size = new Size(111, 15);
-            label13.TabIndex = 8;
-            label13.Text = "Driver export mode:";
-            // 
-            // UnattendCopyCB
-            // 
-            UnattendCopyCB.AutoSize = true;
-            UnattendCopyCB.Location = new Point(83, 158);
-            UnattendCopyCB.Name = "UnattendCopyCB";
-            UnattendCopyCB.Size = new Size(412, 19);
-            UnattendCopyCB.TabIndex = 7;
-            UnattendCopyCB.Text = "Make a copy of the unattended answer file that I can use on other images";
-            UnattendCopyCB.UseVisualStyleBackColor = true;
-            UnattendCopyCB.CheckedChanged += UnattendCopyCB_CheckedChanged;
-            // 
-            // ReportToolCB
-            // 
-            ReportToolCB.AutoSize = true;
-            ReportToolCB.Checked = true;
-            ReportToolCB.CheckState = CheckState.Checked;
-            ReportToolCB.Location = new Point(83, 133);
-            ReportToolCB.Name = "ReportToolCB";
-            ReportToolCB.Size = new Size(218, 19);
-            ReportToolCB.TabIndex = 7;
-            ReportToolCB.Text = "Add a shortcut for the reporting tool";
-            ReportToolCB.UseVisualStyleBackColor = true;
-            ReportToolCB.CheckedChanged += ReportToolCB_CheckedChanged;
-            // 
-            // label11
-            // 
-            label11.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            label11.AutoEllipsis = true;
-            label11.Location = new Point(17, 64);
-            label11.Name = "label11";
-            label11.Size = new Size(1233, 52);
-            label11.TabIndex = 6;
-            label11.Text = "Configure additional settings for your customized image.";
-            // 
-            // label12
-            // 
-            label12.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            label12.AutoEllipsis = true;
-            label12.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label12.Location = new Point(14, 12);
-            label12.Name = "label12";
-            label12.Size = new Size(1236, 45);
-            label12.TabIndex = 5;
-            label12.Text = "Specify additional settings for the image";
-            // 
-            // winutilConfigLabel
-            // 
-            winutilConfigLabel.AutoSize = true;
-            winutilConfigLabel.Location = new Point(80, 265);
-            winutilConfigLabel.Name = "winutilConfigLabel";
-            winutilConfigLabel.Size = new Size(127, 15);
-            winutilConfigLabel.TabIndex = 11;
-            winutilConfigLabel.Text = "WinUtil Config (JSON):";
-            // 
-            // winutilConfigTextBox
-            // 
-            winutilConfigTextBox.Location = new Point(83, 286);
-            winutilConfigTextBox.Name = "winutilConfigTextBox";
-            winutilConfigTextBox.Size = new Size(293, 23);
-            winutilConfigTextBox.TabIndex = 12;
-            winutilConfigTextBox.TextChanged += winutilConfigTextBox_TextChanged;
-            // 
-            // winutilConfigBrowseBtn
-            // 
-            winutilConfigBrowseBtn.FlatStyle = FlatStyle.System;
-            winutilConfigBrowseBtn.Location = new Point(382, 285);
-            winutilConfigBrowseBtn.Name = "winutilConfigBrowseBtn";
-            winutilConfigBrowseBtn.Size = new Size(80, 23);
-            winutilConfigBrowseBtn.TabIndex = 13;
-            winutilConfigBrowseBtn.Text = "Browse...";
-            winutilConfigBrowseBtn.UseVisualStyleBackColor = true;
-            winutilConfigBrowseBtn.Click += winutilConfigBrowseBtn_Click;
-            // 
-            // CopyVirtIODrivers
-            // 
-            CopyVirtIODrivers.AutoSize = true;
-            CopyVirtIODrivers.Location = new Point(83, 318);
-            CopyVirtIODrivers.Name = "CopyVirtIODrivers";
-            CopyVirtIODrivers.Size = new Size(125, 19);
-            CopyVirtIODrivers.TabIndex = 7;
-            CopyVirtIODrivers.Text = "Copy VirtIO drivers";
-            CopyVirtIODrivers.UseVisualStyleBackColor = true;
-            CopyVirtIODrivers.CheckedChanged += CopyVirtIODrivers_CheckedChanged;
             // 
             // UserAccountsPage
             // 
@@ -1027,47 +1305,6 @@
             SysCheckPage_Header.TabIndex = 0;
             SysCheckPage_Header.Text = "Choose a disc image";
             // 
-            // WelcomePage
-            // 
-            WelcomePage.Controls.Add(lblDisclaimer);
-            WelcomePage.Controls.Add(WelcomePage_Description);
-            WelcomePage.Controls.Add(WelcomePage_Header);
-            WelcomePage.Dock = DockStyle.Fill;
-            WelcomePage.Location = new Point(0, 0);
-            WelcomePage.Name = "WelcomePage";
-            WelcomePage.Size = new Size(1264, 641);
-            WelcomePage.TabIndex = 0;
-            // 
-            // lblDisclaimer
-            // 
-            lblDisclaimer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            lblDisclaimer.AutoEllipsis = true;
-            lblDisclaimer.Location = new Point(119, 128);
-            lblDisclaimer.Name = "lblDisclaimer";
-            lblDisclaimer.Size = new Size(1026, 433);
-            lblDisclaimer.TabIndex = 1;
-            // 
-            // WelcomePage_Description
-            // 
-            WelcomePage_Description.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            WelcomePage_Description.AutoEllipsis = true;
-            WelcomePage_Description.Location = new Point(17, 64);
-            WelcomePage_Description.Name = "WelcomePage_Description";
-            WelcomePage_Description.Size = new Size(1233, 172);
-            WelcomePage_Description.TabIndex = 1;
-            WelcomePage_Description.Text = "This wizard will help you configure your Windows image. To begin, click Next.";
-            // 
-            // WelcomePage_Header
-            // 
-            WelcomePage_Header.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            WelcomePage_Header.AutoEllipsis = true;
-            WelcomePage_Header.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            WelcomePage_Header.Location = new Point(14, 12);
-            WelcomePage_Header.Name = "WelcomePage_Header";
-            WelcomePage_Header.Size = new Size(1236, 45);
-            WelcomePage_Header.TabIndex = 0;
-            WelcomePage_Header.Text = "Welcome";
-            // 
             // winutilConfigDialog
             // 
             winutilConfigDialog.Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*";
@@ -1101,16 +1338,25 @@
             ButtonPanel.ResumeLayout(false);
             TableLayoutPanel1.ResumeLayout(false);
             PageContainerPanel.ResumeLayout(false);
+            WelcomePage.ResumeLayout(false);
+            tlpOnlineServices.ResumeLayout(false);
+            tlpOnlineServices.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             FinishPage.ResumeLayout(false);
             FinishPage.PerformLayout();
             panel4.ResumeLayout(false);
             panel4.PerformLayout();
+            IsoSettingsPage.ResumeLayout(false);
+            IsoSettingsPage.PerformLayout();
+            gbRegionalOptions.ResumeLayout(false);
+            gbRegionalOptions.PerformLayout();
+            tableLayoutPanel4.ResumeLayout(false);
+            tableLayoutPanel4.PerformLayout();
             IsoCreationPage.ResumeLayout(false);
             IsoCreationPage.PerformLayout();
             pnlProgress.ResumeLayout(false);
             pnlProgress.PerformLayout();
-            IsoSettingsPage.ResumeLayout(false);
-            IsoSettingsPage.PerformLayout();
             UserAccountsPage.ResumeLayout(false);
             UserAccountsPage.PerformLayout();
             panel1.ResumeLayout(false);
@@ -1127,7 +1373,6 @@
             ImageChooserPage.PerformLayout();
             IsoChooserPage.ResumeLayout(false);
             IsoChooserPage.PerformLayout();
-            WelcomePage.ResumeLayout(false);
             ResumeLayout(false);
 
         }
@@ -1220,5 +1465,22 @@
         private CheckBox UEFICA23CB;
         internal Label label19;
         private ColumnHeader columnHeader4;
+        private GroupBox gbRegionalOptions;
+        private TableLayoutPanel tableLayoutPanel4;
+        private Label label20;
+        private ComboBox comboOffset;
+        private Label label24;
+        private Label label23;
+        private Label label22;
+        private Label label21;
+        private ComboBox comboTimeFormat;
+        private ComboBox comboIme;
+        private ComboBox comboRegion;
+        private TableLayoutPanel tlpOnlineServices;
+        private Label lblUpdateStatus;
+        private LinkLabel lnkLatestBlogPost;
+        private PictureBox pictureBox3;
+        private PictureBox pictureBox4;
+        private Label lblNewsDate;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MicroWin.Classes;
+using MicroWin.Classes.Regional;
 using System.Collections.Generic;
 using System.IO;
 
@@ -24,7 +25,9 @@ namespace MicroWin
         public static bool UseUEFICA23Bins { get; set; } = true;
         public static string? SaveISO { get; set; }
         public static string? WinUtilConfigPath { get; set; }
+        public static UserLocale? userLocale { get; set; }
+        public static TimeOffset? timeOffset { get; set; }
 
-        public static string Version => "v2.0";
+        public static string Version => "v2.1";
     }
 }

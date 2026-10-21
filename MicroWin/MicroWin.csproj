@@ -14,9 +14,17 @@
     <!-- Disable auto-generated assembly attributes to avoid duplication with Properties/AssemblyInfo.cs -->
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <ApplicationIcon>logo.ico</ApplicationIcon>
-    <AssemblyVersion>2.0.1.0</AssemblyVersion>
-    <FileVersion>2.0.1.0</FileVersion>
+    <AssemblyVersion>2.1.0.0</AssemblyVersion>
+    <FileVersion>2.1.0.0</FileVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\Regional\GeoId.xml" />
+    <None Remove="Resources\Regional\ImageLanguage.xml" />
+    <None Remove="Resources\Regional\KeyboardIdentifier.xml" />
+    <None Remove="Resources\Regional\TimeOffset.xml" />
+    <None Remove="Resources\Regional\UserLocale.xml" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="logo.ico" />
@@ -26,10 +34,16 @@
     <!-- Migrate Microsoft.Dism to PackageReference; keep pinned version from assessment -->
     <PackageReference Include="Microsoft.Dism" Version="6.1.0" />
     <PackageReference Include="System.Management" Version="10.0.10" />
+    <PackageReference Include="System.ServiceModel.Syndication" Version="10.0.13" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- Keep native/tools files as content so they remain in the output and/or source tree -->
+    <EmbeddedResource Include="Resources\Regional\GeoId.xml" />
+    <EmbeddedResource Include="Resources\Regional\ImageLanguage.xml" />
+    <EmbeddedResource Include="Resources\Regional\KeyboardIdentifier.xml" />
+    <EmbeddedResource Include="Resources\Regional\TimeOffset.xml" />
+    <EmbeddedResource Include="Resources\Regional\UserLocale.xml" />
     <EmbeddedResource Include="tools\oscdimg.exe" />
     <EmbeddedResource Include="tools\FirstStartup.ps1" />
     <None Include="tools\RemoveTempDir.bat" />

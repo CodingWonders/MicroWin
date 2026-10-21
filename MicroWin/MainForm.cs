@@ -1,12 +1,14 @@
 ﻿using Microsoft.Dism;
 using Microsoft.Win32;
 using MicroWin.Classes;
+using MicroWin.Classes.Regional;
 using MicroWin.functions.dism;
 using MicroWin.functions.Helpers.DeleteFile;
 using MicroWin.functions.Helpers.DesktopWindowManager;
 using MicroWin.functions.Helpers.DriverHelpers;
 using MicroWin.functions.Helpers.Loggers;
 using MicroWin.functions.Helpers.PowerManagement;
+using MicroWin.functions.Helpers.ProgramResources;
 using MicroWin.functions.Helpers.PropertyCheckers;
 using MicroWin.functions.Helpers.RegistryHelpers;
 using MicroWin.functions.Helpers.WMI;
@@ -28,13 +30,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using System.ServiceModel.Syndication;
+using System.Net;
+using System.Xml;
+
 namespace MicroWin
 {
     [SupportedOSPlatform("Windows")]
     public partial class MainForm : Form
     {
         private const string swStatus = "stable";
-        private const string appVer = "2.0.1";
+        private const string appVer = "2.1";
 
         private WizardPage CurrentWizardPage = new();
         private List<WizardPage.Page> VerifyInPages = [
@@ -49,6 +55,19 @@ namespace MicroWin
         private DismImageInfo? installImageInfo;
 
         private bool isEsdFile = false;
+
+        // REGIONAL SETTINGS
+        private List<GeoId> geoIds = [];
+        private List<ImageLanguage> imageLanguages = [];
+        private List<KeyboardIdentifier> keyboardIdentifiers = [];
+        private List<TimeOffset> timeOffsets = [];
+        private List<UserLocale> userLocales = [];
+
+        private static readonly UserLocale defaultLocale = new() { Id = "en-US", DisplayName = "English (United States)", LCID = "0409", KeyboardLayout = "00000409", GeoLocation = "244" };
+        private static UserLocale finalLocale = defaultLocale.Clone();
+        private static TimeOffset defaultOffset = new() { Id = "UTC", DisplayName = "(UTC) Coordinated Universal Time" };
+        private static TimeOffset finalOffset = defaultOffset.Clone();
+
 
         public MainForm()
         {
@@ -87,6 +106,15 @@ namespace MicroWin
             logTB.ForeColor = ForeColor;
             winutilConfigTextBox.BackColor = BackColor;
             winutilConfigTextBox.ForeColor = ForeColor;
+            gbRegionalOptions.ForeColor = ForeColor;
+            comboOffset.BackColor = BackColor;
+            comboOffset.ForeColor = ForeColor;
+            comboIme.BackColor = BackColor;
+            comboIme.ForeColor = ForeColor;
+            comboTimeFormat.BackColor = BackColor;
+            comboTimeFormat.ForeColor = ForeColor;
+            comboRegion.BackColor = BackColor;
+            comboRegion.ForeColor = ForeColor;
 
             WindowHelper.ToggleDarkTitleBar(Handle, colorVal == 0);
         }
@@ -163,27 +191,33 @@ namespace MicroWin
                     }
 
 #pragma warning disable CS8602
-                    if (VersionComparer.IsOlderThanVersion(imageInfo.ElementAtOrDefault(AppState.SelectedImageIndex - 1 ?? 0).ProductVersion, VersionComparer.VERCONST_WIN10)) {
+                    if (VersionComparer.IsOlderThanVersion(imageInfo.ElementAtOrDefault(AppState.SelectedImageIndex - 1 ?? 0).ProductVersion, VersionComparer.VERCONST_WIN10))
+                    {
                         MessageBox.Show("Windows images containing Windows 10 1809 or earlier are not supported.");
                         return false;
                     }
 #pragma warning restore CS8602
 
                     // If we are in ESD mode, we'll begin the export procedure
-                    if (isEsdFile) {
+                    if (isEsdFile)
+                    {
                         string sourceEsd = Path.Combine(AppState.MountPath, "sources", "install.esd"),
                                destinationWim = Path.Combine(AppState.MountPath, "sources", "install.wim");
 
                         MessageBox.Show("Your Windows image will be converted to an editable format.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                        if (!DismManager.ExportImage(sourceEsd, AppState.SelectedImageIndex, destinationWim, "max")) {
+                        if (!DismManager.ExportImage(sourceEsd, AppState.SelectedImageIndex, destinationWim, "max"))
+                        {
                             MessageBox.Show("Your Windows image could not be converted to an editable format.", Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return false;
                         }
 
-                        try {
+                        try
+                        {
                             File.Delete(sourceEsd);
-                        } catch {
+                        }
+                        catch
+                        {
                             string cmdProcPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "cmd.exe"),
                                    takeownPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "takeown.exe"),
                                    icaclsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "system32", "icacls.exe");
@@ -254,7 +288,7 @@ namespace MicroWin
             return true;
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private async void MainForm_Load(object sender, EventArgs e)
         {
             string welcomeMessage = $"Welcome to MicroWin .NET.\n\n" +
                 $"This wizard will guide you through the creation of your ISO file, with a debloated Windows experience. You will need an official " +
@@ -292,8 +326,96 @@ namespace MicroWin
             columnHeader4.Width = WindowHelper.ScaleLogical(128);
             columnHeader5.Width = WindowHelper.ScaleLogical(84);
             columnHeader6.Width = WindowHelper.ScaleLogical(160);
+
+            // Load regional settings
+            geoIds = GeoId.LoadItems().OrderBy(entry => entry.DisplayName).ToList();
+            imageLanguages = ImageLanguage.LoadItems().OrderBy(entry => entry.DisplayName).ToList();
+            keyboardIdentifiers = KeyboardIdentifier.LoadItems().OrderBy(entry => entry.DisplayName).ToList();
+            timeOffsets = TimeOffset.LoadItems().OrderBy(entry => entry.DisplayName).ToList();
+            userLocales = UserLocale.LoadItems().OrderBy(entry => entry.DisplayName).ToList();
+
+            comboTimeFormat.Items.AddRange(userLocales.Select(locale => locale.DisplayName).ToArray());
+            comboIme.Items.AddRange(keyboardIdentifiers.Select(keyboard => $"{keyboard.DisplayName}{(keyboard.GetKeyboardType() == KeyboardType.IME ? " (IME)" : "")}").ToArray());
+            comboRegion.Items.AddRange(geoIds.Select(geoId => geoId.DisplayName).ToArray());
+            comboOffset.Items.AddRange(timeOffsets.Select(offset => offset.DisplayName).ToArray());
+
+            try
+            {
+                comboTimeFormat.SelectedItem = defaultLocale.DisplayName;
+                comboIme.SelectedItem = keyboardIdentifiers.FirstOrDefault(kbd => kbd.Id == defaultLocale.KeyboardLayout)?.DisplayName;
+                comboRegion.SelectedItem = geoIds.FirstOrDefault(geoId => geoId.Id == defaultLocale.GeoLocation)?.DisplayName;
+                comboOffset.SelectedItem = "(UTC) Coordinated Universal Time";
+            }
+            catch
+            {
+
+            }
+
+            AppState.userLocale = finalLocale.Clone();
+            AppState.timeOffset = finalOffset.Clone();
+
+            await CheckFeedsAsync();
+            if (feedContents is not null && feedContents.Items.Any())
+            {
+                lnkLatestBlogPost.Text = feedContents.Items.ElementAt(0).Title.Text;
+                lblNewsDate.Text = feedContents.Items.ElementAt(0).PublishDate.ToString("D");
+            }
+
+            bool updatesAvailable = await AreUpdatesAvailableAsync();
+            if (updatesAvailable) {
+                lblUpdateStatus.Text = $"Updates are available. The latest version is {targetVer}.";
+            } else {
+                lblUpdateStatus.Text = "You are up to date.";
+            }
         }
 
+        // Online Services
+        SyndicationFeed? feedContents = new();
+        private static readonly HttpClient client = new();
+
+        private async Task CheckFeedsAsync()
+        {
+            try
+            {
+                const string rssUrl = "https://codingwonders.github.io/feed.xml";
+                string rssContent = await client.GetStringAsync(rssUrl);
+
+                if (!string.IsNullOrWhiteSpace(rssContent))
+                {
+                    using XmlReader reader = XmlReader.Create(new StringReader(rssContent));
+                    feedContents = SyndicationFeed.Load(reader);
+                }
+            }
+            catch (Exception)
+            {
+                feedContents = null;
+            }
+        }
+
+        private string targetVer = "";
+
+        private async Task<bool> AreUpdatesAvailableAsync() {
+            try
+            {
+                const string updateUrl = "https://raw.githubusercontent.com/CodingWonders/MicroWin/refs/heads/main/VERSION";
+
+                string verIdentifierContent = await client.GetStringAsync(updateUrl);
+
+                if (Version.TryParse(verIdentifierContent, out Version? latestVersion))
+                {
+                    targetVer = verIdentifierContent;
+                    return !VersionComparer.IsNewerThanVersion(new Version(Application.ProductVersion), latestVersion);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
 
         private void Next_Button_Click(object sender, EventArgs e)
         {
@@ -370,7 +492,8 @@ namespace MicroWin
 
             if (File.Exists(wimPath))
             {
-                if (Path.GetExtension(wimPath).EndsWith("esd", StringComparison.OrdinalIgnoreCase)) {
+                if (Path.GetExtension(wimPath).EndsWith("esd", StringComparison.OrdinalIgnoreCase))
+                {
                     // ESD files require that we export them first to WIM. This will be done later,
                     // because we'll be able to know the index.
                     isEsdFile = true;
@@ -777,7 +900,9 @@ namespace MicroWin
                                 }
                             });
                         }
-                    } catch {
+                    }
+                    catch
+                    {
                         WriteLogMessage("Could not download VirtIO drivers...");
                     }
                 }
@@ -851,16 +976,18 @@ namespace MicroWin
                 {
                     // Check if we can do it using the embedded resource; otherwise grab it from the internet.
                     string firstStartupPath = Path.Combine(AppState.ScratchPath, "Windows", "FirstStartup.ps1");
-                    try {
-                        Assembly currentAssembly = Assembly.GetExecutingAssembly();
-                        using Stream resourceStream = currentAssembly.GetManifestResourceStream("MicroWin.tools.FirstStartup.ps1");
+                    try
+                    {
+                        using Stream resourceStream = ResourceHelper.GetProgramResourceStream("MicroWin.tools.FirstStartup.ps1");
                         if (resourceStream is null)
                             throw new Exception();
 
                         using StreamReader sr = new(resourceStream);
                         string firstRunScriptContents = sr.ReadToEnd();
                         File.WriteAllText(firstStartupPath, firstRunScriptContents, new UTF8Encoding(false));
-                    } catch {
+                    }
+                    catch
+                    {
                         DynaLog.logMessage("Could not get embedded res. Downloading from internet.");
                         using HttpClient client = new();
                         byte[] data = client.GetByteArrayAsync("https://github.com/CodingWonders/MicroWin/raw/main/MicroWin/tools/FirstStartup.ps1").GetAwaiter().GetResult();
@@ -978,7 +1105,8 @@ namespace MicroWin
                 RegistryHelper.UnloadRegistryHive("zDEFAULT");
                 RegistryHelper.UnloadRegistryHive("zNTUSER");
 
-                if (Directory.Exists(bootDriverPath)) {
+                if (Directory.Exists(bootDriverPath))
+                {
                     UpdateCurrentStatus("Installing system drivers...");
                     DriverInstallHelper.InstallDrivers(AppState.ScratchPath, bootDriverPath, (message) => WriteLogMessage(message));
                 }
@@ -1166,6 +1294,54 @@ namespace MicroWin
         private void Cancel_Button_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void comboTimeFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Reselect the locale
+            UserLocale selectedLocale = userLocales[comboTimeFormat.SelectedIndex];
+            int keyboardLayoutIndex = keyboardIdentifiers.FindIndex(keybId => keybId.Id == selectedLocale.KeyboardLayout);
+            int geoIdIndex = geoIds.FindIndex(geoId => geoId.Id == selectedLocale.GeoLocation);
+            finalLocale = selectedLocale.Clone();
+
+#nullable disable
+            comboIme.SelectedIndexChanged -= comboIme_SelectedIndexChanged;
+            comboRegion.SelectedIndexChanged -= comboRegion_SelectedIndexChanged;
+            if (keyboardLayoutIndex > -1) comboIme.SelectedIndex = keyboardLayoutIndex;
+            if (geoIdIndex > -1) comboRegion.SelectedIndex = geoIdIndex;
+            comboIme.SelectedIndexChanged += comboIme_SelectedIndexChanged;
+            comboRegion.SelectedIndexChanged += comboRegion_SelectedIndexChanged;
+
+            // set user preferences
+            finalLocale.GeoLocation = geoIds[comboRegion.SelectedIndex].Id;
+            finalLocale.KeyboardLayout = keyboardIdentifiers[comboIme.SelectedIndex].Id;
+#nullable restore
+            AppState.userLocale = finalLocale.Clone();
+        }
+
+        private void comboIme_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            finalLocale.KeyboardLayout = keyboardIdentifiers[comboIme.SelectedIndex].Id;
+            AppState.userLocale = finalLocale.Clone();
+        }
+
+        private void comboRegion_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            finalLocale.GeoLocation = geoIds[comboRegion.SelectedIndex].Id;
+            AppState.userLocale = finalLocale.Clone();
+        }
+
+        private void comboOffset_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            finalOffset = timeOffsets[comboOffset.SelectedIndex].Clone();
+            AppState.timeOffset = finalOffset.Clone();
+        }
+
+        private void lnkLatestBlogPost_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (feedContents is not null && feedContents.Items.Any()) {
+                Process.Start(new ProcessStartInfo() { UseShellExecute = true, FileName = feedContents.Items.ElementAt(0).Links[0].Uri.ToString() });
+            }
         }
     }
 }
