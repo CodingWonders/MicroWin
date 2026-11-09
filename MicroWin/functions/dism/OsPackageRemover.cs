@@ -19,6 +19,7 @@ namespace MicroWin.functions.dism
                 "Windows-Client-LanguagePack",
                 "LanguageFeatures-Basic",
                 "Package_for_ServicingStack",
+                "Package_for_RollupFix",
                 "DotNet",
                 "Notepad",
                 "WMIC",
